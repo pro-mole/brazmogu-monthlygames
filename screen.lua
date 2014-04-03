@@ -6,25 +6,25 @@ Screen.__index = Screen
 screens = {}
 current_screen = nil
 
-Screen.new(name)
-	screens[name] = setmetatable({}, Screen)
+function Screen.new(name,screentype)
+	screens[name] = setmetatable(setmetatable({}, screentype), Screen)
 	if current_screen == nil then
 		current_screen = screens[name]
 	end
 end
 
-Screen:init()
+function Screen:init()
 	-- Called when the screen starts
 end
 
-Screen:quit()
+function Screen:quit()
 	-- Called when we exit the screen
 end
 
-Screen:draw()
+function Screen:draw()
 	-- Called to draw the screen
 end
 
-Screen:update(dt)
+function Screen:update(dt)
 	-- Called to update the screen
 end

@@ -13,10 +13,12 @@ streak_color = ""
 function love.load()
 end
 
-function love.update()
+function love.update(dt)
+	current_screen:update(dt)
 end
 
 function love.draw()
+	current_screen:draw()
 end
 
 function love.quit()

@@ -33,6 +33,6 @@ function Pixel:destroy(clicked)
 	-- (clicked parameter denotes whether this pixel is destroyed by direct or indirect means)
 end
 
-function update(dt)
+function Pixel:update(dt)
 	-- Update position towards the center
 end
