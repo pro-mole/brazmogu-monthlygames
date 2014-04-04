@@ -6,10 +6,20 @@ Screen.__index = Screen
 screens = {}
 current_screen = nil
 
-function Screen.new(name,screentype)
-	screens[name] = setmetatable(setmetatable({}, screentype), Screen)
+function addScreen(screen,name)
+	screens[name] = screen
 	if current_screen == nil then
-		current_screen = screens[name]
+		current_screen = screen
+	end
+end
+
+function changeScreen(to)
+	local _from = current_screen
+	local _to = screens[to]
+	if _to ~= nil and _from ~= _to then
+		_from:quit()
+		_to:init()
+		current_screen = _to
 	end
 end
 
