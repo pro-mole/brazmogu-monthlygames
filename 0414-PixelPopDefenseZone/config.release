@@ -1,0 +1,9 @@
+# Configuration file for releases
+
+# WIN
+
+# MAC OS
+bundleIdentifier="com.brazmogu.monthly.pixelpopdefender"
+bundleName="Pixel Pop Defense Zone"
+
+# LINUX
