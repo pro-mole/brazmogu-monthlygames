@@ -3,6 +3,7 @@ require("screen")
 require("screens/menu")
 require("screens/game")
 -- Load our game element classes
+require("color")
 require("pixel")
 require("zone")
 
