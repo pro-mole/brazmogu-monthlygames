@@ -6,10 +6,8 @@ require("screens/game")
 require("color")
 require("pixel")
 require("zone")
+require("particle")
 
-score = 0
-streak = 0
-streak_color = ""
 center = {}
 
 function love.load()
@@ -21,6 +19,14 @@ end
 
 function love.update(dt)
 	current_screen:update(dt)
+end
+
+function love.mousepressed(x, y, button)
+	current_screen:mousepressed(x,y,button)
+end
+
+function love.keypressed(key, isrepeat)
+	current_screen:keypressed(key,isrepeat)
 end
 
 function love.draw()
