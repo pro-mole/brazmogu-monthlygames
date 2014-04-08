@@ -65,6 +65,7 @@ done
 
 releasedir=$(dirname $lovefile)/release
 . $(dirname $lovefile)/config.release
+make -C $(dirname $lovefile)
 
 if [ ! -e $lovefile ]
 then
