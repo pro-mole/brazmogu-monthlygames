@@ -9,10 +9,11 @@ end
 
 function zone:draw()
 	-- Draw the Zone and the layers of defense around it(if any)
-	love.graphics.setColor(192,0,192,255)
-	love.graphics.circle("fill", center.x, center.y, self.size, 128)
-	love.graphics.setColor(255,0,192,255)
+	love.graphics.setColor(192,192,192,255)
+	love.graphics.circle("line", center.x, center.y, self.size, 128)
+	love.graphics.setColor(255,255,255,255)
 	love.graphics.circle("fill", center.x, center.y, 8, 32)
+	love.graphics.circle("line", center.x, center.y, 8, 32)
 end
 
 function zone:update()
