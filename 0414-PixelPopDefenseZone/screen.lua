@@ -38,3 +38,11 @@ end
 function Screen:update(dt)
 	-- Called to update the screen
 end
+
+function Screen:mousepressed(x,y,mouse)
+	-- Called to handle mouse input
+end
+
+function Screen:keypressed(key,isrepeat)
+	-- Called to handle keyboard input
+end
