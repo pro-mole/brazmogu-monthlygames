@@ -110,7 +110,7 @@ function macosx {
 		mv love.app $appname
 		mv $(basename $lovefile) $appname/Contents/Resources/
 		echo $bundleName $bundleIdentifier
-		sed -i "s/#bundleName/$bundleName/; s/#bundleIdentifier/$bundleIdentifier/;" $appname/Contents/Info.plist
+		sed -i -e "s/#bundleName/$bundleName/; s/#bundleIdentifier/$bundleIdentifier/;" $appname/Contents/Info.plist
 		if $ziprelease
 		then
 			zip -9 -r -m -q ../$releasedir/$zipname-macosx.zip $appname
