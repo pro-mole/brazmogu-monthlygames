@@ -9,10 +9,17 @@ require("zone")
 require("particle")
 
 center = {}
+fonts = {}
+settings = {sound = "ON", music = "ON", difficulty = "Easy", colorblind = "OFF"}
 
 function love.load()
 	center.x = love.window.getWidth()/2
 	center.y = love.window.getHeight()/2
+	
+	fonts['standard'] = love.graphics.newFont(10)
+	fonts['big'] = love.graphics.newFont(16)
+	
+	settings:load()
 	
 	current_screen:init()
 end
@@ -35,4 +42,30 @@ end
 
 function love.quit()
 	pixels = {}
+end
+
+function settings:save()
+	local gamedata = ""
+	for k,v in pairs(self) do
+		if k ~= "save" and k ~= "load" then
+			gamedata = gamedata .. string.format("%s=%s\n",k,v)
+		end
+	end
+	if not love.filesystem.write("ppdz.settings", gamedata) then
+		print("ERROR: Cannot save settings")
+	end
+end
+
+function settings:load()
+	if not love.filesystem.exists("ppdz.settings") then
+		self:save()
+	else
+		local str, bytes = love.filesystem.read("ppdz.settings")
+		print(string.format("%s bytes read from save file", bytes))
+		if bytes == 0 then return end
+		
+		for k, v in string.gmatch(str, "(%w+)=(%w+)") do
+			self[k] = v
+		end
+	end
 end

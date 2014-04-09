@@ -11,7 +11,7 @@ streak = {n=0, r=255, g=255, b=255}
 function ScreenGame:init()
 	-- set up local vars
 	zone:init(32)
-	self.delta = 2
+	self.delta = 0
 	self.interval = 2
 	self.speedvar = 0
 	self.speedavg = 16
@@ -55,15 +55,19 @@ function ScreenGame:update(dt)
 end
 
 function ScreenGame:mousepressed(x, y, button)
-	print(string.format("mouse press(%s) at %d;%d",button,x,y))
-	if button == 'l' then
-		for i,pixel in pairs(pixels) do
-			if pixel:isClicked(x,y) then
-				print("Got a pixel!")
-				pixel:destroy(true)
-				-- Consider breaking the loop here; maybe we don't want to click more than one at a time?
+	if not gameover then
+		print(string.format("mouse press(%s) at %d;%d",button,x,y))
+		if button == 'l' then
+			for i,pixel in pairs(pixels) do
+				if pixel:isClicked(x,y) then
+					print("Got a pixel!")
+					pixel:destroy(true)
+					-- Consider breaking the loop here; maybe we don't want to click more than one at a time?
+				end
 			end
 		end
+	else
+		changeScreen("menu")
 	end
 end
 
@@ -75,16 +79,28 @@ function ScreenGame:draw()
 	end
 	particles:draw()
 
+	love.graphics.setFont(fonts.standard)
 	love.graphics.setColor(255,255,255,255)
 	love.graphics.printf("SCORE\n" .. score, 4, love.window.getHeight() - 28, 32, "center")
 	love.graphics.printf("STREAK", love.window.getWidth() - 28, love.window.getHeight() - 28, 32, "center")
 	love.graphics.setColor(streak.r,streak.g,streak.b,255)
 	love.graphics.printf(streak.n, love.window.getWidth() - 28, love.window.getHeight() - 16, 32, "center")
+	
+	if gameover then
+		love.graphics.setColor(0,0,0,128)
+		love.graphics.rectangle("fill",0,0,love.window.getWidth(),love.window.getHeight())
+		love.graphics.setFont(fonts.big)
+		love.graphics.setColor(255,255,255,255)
+		love.graphics.printf("GAME OVER", 0, love.window.getHeight()/2 - 24, love.window.getWidth(), "center")
+		love.graphics.setFont(fonts.standard)
+		love.graphics.printf("Click anywhere to continue...", 0, love.window.getHeight()/2, love.window.getWidth(), "center")
+	end
 	-- love.graphics.printf(#pixels, love.window.getWidth()/2 - 10, love.window.getHeight() - 16, 20, "center")
 	-- love.graphics.printf(#COLOR, love.window.getWidth()/2 - 10, love.window.getHeight() - 32, 20, "center")
 end
 
 function ScreenGame:quit()
+	pixels = {}
 end
 
 addScreen(ScreenGame, "game")

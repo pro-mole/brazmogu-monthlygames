@@ -72,9 +72,10 @@ function partFlash.new(x, y, duration, size, color)
 end
 
 function partFlash:draw()
-	love.graphics.setColor(self.color.r, self.color.g, self.color.b, self.alpha)
+	love.graphics.setColor(self.color.r, self.color.g, self.color.b, self.alpha/2)
 	love.graphics.circle("fill", self.x, self.y, self.size, 128)
-	-- love.graphics.circle("line", self.x, self.y, self.size, 128)
+	love.graphics.setColor(self.color.r, self.color.g, self.color.b, self.alpha)
+	love.graphics.circle("line", self.x, self.y, self.size, 128)
 	self.alpha = self.alpha - self.alpha/self.duration
 	self.duration = self.duration - 1
 end
