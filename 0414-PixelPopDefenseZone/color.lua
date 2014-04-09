@@ -1,4 +1,5 @@
 -- Color table
+-- TODO: add colorblind mode drawing functions to each color
 
 COLOR = {
 	{r = 0xff, g = 0x00, b = 0x00},
