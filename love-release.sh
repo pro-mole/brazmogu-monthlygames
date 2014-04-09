@@ -64,6 +64,8 @@ while [ $1 ]
 done
 
 releasedir=$(dirname $lovefile)/release
+. $(dirname $lovefile)/config.release
+make -C $(dirname $lovefile)
 
 if [ ! -e $lovefile ]
 then
@@ -107,10 +109,13 @@ function macosx {
 		appname=$zipname.app
 		mv love.app $appname
 		mv $(basename $lovefile) $appname/Contents/Resources/
+		echo $bundleName $bundleIdentifier
+		sed -i "s/#bundleName/$bundleName/; s/#bundleIdentifier/$bundleIdentifier/;" $appname/Contents/Info.plist
 		if $ziprelease
 		then
 			zip -9 -r -m -q ../$releasedir/$zipname-macosx.zip $appname
 		else
+			rm -rf ../$releasedir/*.app
 			mv $appname ../$releasedir/
 		fi
 		rm -rf $appname
