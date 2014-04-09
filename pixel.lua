@@ -73,11 +73,11 @@ function Pixel:update(dt)
 	-- Check if pixel has reached the Zone
 	local d = self:distCenter()
 	if d < zone.size then
+		pixels[self.index] = nil
 		if zone.defense <= 0 then
 			gameover = true
 		else
 			zone.defense = zone.defense - 1
-			pixels[self.index] = nil
 		end
 	end
 	-- Update position towards the center
