@@ -1,7 +1,7 @@
 #A simple Makefile to create our package
 
 EXECNAME=PixelPopDefenseZone
-VERSION=0.1
+VERSION=0.2
 PACKNAME=$(EXECNAME)-$(VERSION).love
 
 all: $(PACKNAME)
