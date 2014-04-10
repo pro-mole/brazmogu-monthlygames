@@ -14,3 +14,4 @@ run: all
 
 clean:
 	rm -f *.love
+	rm -rf release
