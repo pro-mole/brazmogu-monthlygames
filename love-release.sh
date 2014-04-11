@@ -74,11 +74,13 @@ then
 		echo "Cannot generate .love file in folder $lovedir"
 		exit 1
 	fi
+else
+	lovedir=$(dirname $lovefile)
 fi
 
-releasedir=$(dirname $lovefile)/release
-. $(dirname $lovefile)/config.release
-make -C $(dirname $lovefile)
+releasedir=$lovedir/release
+. $lovedir/config.release
+make -C $lovedir
 
 if [ ! -e $lovefile ]
 then
@@ -117,18 +119,16 @@ function macosx {
 	then
 		mkdir tmp
 		cp $lovefile tmp/
-		if [ -e $(dirname $lovefile)/Love.icns ]
-		then 
-			cp $(dirname $lovefile)/Love.icns tmp/
-		fi
+		find $lovedir/assets/icon -name $icnsName -exec cp {} tmp/ \;
 		cd tmp
 		unzip -q ../release/macosx/love-macosx.zip
 		appname=$zipname.app
 		mv love.app $appname
 		mv $(basename $lovefile) $appname/Contents/Resources/
+		mv *.icns $appname/Contents/Resources
 		if [ -e Love.icns ]; then mv Love.icns $appname/Contents/Resources/; fi
-		#echo $bundleName $bundleIdentifier
-		sed -i '' 's/#bundleName/$bundleName/; s/#bundleIdentifier/$bundleIdentifier/;' $appname/Contents/Info.plist
+		echo $bundleName $bundleIdentifier $icnsName
+		sed -i '' "s/#bundleName/$bundleName/; s/#bundleIdentifier/$bundleIdentifier/; s/#bundleIcon/$icnsName/;" $appname/Contents/Info.plist
 		chmod -R a+x $appname
 		if $ziprelease
 		then
@@ -151,6 +151,7 @@ function win32 {
 	then
 		mkdir tmp
 		cp $lovefile tmp/
+		find $lovedir/assets/icon -name $icoName -exec cp {} tmp/ \;
 		cd tmp
 		unzip -j -q ../release/win32/love-win32.zip
 		appname=$zipname-win32.exe
@@ -177,6 +178,7 @@ function win64 {
 		then
 		mkdir tmp
 		cp $lovefile tmp/
+		find $lovedir/assets/icon -name $icoName -exec cp {} tmp/ \;
 		cd tmp
 		unzip -j -q ../release/win64/love-win64.zip
 		appname=$zipname-win64.exe
