@@ -69,6 +69,9 @@ function ScreenMenu:draw()
 	-- Draw the menu header
 	self:drawMenu(self.current_menu)
 	-- Draw footer stuff, I guess
+	--love.graphics.setFont(fonts.standard)
+	love.graphics.printf("HIGHSCORE", center.x-32, love.window.getHeight() - fonts.standard:getHeight()*2 - 2, 64, "center")
+	love.graphics.printf(highscore, center.x-32, love.window.getHeight() - fonts.standard:getHeight() - 1, 64, "center")
 end
 
 function ScreenMenu:drawMenu(menu)
