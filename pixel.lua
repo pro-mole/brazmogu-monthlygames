@@ -42,11 +42,6 @@ function Pixel:destroy(clicked)
 	-- Destroy pixel, add to score, update streak
 	-- (clicked parameter denotes whether this pixel is destroyed by direct or indirect means)
 	pixels[self.index] = nil
-	if clicked then
-		score = score + 100*multiplier
-	else
-		score = score + 100
-	end
 	addParticle(partSpark, self.x, self.y, 10, 5, self.color, 2)
 	if clicked then
 		-- Apply radius of death(if there is a streak going on :V)
@@ -67,6 +62,12 @@ function Pixel:destroy(clicked)
 			streak.n, streak.r, streak.g, streak.b = 1, self.color.r, self.color.g, self.color.b
 		end
 	end
+
+	if clicked then
+		score = score + 10*multiplier
+	else
+		score = score + 5
+	end
 end
 
 function Pixel:update(dt)
@@ -76,6 +77,9 @@ function Pixel:update(dt)
 		pixels[self.index] = nil
 		if zone.defense <= 0 then
 			gameover = true
+			if highscore < score then
+				highscore = score
+			end
 		else
 			zone.defense = zone.defense - 1
 		end
