@@ -10,6 +10,7 @@ require("particle")
 
 center = {}
 fonts = {}
+bg = {}
 settings = {sound = "ON", music = "ON", difficulty = "Easy", colorblind = "OFF"}
 
 function love.load()
@@ -19,6 +20,8 @@ function love.load()
 	fonts['standard'] = love.graphics.newFont(10)
 	fonts['big'] = love.graphics.newFont(16)
 	
+	bg['circles'] = love.graphics.newImage("assets/bg/circles.png")
+
 	settings:load()
 	
 	current_screen:init()
