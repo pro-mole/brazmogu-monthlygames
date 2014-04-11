@@ -30,7 +30,7 @@ function ScreenGame:update(dt)
 		if self.delta >= self.interval then
 			self.delta = self.delta - self.interval
 			local side = love.math.random(0,3)
-			local color = COLOR[love.math.random(1,2)]--#COLOR)]
+			local color = COLOR[love.math.random(1,#COLOR)]
 			local speed = self.speedavg + love.math.random(-self.speedvar, self.speedvar)
 			if side == 0 then     -- Left
 				Pixel.new(0, love.math.random(love.window.getHeight()), color, speed)
@@ -73,6 +73,8 @@ end
 
 function ScreenGame:draw()
 	-- love.graphics.printf("PLAY THE GAME", love.window.getWidth()/2 - 10, love.window.getHeight()/2, 20, "center")
+	love.graphics.draw(bg['circles'])
+
 	zone:draw()
 	for i,pixel in pairs(pixels) do
 		pixel:draw()
