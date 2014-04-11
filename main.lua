@@ -2,6 +2,8 @@
 require("screen")
 require("screens/menu")
 require("screens/game")
+require("screens/help")
+require("screens/about")
 -- Load our game element classes
 require("color")
 require("pixel")
@@ -11,14 +13,16 @@ require("particle")
 center = {}
 fonts = {}
 bg = {}
-settings = {sound = "ON", music = "ON", difficulty = "Easy", colorblind = "OFF"}
+settings = {sound = "ON", music = "ON", difficulty = "Medium", colorblind = "OFF"}
 
 function love.load()
 	center.x = love.window.getWidth()/2
 	center.y = love.window.getHeight()/2
 	
+	fonts['small'] = love.graphics.newFont(8)
 	fonts['standard'] = love.graphics.newFont(10)
 	fonts['big'] = love.graphics.newFont(16)
+	fonts['huge'] = love.graphics.newFont(48)
 	
 	bg['circles'] = love.graphics.newImage("assets/bg/circles.png")
 

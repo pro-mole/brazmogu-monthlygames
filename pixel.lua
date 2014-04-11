@@ -9,6 +9,9 @@ Pixel.__index = Pixel
 pixels = {}
 lastindex = 0
 
+-- Score value depending on game difficulty
+pixelval = {Easy=4, Medium=10, Hard=16}
+
 function Pixel.new(x, y, color, speed, type)
 	--[[
 		x,y = pixel's initial position
@@ -64,9 +67,9 @@ function Pixel:destroy(clicked)
 	end
 
 	if clicked then
-		score = score + 10*multiplier
+		score = score + pixelval[settings.difficulty]*multiplier
 	else
-		score = score + 5
+		score = score + pixelval[settings.difficulty]/2
 	end
 end
 

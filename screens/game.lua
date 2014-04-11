@@ -12,9 +12,43 @@ function ScreenGame:init()
 	-- set up local vars
 	zone:init(32)
 	self.delta = 0
-	self.interval = 2
-	self.speedvar = 0
-	self.speedavg = 16
+	if settings.difficulty == "Easy" then
+		self.interval = 3
+		self.timerate = 0.99
+		self.mininterval = 1
+		
+		self.speedavg = 16
+		self.speedavgrate = 0.5
+		self.maxspeedavg =96
+		
+		self.speedvar = 0
+		self.speedvarrate = 0.01
+		self.maxspeedvar = 0.5
+	elseif settings.difficulty == "Medium" then
+		self.interval = 2
+		self.timerate = 0.9
+		self.mininterval = 0.5
+		
+		self.speedavg = 16
+		self.speedavgrate = 1
+		self.maxspeedavg = 128
+		
+		self.speedvar = 0
+		self.speedvarrate = 0.01
+		self.maxspeedvar = 0.5
+	elseif settings.difficulty == "Hard" then
+		self.interval = 1
+		self.timerate = 0.75
+		self.mininterval = 0.25
+		
+		self.speedavg = 16
+		self.speedavgrate = 2
+		self.maxspeedavg = 144
+		
+		self.speedvar = 0
+		self.speedvarrate = 0.1
+		self.maxspeedvar = 1
+	end
 	
 	-- set up global vars
 	gameover = false
@@ -31,7 +65,7 @@ function ScreenGame:update(dt)
 			self.delta = self.delta - self.interval
 			local side = love.math.random(0,3)
 			local color = COLOR[love.math.random(1,#COLOR)]
-			local speed = self.speedavg + love.math.random(-self.speedvar, self.speedvar)
+			local speed = self.speedavg + self.speedavg*love.math.random(-self.speedvar, self.speedvar)
 			if side == 0 then     -- Left
 				Pixel.new(0, love.math.random(love.window.getHeight()), color, speed)
 			elseif side == 1 then -- Top
@@ -42,9 +76,9 @@ function ScreenGame:update(dt)
 				Pixel.new(love.math.random(love.window.getWidth()), love.window.getHeight(), color, speed)
 			end
 			
-			if self.interval > 0.5 then self.interval = self.interval * 0.99 end
-			if self.speedavg < 128 then self.speedavg = self.speedavg + 1 end
-			if self.speedvar < self.speedavg/2 then self.speedvar = self.speedvar + 0.1 end
+			if self.interval > self.mininterval then self.interval = self.interval * self.timerate end
+			if self.speedavg < self.maxspeedavg then self.speedavg = self.speedavg + self.speedavgrate end
+			if self.speedvar < self.maxspeedvar then self.speedvar = self.speedvar + self.speedvarrate end
 			
 		end
 
@@ -84,9 +118,10 @@ function ScreenGame:draw()
 	love.graphics.setFont(fonts.standard)
 	love.graphics.setColor(255,255,255,255)
 	love.graphics.printf("SCORE\n" .. score, 4, love.window.getHeight() - 28, 32, "center")
-	love.graphics.printf("STREAK", love.window.getWidth() - 28, love.window.getHeight() - 28, 32, "center")
+	love.graphics.printf("STREAK", love.window.getWidth() - 36, love.window.getHeight() - 28, 32, "center")
 	love.graphics.setColor(streak.r,streak.g,streak.b,255)
-	love.graphics.printf(streak.n, love.window.getWidth() - 28, love.window.getHeight() - 16, 32, "center")
+	love.graphics.rectangle("fill", love.window.getWidth() - 30, love.window.getHeight() - 14, 8, 8)
+	love.graphics.printf(streak.n, love.window.getWidth() - 16, love.window.getHeight() - 16, 8, "center")
 	
 	if gameover then
 		love.graphics.setColor(0,0,0,128)
