@@ -67,6 +67,10 @@ end
 
 function ScreenMenu:draw()
 	-- Draw the menu header
+	love.graphics.setFont(fonts.huge)
+	love.graphics.printf("PIXEL POP DEFENSE ZONE", 0, center.y/2 - fonts.huge:getHeight(), love.window.getWidth(), "center")
+	
+	love.graphics.setFont(fonts.standard)
 	self:drawMenu(self.current_menu)
 	-- Draw footer stuff, I guess
 	--love.graphics.setFont(fonts.standard)
@@ -75,6 +79,12 @@ function ScreenMenu:draw()
 end
 
 function ScreenMenu:drawMenu(menu)
+	if menu.title ~= nil then
+		love.graphics.setFont(fonts.big)
+		love.graphics.printf(menu.title, 0, center.y - fonts.big:getHeight() - 8, love.window.getWidth(),"center")
+		love.graphics.setFont(fonts.standard)
+	end
+	
 	local mx, my = love.mouse.getPosition()
 	love.graphics.setColor(255,255,255,255)
 	for i,button in ipairs(menu) do
