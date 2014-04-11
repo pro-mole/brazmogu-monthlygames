@@ -5,6 +5,7 @@ function love.conf(t)
 	t.version = "0.9.0"
 
 	t.window.title = "Pixel Pop Defense Zone - 0.3 Alpha Version"
+	t.window.icon = "assets/icon/ppdz.png"
 	
 	t.window.height = 600
 	t.window.width = 600
