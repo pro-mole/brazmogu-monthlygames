@@ -8,3 +8,6 @@ Included here are the source codes and release versions of the games I'm submitt
 * April 2014: Pixel Pop Defense Zone
 * May 2014: Molesweeper
 * June 2014: Asteroid Miner
+* July 2014: Board Conquest
+* August 2014: Gra-Villa Farmer
+* September 2014: Merchants!
