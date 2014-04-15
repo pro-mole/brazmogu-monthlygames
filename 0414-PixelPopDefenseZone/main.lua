@@ -13,6 +13,7 @@ require("particle")
 center = {}
 fonts = {}
 bg = {}
+sound = {}
 settings = {sound = "ON", music = "ON", difficulty = "Medium", colorblind = "OFF"}
 
 function love.load()
@@ -23,6 +24,8 @@ function love.load()
 	fonts['standard'] = love.graphics.newFont(10)
 	fonts['big'] = love.graphics.newFont(16)
 	fonts['huge'] = love.graphics.newFont(48)
+
+	sound['dissolve'] = love.audio.newSource("assets/sound/dissolve.wav")
 	
 	bg['circles'] = love.graphics.newImage("assets/bg/circles.png")
 
