@@ -64,6 +64,10 @@ function Pixel:destroy(clicked)
 			multiplier = 1
 			streak.n, streak.r, streak.g, streak.b = 1, self.color.r, self.color.g, self.color.b
 		end
+
+		if settings.sound == "ON" then
+			sound.dissolve:play()
+		end
 	end
 
 	if clicked then
