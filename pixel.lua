@@ -12,13 +12,22 @@ lastindex = 0
 -- Score value depending on game difficulty
 pixelval = {Easy=4, Medium=10, Hard=16}
 
-function Pixel.new(x, y, color, speed, type)
+function Pixel.new(x, y, color, speed, ptype)
 	--[[
 		x,y = pixel's initial position
 		color = pixel's color name
 		type = common, flash or hollow
 	]]
-	P = setmetatable({x = x or 0, y = y or 0, color = color or {0xff, 0xff, 0xff}, speed = speed or 16, type = "common"}, Pixel)
+	P = setmetatable({x = x or 0, y = y or 0, color = color or {r=0xff, g=0xff, b=0xff}, speed = speed or 16, type = ptype or "common"}, Pixel)
+	if P.type == "flash" then
+		P.angle = 0
+		if P.color.r ~= 0xff or P.color.g ~= 0xff or P.color.b ~= 0xff then
+			P.color_offset = {r=0xff - P.color.r, g=0xff - P.color.g, b=0xff - P.color.b}
+		else -- Pixel is white, need to flash to black
+			P.color_offset = {r=-0xff, g=-0xff, b=-0xff}
+		end
+	end
+	
 	local d = P.speed / P:distCenter()
 	P.vx = d * (love.window.getWidth()/2 - x)
 	P.vy = d * (love.window.getHeight()/2 - y)
@@ -31,8 +40,22 @@ end
 
 function Pixel:draw()
 	-- Draw pixel on position, obviously
-	love.graphics.setColor(self.color.r, self.color.g, self.color.b, 255)
-	love.graphics.rectangle("fill", self.x-4, self.y-4, 8, 8)
+	if self.type == "flash" then
+		local flash_factor = math.sin(math.rad(self.angle))
+		--[[ love.graphics.setColor(self.color.r + self.color_offset.r * flash_factor,
+			self.color.g + self.color_offset.g * flash_factor,
+			self.color.b + self.color_offset.b * flash_factor, 255) ]] -- Instead of offset to white, let's change the transparency :)
+		love.graphics.setColor(self.color.r, self.color.g, self.color.b, 32 + 223*flash_factor)
+	else
+		love.graphics.setColor(self.color.r, self.color.g, self.color.b, 255)
+	end
+	
+	if self.type == "hollow" then
+		love.graphics.rectangle("line", self.x-4, self.y-4, 8, 8)
+	else
+		love.graphics.rectangle("fill", self.x-4, self.y-4, 8, 8)
+	end
+	
 	-- love.graphics.print(self.vx .. ";" .. self.vy, self.x - 8, self.y + 12)
 end
 
@@ -64,7 +87,7 @@ function Pixel:destroy(clicked)
 			multiplier = 1
 			streak.n, streak.r, streak.g, streak.b = 1, self.color.r, self.color.g, self.color.b
 		end
-
+		
 		if settings.sound == "ON" then
 			sound.dissolve:play()
 		end
@@ -74,6 +97,20 @@ function Pixel:destroy(clicked)
 		score = score + pixelval[settings.difficulty]*multiplier
 	else
 		score = score + pixelval[settings.difficulty]/2
+	end
+	
+	if clicked and self.type == "flash" then
+		for i,pixel in pairs(pixels) do
+			if self.color == pixel.color then
+				pixel:destroy(false)
+			end
+		end
+	end
+	
+	if clicked and self.type == "hollow" then
+		if zone.defense < 3 then
+			zone.defense = zone.defense + 1
+		end
 	end
 end
 
@@ -94,6 +131,10 @@ function Pixel:update(dt)
 	-- Update position towards the center
 	self.x = self.x + dt*self.vx
 	self.y = self.y + dt*self.vy
+	-- Update flash effect
+	if self.type == "flash" then
+		self.angle = (self.angle + dt*360) % 180
+	end
 end
 
 -- Return pixel distance from the center

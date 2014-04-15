@@ -67,15 +67,16 @@ partFlash = {}
 partFlash.__index = partFlash
 
 function partFlash.new(x, y, duration, size, color)
-	local P = {x=x, y=y, duration=duration, color=color or {r=0xff, g=0xff, b=0xff}, size=size, alpha=96}
+	local P = {x=x, y=y, duration=duration, color=color or {r=0xff, g=0xff, b=0xff}, size=size, alpha=96, factor=30, increment=120/duration }
 	return setmetatable(P, partFlash)
 end
 
 function partFlash:draw()
 	love.graphics.setColor(self.color.r, self.color.g, self.color.b, self.alpha/2)
-	love.graphics.circle("fill", self.x, self.y, self.size, 128)
+	love.graphics.circle("fill", self.x, self.y, self.size * math.sin(math.rad(self.factor)), 64)
 	love.graphics.setColor(self.color.r, self.color.g, self.color.b, self.alpha)
-	love.graphics.circle("line", self.x, self.y, self.size, 128)
-	self.alpha = self.alpha - self.alpha/self.duration
+	love.graphics.circle("line", self.x, self.y, self.size * math.sin(math.rad(self.factor)), 64)
+	
+	self.factor = self.factor + self.increment
 	self.duration = self.duration - 1
 end

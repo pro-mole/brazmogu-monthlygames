@@ -15,3 +15,10 @@ COLOR = {
 	{r = 0xff, g = 0xff, b = 0xff},
 	{r = 0x80, g = 0x80, b = 0x80}
 }
+
+color_methods = {}
+function color_methods.__eq(t, other)
+	return (t.r == other.r and t.g == other.g and t.b == other.b)
+end
+
+setmetatable(COLOR, color_methods)

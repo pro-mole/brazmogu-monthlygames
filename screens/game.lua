@@ -65,15 +65,24 @@ function ScreenGame:update(dt)
 			self.delta = self.delta - self.interval
 			local side = love.math.random(0,3)
 			local color = COLOR[love.math.random(1,#COLOR)]
+			--local color = COLOR[11]
+			local ptype = love.math.random(1,10)
+			if ptype <= 1 then
+				ptype = "flash"
+			elseif ptype <= 3 then
+				ptype = "hollow"
+			else
+				ptype = "common"
+			end
 			local speed = self.speedavg + self.speedavg*love.math.random(-self.speedvar, self.speedvar)
 			if side == 0 then     -- Left
-				Pixel.new(0, love.math.random(love.window.getHeight()), color, speed)
+				Pixel.new(0, love.math.random(love.window.getHeight()), color, speed, ptype)
 			elseif side == 1 then -- Top
-				Pixel.new(love.math.random(love.window.getWidth()), 0, color, speed)
+				Pixel.new(love.math.random(love.window.getWidth()), 0, color, speed, ptype)
 			elseif side == 2 then -- Right
-				Pixel.new(love.window.getWidth(), love.math.random(love.window.getHeight()), color, speed)
+				Pixel.new(love.window.getWidth(), love.math.random(love.window.getHeight()), color, speed, ptype)
 			elseif side == 3 then -- Bottom
-				Pixel.new(love.math.random(love.window.getWidth()), love.window.getHeight(), color, speed)
+				Pixel.new(love.math.random(love.window.getWidth()), love.window.getHeight(), color, speed, ptype)
 			end
 			
 			if self.interval > self.mininterval then self.interval = self.interval * self.timerate end
