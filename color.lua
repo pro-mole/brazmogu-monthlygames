@@ -16,9 +16,6 @@ COLOR = {
 	{r = 0x80, g = 0x80, b = 0x80}
 }
 
-color_methods = {}
-function color_methods.__eq(t, other)
+function compare_color(t, other)
 	return (t.r == other.r and t.g == other.g and t.b == other.b)
 end
-
-setmetatable(COLOR, color_methods)

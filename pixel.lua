@@ -16,7 +16,7 @@ function Pixel.new(x, y, color, speed, ptype)
 	--[[
 		x,y = pixel's initial position
 		color = pixel's color name
-		type = common, flash or hollow
+		type = common, flash, hollow or rainbow
 	]]
 	P = setmetatable({x = x or 0, y = y or 0, color = color or {r=0xff, g=0xff, b=0xff}, speed = speed or 16, type = ptype or "common"}, Pixel)
 	if P.type == "flash" then
@@ -26,6 +26,11 @@ function Pixel.new(x, y, color, speed, ptype)
 		else -- Pixel is white, need to flash to black
 			P.color_offset = {r=-0xff, g=-0xff, b=-0xff}
 		end
+	end
+
+	if P.type == "rainbow" then
+		P.cID = 1
+		P.color = COLOR[P.cID]
 	end
 	
 	local d = P.speed / P:distCenter()
@@ -40,6 +45,11 @@ end
 
 function Pixel:draw()
 	-- Draw pixel on position, obviously
+	if self.type == "rainbow" then
+		self.cID = (self.cID % #COLOR) + 1
+		self.color = COLOR[self.cID]
+	end
+
 	if self.type == "flash" then
 		local flash_factor = math.sin(math.rad(self.angle))
 		--[[ love.graphics.setColor(self.color.r + self.color_offset.r * flash_factor,
@@ -71,21 +81,23 @@ function Pixel:destroy(clicked)
 	addParticle(partSpark, self.x, self.y, 10, 5, self.color, 2)
 	if clicked then
 		-- Apply radius of death(if there is a streak going on :V)
-		if streak.n > 0 and self.color.r == streak.r and self.color.g == streak.g and self.color.b == streak.b then
-			addParticle(partFlash, self.x, self.y, 15, 16 * streak.n, self.color)
-			for i,pixel in pairs(pixels) do
-				if math.sqrt((pixel.x - self.x)^2 + (pixel.y - self.y)^2) < (16 * streak.n) then
-					pixel:destroy(false)
+		if self.type ~= "rainbow" then
+			if streak.n > 0 and compare_color(self.color,streak) then
+				addParticle(partFlash, self.x, self.y, 15, 16 * streak.n, self.color)
+				for i,pixel in pairs(pixels) do
+					if math.sqrt((pixel.x - self.x)^2 + (pixel.y - self.y)^2) < (16 * streak.n) then
+						pixel:destroy(false)
+					end
 				end
 			end
-		end
-		-- Check streak
-		if self.color.r == streak.r and self.color.g == streak.g and self.color.b == streak.b then
-			streak.n = streak.n + 1
-			multiplier = multiplier + 1
-		else
-			multiplier = 1
-			streak.n, streak.r, streak.g, streak.b = 1, self.color.r, self.color.g, self.color.b
+			-- Check streak
+			if compare_color(self.color,streak) then
+				streak.n = streak.n + 1
+				multiplier = multiplier + 1
+			else
+				multiplier = 1
+				streak.n, streak.r, streak.g, streak.b = 1, self.color.r, self.color.g, self.color.b
+			end
 		end
 		
 		if settings.sound == "ON" then
@@ -112,6 +124,10 @@ function Pixel:destroy(clicked)
 			zone.defense = zone.defense + 1
 		end
 	end
+
+	if clicked and self.type == "rainbow" then
+		if timestop <= 0 then timestop = 3 end
+	end
 end
 
 function Pixel:update(dt)
@@ -129,8 +145,11 @@ function Pixel:update(dt)
 		end
 	end
 	-- Update position towards the center
-	self.x = self.x + dt*self.vx
-	self.y = self.y + dt*self.vy
+	-- Check if time is stopped before moving, of course
+	if timestop <= 0 then
+		self.x = self.x + dt*self.vx
+		self.y = self.y + dt*self.vy
+	end
 	-- Update flash effect
 	if self.type == "flash" then
 		self.angle = (self.angle + dt*360) % 180
