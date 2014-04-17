@@ -2,7 +2,7 @@
 These are the pesky pixels we're defending our zone against
 ]]
 
-Pixel = {}
+Pixel = {size = 8}
 Pixel.__index = Pixel
 
 -- List of all pixels
@@ -51,9 +51,9 @@ function Pixel:draw()
 	end
 	
 	if self.type == "hollow" then
-		love.graphics.rectangle("line", self.x-4, self.y-4, 8, 8)
+		love.graphics.rectangle("line", self.x-(Pixel.size/2), self.y-(Pixel.size/2), Pixel.size, Pixel.size)
 	else
-		love.graphics.rectangle("fill", self.x-4, self.y-4, 8, 8)
+		love.graphics.rectangle("fill", self.x-(Pixel.size/2), self.y-(Pixel.size/2), Pixel.size, Pixel.size)
 	end
 	
 	-- love.graphics.print(self.vx .. ";" .. self.vy, self.x - 8, self.y + 12)
@@ -61,7 +61,7 @@ end
 
 function Pixel:isClicked(mx, my)
 	-- Check if pixel was clicked
-	return math.abs(self.x - mx) <= 4 and math.abs(self.y - my) <= 4
+	return math.abs(self.x - mx) <= Pixel.size/2 and math.abs(self.y - my) <= Pixel.size/2
 end
 
 function Pixel:destroy(clicked)
@@ -81,8 +81,10 @@ function Pixel:destroy(clicked)
 		end
 		-- Check streak
 		if self.color.r == streak.r and self.color.g == streak.g and self.color.b == streak.b then
-			streak.n = streak.n + 1
-			multiplier = multiplier + 1
+			if streak < 10 then
+				streak.n = streak.n + 1
+				multiplier = multiplier + 1
+			end
 		else
 			multiplier = 1
 			streak.n, streak.r, streak.g, streak.b = 1, self.color.r, self.color.g, self.color.b
