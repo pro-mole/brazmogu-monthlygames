@@ -3,6 +3,7 @@
 ScreenGame = setmetatable({}, Screen)
 
 gameover = false
+timestop = 0
 score = 0
 highscore = 0
 multiplier = 1
@@ -61,6 +62,10 @@ function ScreenGame:update(dt)
 	if not gameover then
 		self.delta = self.delta + dt
 		
+		if timestop > 0 then timestop = timestop - dt
+		elseif timestop < 0 then timestop = 0
+		end
+
 		if self.delta >= self.interval then
 			self.delta = self.delta - self.interval
 			local side = love.math.random(0,3)
@@ -69,6 +74,8 @@ function ScreenGame:update(dt)
 			local ptype = love.math.random(1,10)
 			if ptype <= 1 then
 				ptype = "flash"
+			elseif ptype <= 2 then
+				ptype = "rainbow"
 			elseif ptype <= 3 then
 				ptype = "hollow"
 			else
