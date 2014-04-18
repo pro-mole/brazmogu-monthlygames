@@ -14,29 +14,33 @@ function ScreenGame:init()
 	zone:init(32)
 	self.delta = 0
 	if settings.difficulty == "Easy" then
-		self.interval = 3
+		self.interval = 4
 		self.timerate = 0.99
 		self.mininterval = 1
 		
-		self.speedavg = 16
+		self.speedavg = 8
 		self.speedavgrate = 0.5
-		self.maxspeedavg =96
+		self.maxspeedavg = 32
 		
 		self.speedvar = 0
 		self.speedvarrate = 0.01
 		self.maxspeedvar = 0.5
+
+		self.randChances = {streak=25, flash=20, hollow=20, rainbow=10}
 	elseif settings.difficulty == "Medium" then
 		self.interval = 2
 		self.timerate = 0.9
 		self.mininterval = 0.5
 		
-		self.speedavg = 16
+		self.speedavg = 12
 		self.speedavgrate = 1
-		self.maxspeedavg = 128
+		self.maxspeedavg = 48
 		
 		self.speedvar = 0
 		self.speedvarrate = 0.01
 		self.maxspeedvar = 0.5
+
+		self.randChances = {streak=15, flash=10, hollow=10, rainbow=5}
 	elseif settings.difficulty == "Hard" then
 		self.interval = 1
 		self.timerate = 0.75
@@ -44,11 +48,13 @@ function ScreenGame:init()
 		
 		self.speedavg = 16
 		self.speedavgrate = 2
-		self.maxspeedavg = 144
+		self.maxspeedavg = 64
 		
 		self.speedvar = 0
 		self.speedvarrate = 0.1
 		self.maxspeedvar = 1
+
+		self.randChances = {streak=10, flash=5, hollow=5, rainbow=1}
 	end
 	
 	-- set up global vars
@@ -60,7 +66,7 @@ end
 
 function ScreenGame:update(dt)
 	if not gameover then
-		self.delta = self.delta + dt
+		if timestop <= 0 then self.delta = self.delta + dt end
 		
 		if timestop > 0 then timestop = timestop - dt
 		elseif timestop < 0 then timestop = 0
@@ -71,16 +77,28 @@ function ScreenGame:update(dt)
 			local side = love.math.random(0,3)
 			local color = COLOR[love.math.random(1,#COLOR)]
 			--local color = COLOR[11]
-			local ptype = love.math.random(1,10)
-			if ptype <= 1 then
-				ptype = "flash"
-			elseif ptype <= 2 then
-				ptype = "rainbow"
-			elseif ptype <= 3 then
-				ptype = "hollow"
+			local ptype = "common"
+			local chance = love.math.random(1,100)
+
+			if chance <= self.randChances.streak then
+				color = {r=streak.r, g=streak.g, b=streak.b}
 			else
-				ptype = "common"
+				chance = chance - self.randChances.streak
+				if chance <= self.randChances.flash then
+					ptype = "flash"
+				else
+					chance = chance - self.randChances.flash
+					if chance <= self.randChances.hollow then
+						ptype = "hollow"
+					else
+						chance = chance - self.randChances.hollow
+						if chance <= self.randChances.rainbow then
+							ptype = "rainbow"
+						end
+					end
+				end
 			end
+
 			local speed = self.speedavg + self.speedavg*love.math.random(-self.speedvar, self.speedvar)
 			if side == 0 then     -- Left
 				Pixel.new(0, love.math.random(love.window.getHeight()), color, speed, ptype)
@@ -104,6 +122,12 @@ function ScreenGame:update(dt)
 	end
 end
 
+function ScreenGame:keypressed(key ,isrepeat)
+	if key == "escape" and gameover then
+		changeScreen("menu")
+	end
+end
+
 function ScreenGame:mousepressed(x, y, button)
 	if not gameover then
 		print(string.format("mouse press(%s) at %d;%d",button,x,y))
@@ -116,13 +140,12 @@ function ScreenGame:mousepressed(x, y, button)
 				end
 			end
 		end
-	else
-		changeScreen("menu")
 	end
 end
 
 function ScreenGame:draw()
 	-- love.graphics.printf("PLAY THE GAME", love.window.getWidth()/2 - 10, love.window.getHeight()/2, 20, "center")
+	love.graphics.setColor(255,255,255,255)
 	love.graphics.draw(bg['circles'])
 
 	zone:draw()
@@ -146,7 +169,7 @@ function ScreenGame:draw()
 		love.graphics.setColor(255,255,255,255)
 		love.graphics.printf("GAME OVER", 0, love.window.getHeight()/2 - 24, love.window.getWidth(), "center")
 		love.graphics.setFont(fonts.standard)
-		love.graphics.printf("Click anywhere to continue...", 0, love.window.getHeight()/2, love.window.getWidth(), "center")
+		love.graphics.printf("Press ESC to continue...", 0, love.window.getHeight()/2, love.window.getWidth(), "center")
 	end
 	-- love.graphics.printf(#pixels, love.window.getWidth()/2 - 10, love.window.getHeight() - 16, 20, "center")
 	-- love.graphics.printf(#COLOR, love.window.getWidth()/2 - 10, love.window.getHeight() - 32, 20, "center")

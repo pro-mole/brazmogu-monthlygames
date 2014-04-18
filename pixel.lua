@@ -65,13 +65,14 @@ function Pixel:draw()
 	else
 		love.graphics.rectangle("fill", self.x-(Pixel.size/2), self.y-(Pixel.size/2), Pixel.size, Pixel.size)
 	end
-	
+
 	-- love.graphics.print(self.vx .. ";" .. self.vy, self.x - 8, self.y + 12)
 end
 
 function Pixel:isClicked(mx, my)
 	-- Check if pixel was clicked
-	return math.abs(self.x - mx) <= Pixel.size/2 and math.abs(self.y - my) <= Pixel.size/2
+	--return math.abs(self.x - mx) <= Pixel.size/2 and math.abs(self.y - my) <= Pixel.size/2
+	return (self.x-mx)^2 + (self.y-my)^2 <= 2*(self.size/2)^2 + 4
 end
 
 function Pixel:destroy(clicked)
@@ -126,7 +127,8 @@ function Pixel:destroy(clicked)
 	end
 
 	if clicked and self.type == "rainbow" then
-		if timestop <= 0 then timestop = 3 end
+		timestop = 3
+		streak = {r=255, g=255, b=255, n=0}
 	end
 end
 
