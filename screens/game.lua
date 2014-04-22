@@ -156,11 +156,14 @@ function ScreenGame:draw()
 
 	love.graphics.setFont(fonts.standard)
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.printf("SCORE\n" .. score, 4, love.window.getHeight() - 28, 32, "center")
-	love.graphics.printf("STREAK", love.window.getWidth() - 36, love.window.getHeight() - 28, 32, "center")
+	local stats_w = fonts.standard:getWidth("STREAK")
+	local stats_h = fonts.standard:getHeight() * 5
+	love.graphics.printf("SCORE", 4, love.window.getHeight() - stats_h, stats_w, "center")
+	love.graphics.printf(score, 4, love.window.getHeight() - stats_h + fonts.standard:getHeight() * 2, stats_w, "center")
+	love.graphics.printf("STREAK", love.window.getWidth() - 4 - stats_w, love.window.getHeight() - stats_h, stats_w, "center")
 	love.graphics.setColor(streak.r,streak.g,streak.b,255)
-	love.graphics.rectangle("fill", love.window.getWidth() - 30, love.window.getHeight() - 14, 8, 8)
-	love.graphics.printf(streak.n, love.window.getWidth() - 16, love.window.getHeight() - 16, 8, "center")
+	love.graphics.rectangle("fill", love.window.getWidth() - stats_w/2 - 9, love.window.getHeight() - stats_h + fonts.standard:getHeight() * 2, 8, 8)
+	love.graphics.printf(streak.n, love.window.getWidth() - stats_w/2 + 1, love.window.getHeight() - stats_h + fonts.standard:getHeight() * 2 + 1, fonts.standard:getWidth("00"), "left")
 	
 	if gameover then
 		love.graphics.setColor(0,0,0,128)
