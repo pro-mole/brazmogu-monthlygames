@@ -33,14 +33,14 @@ function ScreenAbout:draw()
 	love.graphics.setFont(fonts.standard)
 	love.graphics.printf("Bruno Guedes", 32, 164, 536, "center");
 	love.graphics.setFont(fonts.small)
-	love.graphics.printf("[brazmogu.tumblr.com]", 32, 174, 536, "center");
+	love.graphics.printf("http://brazmogu.tumblr.com", 32, 174, 536, "center");
 	
 	love.graphics.setFont(fonts.big)
 	love.graphics.printf("ENGINE", 32, 262, 536, "center");
 	love.graphics.setFont(fonts.standard)
 	love.graphics.printf("LOVE 2D", 32, 282, 536, "center");
 	love.graphics.setFont(fonts.small)
-	love.graphics.printf("[love2d.org]", 32, 292, 536, "center");
+	love.graphics.printf("http://love2d.org", 32, 292, 536, "center");
 	
 	love.graphics.setFont(fonts.big)
 	love.graphics.printf("SPECIAL THANKS TO", 32, 400, 536, "center");
