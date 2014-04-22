@@ -7,7 +7,9 @@ Included here are the source codes and release versions of the games I'm submitt
 
 * April 2014: Pixel Pop Defense Zone
 * May 2014: Molesweeper
-* June 2014: Asteroid Miner
-* July 2014: Board Conquest
-* August 2014: Gra-Villa Farmer
-* September 2014: Merchants!
+* Coming Next(In No Particular Order Yet)
+** Stranded Spacebus (Text Adventure)
+** Asteroid Miner (Sorta-Shmup/Roguelike)
+** Board Conquest (Multiplayer Strategy)
+** Gra-Villa Farmer (Simulation)
+** Merchants! (Simulation/Roguelike)
