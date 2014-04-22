@@ -90,8 +90,8 @@ function ScreenMenu:drawMenu(menu)
 	for i,button in ipairs(menu) do
 		if button.action == "toggle" then -- toggle buttons need to tell me what value is set
 			love.graphics.rectangle("line", button.pos[1], button.pos[2], button.size[1], button.size[2])
-			love.graphics.printf(button.text, button.pos[1], button.pos[2] + 2, button.size[1],"center")
-			love.graphics.printf(settings[button.var], button.pos[1], button.pos[2] + 4 + fonts.standard:getHeight(), button.size[1],"center")
+			love.graphics.printf(button.text, button.pos[1], button.pos[2] + 8, button.size[1],"center")
+			love.graphics.printf(settings[button.var], button.pos[1], button.pos[2] + 12 + fonts.standard:getHeight(), button.size[1],"center")
 		else -- all other buttons
 			love.graphics.rectangle("line", button.pos[1], button.pos[2], button.size[1], button.size[2])
 			love.graphics.printf(button.text, button.pos[1], button.pos[2] + (button.size[2] - fonts.standard:getHeight())/2, button.size[1],"center")
