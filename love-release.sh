@@ -128,7 +128,8 @@ function macosx {
 		mv *.icns $appname/Contents/Resources
 		if [ -e Love.icns ]; then mv Love.icns $appname/Contents/Resources/; fi
 		echo $bundleName $bundleIdentifier $icnsName
-		sed -i'' -e "s/#bundleName/$bundleName/; s/#bundleIdentifier/$bundleIdentifier/; s/#bundleIcon/$icnsName/;" $appname/Contents/Info.plist
+		sed -i".BACKUP" -e "s/#bundleName/$bundleName/; s/#bundleIdentifier/$bundleIdentifier/; s/#bundleIcon/$icnsName/;" $appname/Contents/Info.plist
+		rm $appname/Contents/Info.plist.BACKUP
 		chmod -R a+x $appname
 		if $ziprelease
 		then
