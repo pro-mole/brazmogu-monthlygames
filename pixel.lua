@@ -2,7 +2,7 @@
 These are the pesky pixels we're defending our zone against
 ]]
 
-Pixel = {size = 8}
+Pixel = {size = 16}
 Pixel.__index = Pixel
 
 -- List of all pixels
