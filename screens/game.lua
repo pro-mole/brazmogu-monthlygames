@@ -13,7 +13,9 @@ function ScreenGame:init()
 	-- set up local vars
 	zone:init(32)
 	self.delta = 0
+	self.dstep = 0
 	if settings.difficulty == "Easy" then
+		self.step=4
 		self.interval = 4
 		self.timerate = 0.99
 		self.mininterval = 1
@@ -26,8 +28,9 @@ function ScreenGame:init()
 		self.speedvarrate = 0.01
 		self.maxspeedvar = 0.5
 
-		self.randChances = {streak=25, flash=20, hollow=20, rainbow=10}
+		self.randChances = {streak=5, flash=20, hollow=20, rainbow=20}
 	elseif settings.difficulty == "Medium" then
+		self.step=2
 		self.interval = 2
 		self.timerate = 0.9
 		self.mininterval = 0.5
@@ -40,8 +43,9 @@ function ScreenGame:init()
 		self.speedvarrate = 0.01
 		self.maxspeedvar = 0.5
 
-		self.randChances = {streak=15, flash=10, hollow=10, rainbow=5}
+		self.randChances = {streak=10, flash=50, hollow=50, rainbow=100}
 	elseif settings.difficulty == "Hard" then
+		self.step=1
 		self.interval = 1
 		self.timerate = 0.75
 		self.mininterval = 0.25
@@ -54,7 +58,7 @@ function ScreenGame:init()
 		self.speedvarrate = 0.1
 		self.maxspeedvar = 1
 
-		self.randChances = {streak=10, flash=5, hollow=5, rainbow=1}
+		self.randChances = {streak=20, flash=100, hollow=100, rainbow=500}
 	end
 	
 	-- set up global vars
@@ -66,7 +70,10 @@ end
 
 function ScreenGame:update(dt)
 	if not gameover then
-		if timestop <= 0 then self.delta = self.delta + dt end
+		if timestop <= 0 then
+			self.delta = self.delta + dt
+			self.dstep = self.dstep + dt
+		end
 		
 		if timestop > 0 then timestop = timestop - dt
 		elseif timestop < 0 then timestop = 0
@@ -78,27 +85,29 @@ function ScreenGame:update(dt)
 			local color = COLOR[love.math.random(1,#COLOR)]
 			--local color = COLOR[11]
 			local ptype = "common"
-			local chance = love.math.random(1,100)
-
-			if chance <= self.randChances.streak then
+			
+			-- Chance of continuing the streak (definitely)
+			local chance = love.math.random(1,self.randChances.streak)
+			if chance == 1 then
 				color = {r=streak.r, g=streak.g, b=streak.b}
+			end
+			
+			-- Chance of pixel being special
+			chance = love.math.random(1,self.randChances.flash)
+			if chance == 1 then
+				ptype = "flash"
 			else
-				chance = chance - self.randChances.streak
-				if chance <= self.randChances.flash then
-					ptype = "flash"
+				chance = love.math.random(1,self.randChances.hollow)
+				if chance == 1 then
+					ptype = "hollow"
 				else
-					chance = chance - self.randChances.flash
-					if chance <= self.randChances.hollow then
-						ptype = "hollow"
-					else
-						chance = chance - self.randChances.hollow
-						if chance <= self.randChances.rainbow then
-							ptype = "rainbow"
-						end
+					chance = love.math.random(1,self.randChances.rainbow)
+					if chance == 1 then
+						ptype = "rainbow"
 					end
 				end
 			end
-
+			
 			local speed = self.speedavg + self.speedavg*love.math.random(-self.speedvar, self.speedvar)
 			if side == 0 then     -- Left
 				Pixel.new(0, love.math.random(love.window.getHeight()), color, speed, ptype)
@@ -109,11 +118,13 @@ function ScreenGame:update(dt)
 			elseif side == 3 then -- Bottom
 				Pixel.new(love.math.random(love.window.getWidth()), love.window.getHeight(), color, speed, ptype)
 			end
-			
+		end
+		
+		if self.dstep >= self.step then
+			self.dstep = self.dstep - selfstep
 			if self.interval > self.mininterval then self.interval = self.interval * self.timerate end
 			if self.speedavg < self.maxspeedavg then self.speedavg = self.speedavg + self.speedavgrate end
 			if self.speedvar < self.maxspeedvar then self.speedvar = self.speedvar + self.speedvarrate end
-			
 		end
 
 		for i,pixel in pairs(pixels) do
