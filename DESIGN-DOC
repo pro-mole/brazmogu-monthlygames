@@ -24,13 +24,13 @@ Hollow pixels will add an extra layer of protection to the zone, so if a pixel r
   Feature Priority
 ====================
 
-- Basic Gameplay/Graphics
-- Advanced Graphics
-- Special Pixels and Defense Layers
-- Main Menu
+- Basic Gameplay/Graphics [OK]
+- Advanced Graphics 
+- Special Pixels and Defense Layers [OK]
+- Main Menu [OK]
 - High Scores
-- General Customization(video/audio/controls)
-- Difficulty Customization
+- General Customization(video/audio/controls) [NOK/OK/NA]
+- Difficulty Customization [OK]
 - Colorblind Mode
 
 =============================
