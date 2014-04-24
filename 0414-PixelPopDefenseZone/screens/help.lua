@@ -66,6 +66,9 @@ function ScreenHelp:quit()
 	while #particles > 0 do
 		table.remove(particles,1)
 	end
+	for i,P in pairs(pixels) do
+		pixels[i] = nil
+	end
 end
 
 addScreen(ScreenHelp, "help")
