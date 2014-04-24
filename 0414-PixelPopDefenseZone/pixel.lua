@@ -66,6 +66,10 @@ function Pixel:draw()
 		love.graphics.rectangle("fill", self.x-(Pixel.size/2), self.y-(Pixel.size/2), Pixel.size, Pixel.size)
 	end
 
+	-- Update flash effect
+	if self.type == "flash" then
+		self.angle = (self.angle + 6) % 180
+	end
 	-- love.graphics.print(self.vx .. ";" .. self.vy, self.x - 8, self.y + 12)
 end
 
@@ -151,10 +155,6 @@ function Pixel:update(dt)
 	if timestop <= 0 then
 		self.x = self.x + dt*self.vx
 		self.y = self.y + dt*self.vy
-	end
-	-- Update flash effect
-	if self.type == "flash" then
-		self.angle = (self.angle + dt*360) % 180
 	end
 end
 
