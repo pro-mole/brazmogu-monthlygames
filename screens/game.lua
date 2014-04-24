@@ -121,7 +121,7 @@ function ScreenGame:update(dt)
 		end
 		
 		if self.dstep >= self.step then
-			self.dstep = self.dstep - selfstep
+			self.dstep = self.dstep - self.step
 			if self.interval > self.mininterval then self.interval = self.interval * self.timerate end
 			if self.speedavg < self.maxspeedavg then self.speedavg = self.speedavg + self.speedavgrate end
 			if self.speedvar < self.maxspeedvar then self.speedvar = self.speedvar + self.speedvarrate end
