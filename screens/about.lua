@@ -36,26 +36,31 @@ function ScreenAbout:draw()
 	love.graphics.printf("http://brazmogu.tumblr.com", 32, 174, 536, "center");
 	
 	love.graphics.setFont(fonts.big)
-	love.graphics.printf("ENGINE", 32, 262, 536, "center");
+	love.graphics.printf("ENGINE", 32, 240, 536, "center");
 	love.graphics.setFont(fonts.standard)
-	love.graphics.printf("LOVE 2D", 32, 282, 536, "center");
+	love.graphics.printf("LOVE 2D", 32, 260, 536, "center");
 	love.graphics.setFont(fonts.small)
-	love.graphics.printf("http://love2d.org", 32, 292, 536, "center");
+	love.graphics.printf("http://love2d.org", 32, 270, 536, "center");
+	
+	love.graphics.setFont(fonts.big)
+	love.graphics.printf("MUSIC", 32, 324, 536, "center");
+	love.graphics.setFont(fonts.standard)
+	love.graphics.printf("\"UNNATURAL\" by CCIVORY", 32, 344, 536, "center");
 	
 	love.graphics.setFont(fonts.big)
 	love.graphics.printf("SPECIAL THANKS TO", 32, 400, 536, "center");
 	love.graphics.setFont(fonts.standard)
-	love.graphics.printf("Ricardo", 32, 420, 536, "center");
+	love.graphics.printf("Ricardo", 32, 424, 536, "center");
 	love.graphics.setFont(fonts.standard)
-	love.graphics.printf("Steve", 32, 430, 536, "center");
+	love.graphics.printf("Steve", 32, 438, 536, "center");
 	love.graphics.setFont(fonts.small)
-	love.graphics.printf("and...", 32, 442, 536, "center");
+	love.graphics.printf("and...", 32, 454, 536, "center");
 	love.graphics.setFont(fonts.standard)
-	love.graphics.printf("YOU", 32, 450, 536, "center");
+	love.graphics.printf("YOU", 32, 462, 536, "center");
 	
 	
 	love.graphics.setFont(fonts.standard)
-	love.graphics.printf("Press 'Esc' or 'Backscape' to go back!", 16, 584, 268, "left");
+	love.graphics.printf("Press 'Esc' or 'Backscape' to go back!", 16, 624, 268, "left");
 end
 
 function ScreenAbout:quit()
