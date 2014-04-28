@@ -88,9 +88,9 @@ function Pixel:destroy(clicked)
 		-- Apply radius of death(if there is a streak going on :V)
 		if self.type ~= "rainbow" then
 			if streak.n > 0 and compare_color(self.color,streak) then
-				addParticle(partFlash, self.x, self.y, 15, 16 * streak.n, self.color)
+				addParticle(partFlash, self.x, self.y, 15, 32 * streak.n, self.color)
 				for i,pixel in pairs(pixels) do
-					if math.sqrt((pixel.x - self.x)^2 + (pixel.y - self.y)^2) < (16 * streak.n) then
+					if math.sqrt((pixel.x - self.x)^2 + (pixel.y - self.y)^2) < (32*streak.n + Pixel.size/2) then
 						pixel:destroy(false)
 					end
 				end
@@ -106,6 +106,7 @@ function Pixel:destroy(clicked)
 		end
 		
 		if settings.sound == "ON" then
+			sound.dissolve:rewind()
 			sound.dissolve:play()
 		end
 	end
@@ -143,6 +144,7 @@ function Pixel:update(dt)
 		pixels[self.index] = nil
 		if zone.defense <= 0 then
 			gameover = true
+			if settings.music == "ON" then music.BGM:setVolume(0.8) end
 			if highscore < score then
 				highscore = score
 			end
