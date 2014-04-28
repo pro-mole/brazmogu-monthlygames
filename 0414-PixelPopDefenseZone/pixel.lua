@@ -144,7 +144,7 @@ function Pixel:update(dt)
 		pixels[self.index] = nil
 		if zone.defense <= 0 then
 			gameover = true
-			if settings.music == "ON" then music.BGM:setVolume(0.8) end
+			if settings.music == "ON" then music.BGM:setVolume(0.25) end
 			if highscore < score then
 				highscore = score
 			end
