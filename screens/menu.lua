@@ -10,7 +10,7 @@ function ScreenMenu:init()
 			{text="Sound", pos={center.x-100, center.y}, size={96,32}, action="toggle", var="sound", values={"ON","OFF"}},
 			{text="Music", pos={center.x+4, center.y}, size={96,32}, action="toggle", var="music", values={"ON","OFF"}},
 			{text="Dificulty", pos={center.x-64, center.y+40}, size={128,32}, action="toggle", var="difficulty", values={"Easy","Medium","Hard"}},
-			{text="Colorblind Mode", pos={center.x-72, center.y+80}, size={144,32}, action="toggle", var="colorblind", values={"ON","OFF"}},
+			-- {text="Colorblind Mode", pos={center.x-72, center.y+80}, size={144,32}, action="toggle", var="colorblind", values={"ON","OFF"}},
 			{text="Back", pos={center.x-24, center.y+120}, size={48,24}, action="back"}
 		}},
 		{text="Help", pos={center.x-48, center.y+64}, size={96,24}, action="goto", goto="help"},
@@ -21,6 +21,12 @@ function ScreenMenu:init()
 	self.current_menu = self.menu
 	self.parent_menu = nil
 	print (self.current_menu)
+
+	if settings.music == "ON" then
+		music.BGM:rewind()
+		music.BGM:setVolume(0.5)
+		music.BGM:play()
+	end
 	
 	love.graphics.setFont(fonts.standard)
 end
@@ -66,6 +72,9 @@ function ScreenMenu:keypressed(key, isrepeat)
 end
 
 function ScreenMenu:draw()
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.draw(bg['titlescreen'])
+
 	-- Draw the menu header
 	love.graphics.setFont(fonts.huge)
 	love.graphics.printf("PIXEL POP DEFENSE ZONE", 0, center.y/2 - fonts.huge:getHeight(), love.window.getWidth(), "center")
@@ -74,8 +83,8 @@ function ScreenMenu:draw()
 	self:drawMenu(self.current_menu)
 	-- Draw footer stuff, I guess
 	--love.graphics.setFont(fonts.standard)
-	love.graphics.printf("HIGHSCORE", center.x-32, love.window.getHeight() - fonts.standard:getHeight()*2 - 2, 64, "center")
-	love.graphics.printf(highscore, center.x-32, love.window.getHeight() - fonts.standard:getHeight() - 1, 64, "center")
+	love.graphics.printf("HIGHSCORE", center.x-32, love.window.getHeight() - 128 - fonts.standard:getHeight()*2 - 2, 64, "center")
+	love.graphics.printf(highscore, center.x-32, love.window.getHeight() - 128 - fonts.standard:getHeight() - 1, 64, "center")
 end
 
 function ScreenMenu:drawMenu(menu)

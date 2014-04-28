@@ -66,6 +66,14 @@ function ScreenGame:init()
 	score = 0
 	multiplier = 1
 	streak = {n=0, r=255, g=255, b=255}
+
+	-- play that music
+	if settings.music == "ON" then
+		music.BGM:setVolume(1.0)
+		if not music.BGM:isPlaying() then
+			music.BGM.play()
+		end
+	end
 end
 
 function ScreenGame:update(dt)

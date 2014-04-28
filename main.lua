@@ -14,6 +14,7 @@ center = {}
 fonts = {}
 bg = {}
 sound = {}
+music = {}
 settings = {sound = "ON", music = "ON", difficulty = "Medium", colorblind = "OFF"}
 
 function love.load()
@@ -23,11 +24,14 @@ function love.load()
 	fonts['small'] = love.graphics.newFont("assets/font/imagine_font.otf",8)
 	fonts['standard'] = love.graphics.newFont("assets/font/imagine_font.otf",10)
 	fonts['big'] = love.graphics.newFont("assets/font/imagine_font.otf",16)
-	fonts['huge'] = love.graphics.newFont("assets/font/imagine_font.otf",48)
+	fonts['huge'] = love.graphics.newFont("assets/font/imagine_font.otf",64)
 
-	sound['dissolve'] = love.audio.newSource("assets/sound/dissolve.wav")
+	sound['dissolve'] = love.audio.newSource("assets/sound/dissolve.wav","static")
+
+	music['BGM'] = love.audio.newSource("assets/sound/bgm.mp3","stream")
 	
-	bg['circles'] = love.graphics.newImage("assets/bg/circles.png")
+	bg['circles'] = love.graphics.newImage("assets/bg/octos.png")
+	bg['titlescreen'] = love.graphics.newImage("assets/bg/title.png")
 
 	settings:load()
 	
