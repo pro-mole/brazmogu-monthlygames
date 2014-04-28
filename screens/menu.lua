@@ -8,7 +8,7 @@ function ScreenMenu:init()
 		{text="Options", pos={center.x-48, center.y+32}, size={96,24}, action="submenu", submenu={
 			title="Options",
 			{text="Sound", pos={center.x-100, center.y}, size={96,32}, action="toggle", var="sound", values={"ON","OFF"}},
-			{text="Music", pos={center.x+4, center.y}, size={96,32}, action="toggle", var="music", values={"ON","OFF"}},
+			{text="Music", pos={center.x+4, center.y}, size={96,32}, action="toggle", var="music", values={"ON","OFF"}, callback=toggleMusic},
 			{text="Dificulty", pos={center.x-64, center.y+40}, size={128,32}, action="toggle", var="difficulty", values={"Easy","Medium","Hard"}},
 			-- {text="Colorblind Mode", pos={center.x-72, center.y+80}, size={144,32}, action="toggle", var="colorblind", values={"ON","OFF"}},
 			{text="Back", pos={center.x-24, center.y+120}, size={48,24}, action="back"}
@@ -22,9 +22,9 @@ function ScreenMenu:init()
 	self.parent_menu = nil
 	print (self.current_menu)
 
+	music.BGM:rewind()
+	music.BGM:setVolume(0.5)
 	if settings.music == "ON" then
-		music.BGM:rewind()
-		music.BGM:setVolume(0.5)
 		music.BGM:play()
 	end
 	
@@ -62,6 +62,10 @@ function ScreenMenu:mousepressed(x, y, button)
 				elseif button.action == "quit" then
 					-- Quit game	
 					love.event.quit()
+				end
+				
+				if button.callback then
+					button.callback()
 				end
 			end
 		end
@@ -109,6 +113,14 @@ function ScreenMenu:drawMenu(menu)
 end
 
 function ScreenMenu:quit()
+end
+
+function toggleMusic()
+	if settings['music'] == "ON" then
+		music.BGM:play()
+	else
+		music.BGM:stop()
+	end
 end
 
 addScreen(ScreenMenu, "menu")
