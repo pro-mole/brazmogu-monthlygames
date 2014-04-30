@@ -1,0 +1,11 @@
+# Configuration file for releases
+
+# WIN
+icoName="molesweeper.ico"
+
+# MAC OS
+bundleIdentifier="com.brazmgu.molesweeper"
+bundleName="Molesweeper"
+icnsName="molesweeper.icns"
+
+# LINUX

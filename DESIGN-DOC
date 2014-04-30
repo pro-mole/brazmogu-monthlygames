@@ -1,0 +1,22 @@
+MOLESWEEPER
+
+===========
+  Concept
+===========
+
+A character-controlled reimagining of the classic Minesweeper, plus a few more additions.
+
+============
+  Gameplay
+============
+
+The player controls a genetically engineered supermole who works as a live mine detector, thanks to its unique magnetic detection sense. As in the classic minesweeper, the player knows how many mines are there adjacent to the current tile they occupy, but not where they are. If the player is certain of where a mine is, they can set up a marker. If the player walks into a mine, they lose the game. When the player sets up all the markers for the level, they can call the match and check if they were right(if not, they lose).
+
+Some new features include...
+
+- False Positives: besides mines, other features of the scenery can trigger the mole's senses, such as the local mutated plantlife. Coppermoss, ironcaps and goldendrops are such organisms that evolved to absorb metal from the soil to keep alive, but that also means they're metallic as hell. Each have a distinct tell that the player must use to differentiate it from actual mines and avoid false positives.
+
+Also, there are different game modes.
+
+- Story Mode: in Story Mode, we follow the story of this little genius mole and a squad trying to go back home through so many minefields. In this mode failing to locate the mines correctly will not cause a game over, but instead will cost the life of one soldier. A game over happens if the player lets all soldiers die. Levels are generated randomly, with increasing complexity, until the very end. Stats of the player's progress are saved as a "high score" history.
+- Custom Modes: the player sets up the field and plays a randomly generated match. The modes differ in scoring criterion(time/least steps/etc)
