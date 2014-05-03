@@ -39,7 +39,6 @@ function Pixel.new(x, y, color, speed, ptype)
 	P.index = string.format('%08x',lastindex)
 	lastindex = lastindex + 1
 	pixels[P.index] =  P
-	print(string.format("New pixel %s at %d,%d", P.index, P.x, P.y))
 	return P
 end
 

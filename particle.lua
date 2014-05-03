@@ -33,8 +33,8 @@ function partSpark.new(x, y, duration, numSparks, color, avgSize)
 	local P = {x=x, y=y, duration=duration, done=false, sparks={}}
 	local numSparks = numSparks or 4
 
-	print(string.format("PARTICLE: [%d;%d - %d, %d, (%x,%x,%x), %d]", P.x, P.y, P.duration, numSparks, color.r, color.g, color.b, avgSize))
-	print (numSparks)
+	-- print(string.format("PARTICLE: [%d;%d - %d, %d, (%x,%x,%x), %d]", P.x, P.y, P.duration, numSparks, color.r, color.g, color.b, avgSize))
+	-- print (numSparks)
 	for i=1,numSparks,1 do
 		local spark = {x=x, y=y, size=avgSize or 4, color=color or {r=0xff, g=0xff, b=0xff}, alpha=128}
 		spark.x = spark.x + love.math.random(-numSparks,numSparks)

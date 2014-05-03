@@ -147,11 +147,11 @@ end
 
 function ScreenGame:mousepressed(x, y, button)
 	if not gameover then
-		print(string.format("mouse press(%s) at %d;%d",button,x,y))
+		-- print(string.format("mouse press(%s) at %d;%d",button,x,y))
 		if button == 'l' then
 			for i,pixel in pairs(pixels) do
 				if pixel:isClicked(x,y) then
-					print("Got a pixel!")
+					-- print("Got a pixel!")
 					pixel:destroy(true)
 					-- Consider breaking the loop here; maybe we don't want to click more than one at a time?
 				end

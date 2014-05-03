@@ -75,7 +75,7 @@ function settings:load()
 		self:save()
 	else
 		local str, bytes = love.filesystem.read("ppdz.settings")
-		print(string.format("%s bytes read from save file", bytes))
+		-- print(string.format("%s bytes read from save file", bytes))
 		if bytes == 0 then return end
 		
 		for k, v in string.gmatch(str, "(%w+)=(%w+)") do
