@@ -20,7 +20,7 @@ function ScreenMenu:init()
 	
 	self.current_menu = self.menu
 	self.parent_menu = nil
-	print (self.current_menu)
+	-- print (self.current_menu)
 
 	music.BGM:rewind()
 	music.BGM:setVolume(0.5)
