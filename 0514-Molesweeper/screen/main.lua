@@ -15,6 +15,11 @@ end
 function Screen:quit()
 end
 
+function Screen:restart()
+	self:quit()
+	self:load()
+end
+
 screens  = {}
 
 function screens:top()
