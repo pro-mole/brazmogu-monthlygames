@@ -3,13 +3,14 @@ require("molesweeper/minegenerator")
 Grid = {}
 Grid.__index = Grid
 
-function Grid.new(w, h)
+function Grid.new(w, h, mines)
 	local _w = w or 16
 	local _h = h or 16
-	local N = {width = _w, height = _h, tile_size = 16}
+	local _m = mines or 8
+	local N = {width = _w, height = _h, tile_size = 16, marks = 0, mines = _m}
 	N.offset = {x = (love.window.getWidth() - _w * N.tile_size)/2, y = (love.window.getHeight() - _h * N.tile_size)/2}
 
-	N.tiles = generateMinefield(_w, _h, 8)
+	N.tiles = generateMinefield(_w, _h, _m)
 
 	return setmetatable(N, Grid)
 end
@@ -33,6 +34,19 @@ function Grid:getTile(x, y)
 	return self.tiles[y][x]
 end
 
+function Grid:markTile(x, y)
+	local T = self:getTile(x, y)
+	if T ~= nil then
+		T.mark = not T.mark
+	end
+
+	if T.mark then
+		self.marks = self.marks + 1
+	else
+		self.marks = self.marks - 1
+	end
+end
+
 function Grid:drawTile(x, y)
 	local T = self:getTile(x, y)
 
@@ -44,11 +58,19 @@ function Grid:drawTile(x, y)
 	love.graphics.setColor(64,64,64,255)
 	love.graphics.rectangle("line", draw_x, draw_y, self.tile_size, self.tile_size)
 
-	if T.content == "mine" then
+	if T.known then
+		if T.content == "mine" then
+			love.graphics.setColor(128, 0, 0, 255)
+			love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/2, self.tile_size/4, 8)
+		else
+			love.graphics.setColor(128, 0, 0, 255)
+			love.graphics.printf(T.neighbors, draw_x, draw_y + 2, self.tile_size, "center")
+		end
+	elseif T.mark then
 		love.graphics.setColor(128, 0, 0, 255)
-		love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/2, self.tile_size/4, 8)
-	else
-		love.graphics.setColor(128, 0, 0, 255)
-		love.graphics.printf(T.neighbors, draw_x, draw_y + 2, self.tile_size, "center")
+		love.graphics.polygon("fill",
+			draw_x + 2, draw_y + 2,
+			draw_x + 2, draw_y + self.tile_size - 2,
+			draw_x + self.tile_size - 2, draw_y + self.tile_size/2)
 	end
 end
