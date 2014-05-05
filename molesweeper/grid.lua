@@ -38,12 +38,11 @@ function Grid:markTile(x, y)
 	local T = self:getTile(x, y)
 	if T ~= nil then
 		T.mark = not T.mark
-	end
-
-	if T.mark then
-		self.marks = self.marks + 1
-	else
-		self.marks = self.marks - 1
+		if T.mark then
+			self.marks = self.marks + 1
+		else
+			self.marks = self.marks - 1
+		end
 	end
 end
 
@@ -52,25 +51,31 @@ function Grid:drawTile(x, y)
 
 	local draw_x = (x-1) * self.tile_size
 	local draw_y = (y-1) * self.tile_size
-
-	love.graphics.setColor(128,128,128,255)
-	love.graphics.rectangle("fill", draw_x, draw_y, self.tile_size, self.tile_size)
+	
 	love.graphics.setColor(64,64,64,255)
 	love.graphics.rectangle("line", draw_x, draw_y, self.tile_size, self.tile_size)
 
 	if T.known then
+		love.graphics.setColor(192,192,192,255)
+		love.graphics.rectangle("fill", draw_x+1, draw_y+1, self.tile_size-2, self.tile_size-2)
 		if T.content == "mine" then
 			love.graphics.setColor(128, 0, 0, 255)
 			love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/2, self.tile_size/4, 8)
 		else
-			love.graphics.setColor(128, 0, 0, 255)
-			love.graphics.printf(T.neighbors, draw_x, draw_y + 2, self.tile_size, "center")
+			if T.neighbors > 0 then
+				love.graphics.setColor(128, 0, 0, 255)
+				love.graphics.printf(T.neighbors, draw_x, draw_y + 2, self.tile_size, "center")
+			end
 		end
-	elseif T.mark then
-		love.graphics.setColor(128, 0, 0, 255)
-		love.graphics.polygon("fill",
-			draw_x + 2, draw_y + 2,
-			draw_x + 2, draw_y + self.tile_size - 2,
-			draw_x + self.tile_size - 2, draw_y + self.tile_size/2)
+	else
+		love.graphics.setColor(128,128,128,255)
+		love.graphics.rectangle("fill", draw_x+1, draw_y+1, self.tile_size-2, self.tile_size-2)
+		if T.mark then
+			love.graphics.setColor(128, 0, 0, 255)
+			love.graphics.polygon("fill",
+				draw_x + 2, draw_y + 2,
+				draw_x + 2, draw_y + self.tile_size - 2,
+				draw_x + self.tile_size - 2, draw_y + self.tile_size/2)
+		end
 	end
 end
