@@ -71,7 +71,7 @@ function ScreenHelp:draw()
 	love.graphics.printf("And that's about all you need to know for now! Stay strong as long as you can and best of luck!", 32, 480, 536, "center");
 	
 	love.graphics.setFont(fonts.standard)
-	love.graphics.printf("Press 'Esc' or 'Backscape' to go back!", 16, 624, 268, "left");
+	love.graphics.printf("Press 'Esc' or 'Backspace' to go back!", 16, 624, 268, "left");
 end
 
 function ScreenHelp:quit()

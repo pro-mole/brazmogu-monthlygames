@@ -60,7 +60,7 @@ function ScreenAbout:draw()
 	
 	
 	love.graphics.setFont(fonts.standard)
-	love.graphics.printf("Press 'Esc' or 'Backscape' to go back!", 16, 624, 268, "left");
+	love.graphics.printf("Press 'Esc' or 'Backspace' to go back!", 16, 624, 268, "left");
 end
 
 function ScreenAbout:quit()
