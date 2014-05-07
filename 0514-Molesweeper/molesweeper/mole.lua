@@ -20,26 +20,38 @@ function Mole:revealTile()
 end
 
 function Mole:keypressed(k, isrepeat)
+	-- Local variables to check the tile before moving
+	local _x, _y = self.x, self.y
+
 	if k == 'up' then
-		self.y = self.y - 1
+		_y = self.y - 1
 	elseif k == 'down' then
-		self.y = self.y + 1
+		_y = self.y + 1
 	elseif k == 'left' then
-		self.x = self.x - 1
+		_x = self.x - 1
 	elseif k == 'right' then
-		self.x = self.x + 1
+		_x = self.x + 1
 	end
 
-	if self.y < 1 then self.y = 1 end
-	if self.y > self.grid.height then self.y = self.grid.height end
-	if self.x < 1 then self.x = 1 end
-	if self.x > self.grid.width then self.x = self.grid.width end
+	-- If walking over borders, move back
+	if _y < 1 or _y > self.grid.height then
+		_y = self.y
+	end
+	if _x < 1 or _x > self.grid.width then 
+		_x = self.x
+	end
 
+	local T = self.grid:getTile(_x, _y)
+	if T.mark then -- if tile is marked, don't move there, dumbass
+		_x, _y = self.x, self.y
+	else  -- if tile is not marked, check if we blow up
+		self.x, self.y = _x, _y
+		if T.content == "mine" then
+			gameover = true
+			self.grid.revealed = true
+		end
+	end
 	self:revealTile()
-	local T = self.grid:getTile(self.x, self.y)
-	if T.content == "mine" then
-		gameover = true
-	end
 
 	if k == 'w' then
 		self.grid:markTile(self.x, self.y-1)
