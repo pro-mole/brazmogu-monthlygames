@@ -10,9 +10,9 @@ function GameScreen:load()
 	self.UI:addButton(164, 596, 152, 40, "Restart", self, self.retry, "r")
 	--self.UI:addButton(324, 596, 152, 40, "Exit", nil, love.event.quit, "escape")
 	--self.UI:addButton(484, 596, 152, 40, "Exit", nil, love.event.quit, "escape")
-	self.UI:addLabel(164, 4, 152, "Mines: %s", self, self.getMines)
-	self.UI:addLabel(324, 4, 152, "Marks: %s", self, self.getMarks)
-	self.UI:addButton(164, 36, 312, 40, "Verify", self, self.checkGrid, "enter")
+	self.UI:addLabel(164, 4, 152, "Mines: %s", self.grid, self.grid.getMines)
+	self.UI:addLabel(324, 4, 152, "Marks: %s", self.grid, self.grid.getMarks)
+	self.UI:addButton(164, 36, 312, 40, "Verify", self.grid, self.grid.checkSolution, "enter")
 	print("Loaded Game Screen")
 end
 
@@ -21,6 +21,10 @@ function GameScreen:keypressed(k, isrepeat)
 		self.mole:keypressed(k, isrepeat)
 	end
 	self.UI:keypressed(k, isrepeat)
+end
+
+function GameScreen:update(dt)
+	self.UI:update(dt)
 end
 
 function GameScreen:draw()
@@ -44,17 +48,6 @@ end
 function GameScreen:retry()
 	gameover = false
 	self:restart()
-end
-
-function GameScreen:checkGrid()
-end
-
-function GameScreen:getMines()
-	return self.grid.mines
-end
-
-function GameScreen:getMarks()
-	return self.grid.marks
 end
 
 return GameScreen

@@ -11,6 +11,7 @@ function Grid.new(w, h, mines)
 	N.offset = {x = (love.window.getWidth() - _w * N.tile_size)/2, y = (love.window.getHeight() - _h * N.tile_size)/2}
 
 	N.tiles = generateMinefield(_w, _h, _m)
+	N.revealed = false
 
 	return setmetatable(N, Grid)
 end
@@ -36,7 +37,7 @@ end
 
 function Grid:markTile(x, y)
 	local T = self:getTile(x, y)
-	if T ~= nil then
+	if T ~= nil and not T.known then
 		T.mark = not T.mark
 		if T.mark then
 			self.marks = self.marks + 1
@@ -44,6 +45,32 @@ function Grid:markTile(x, y)
 			self.marks = self.marks - 1
 		end
 	end
+end
+
+function Grid:getMines()
+	return self.mines
+end
+
+function Grid:getMarks()
+	return self.marks
+end
+
+function Grid:checkSolution()
+	if self.mines ~= self.marks then
+		return false
+	end
+
+	-- Assuming we have the same number of marks and mines, then either all marked tiles are mines or the player failed
+	for i,row in ipairs(N.tiles) do
+		for j,cell in ipairs(row) do
+			if cell.mark and cell.content ~= "mine" then
+				return false
+			end
+		end
+	end
+
+	-- Here we then checked that all makerd tiles are mines, and thus all mines were marked. Yay!
+	return true
 end
 
 function Grid:drawTile(x, y)
@@ -55,7 +82,7 @@ function Grid:drawTile(x, y)
 	love.graphics.setColor(64,64,64,255)
 	love.graphics.rectangle("line", draw_x, draw_y, self.tile_size, self.tile_size)
 
-	if T.known then
+	if T.known or self.revealed then
 		love.graphics.setColor(192,192,192,255)
 		love.graphics.rectangle("fill", draw_x+1, draw_y+1, self.tile_size-2, self.tile_size-2)
 		if T.content == "mine" then

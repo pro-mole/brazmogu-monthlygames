@@ -10,7 +10,7 @@ GUI = { menu_padding = 4,
 GUI.__index = GUI
 
 function GUI.new()
-	local N = setmetatable({menu = nil, labels = {}, buttons = {}, keys = {}}, GUI)
+	local N = setmetatable({menu = nil, messages = {}, labels = {}, buttons = {}, keys = {}}, GUI)
 
 	return N
 end
@@ -26,6 +26,26 @@ function GUI:keypressed(key, isrepeat)
 			callback(object)
 		end
 	end
+end
+
+function GUI:update(dt)
+	-- Only thing we do in GUI update is countdown the message stack items
+	for i = #self.messages,1,-1 do
+		local M = self.messages(i)
+		M.timer = M.timer - dt
+		if M.timer <= 0 then
+			table.remove(self.messages, i)
+		end
+	end
+end
+
+-- Add a message box
+-- This adds a message to a queue, and this queue will elminiate these messages one at a time
+function GUI:addMessage(x, y, width, text, timer)
+	local M = {x = x, y = y, w = width, text = text, timer = time}
+	M.h = font.menustandard:getHeight() + 2*GUI.label_padding
+
+	table.insert(self.messages, M)
 end
 
 -- Add label
