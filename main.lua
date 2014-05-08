@@ -33,6 +33,7 @@ function love.keypressed(k, isrepeat)
 end
 
 function love.update(dt)
+	screens:update(dt)
 end
 
 function love.draw()

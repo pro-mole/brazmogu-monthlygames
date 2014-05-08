@@ -55,21 +55,27 @@ function Grid:getMarks()
 	return self.marks
 end
 
-function Grid:checkSolution()
+function Grid:checkSolution(UI)
 	if self.mines ~= self.marks then
+		if UI then UI:addMessage(self.offset.x, self.offset.y + self.height*self.tile_size + 4, self.width*self.tile_size, "Number of mines and marks doesn't match", 2) end
 		return false
 	end
 
 	-- Assuming we have the same number of marks and mines, then either all marked tiles are mines or the player failed
-	for i,row in ipairs(N.tiles) do
+	for i,row in ipairs(self.tiles) do
 		for j,cell in ipairs(row) do
 			if cell.mark and cell.content ~= "mine" then
+				if UI then UI:addLabel(self.offset.x, self.offset.y + self.height*self.tile_size + 4, self.width*self.tile_size, "Sorry...") end
+				self.revealed = true
+				gameover = true
 				return false
 			end
 		end
 	end
 
 	-- Here we then checked that all makerd tiles are mines, and thus all mines were marked. Yay!
+	if UI then UI:addLabel(self.offset.x, self.offset.y + self.height*self.tile_size + 4, self.width*self.tile_size, "Good job!") end
+	gameover = true
 	return true
 end
 
@@ -86,12 +92,19 @@ function Grid:drawTile(x, y)
 		love.graphics.setColor(192,192,192,255)
 		love.graphics.rectangle("fill", draw_x+1, draw_y+1, self.tile_size-2, self.tile_size-2)
 		if T.content == "mine" then
-			love.graphics.setColor(128, 0, 0, 255)
+			if T.mark then
+				love.graphics.setColor(0, 192, 0, 255)
+			else
+				love.graphics.setColor(128, 0, 0, 255)
+			end
 			love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/2, self.tile_size/4, 8)
+		elseif T.mark then
+			love.graphics.setColor(128, 0, 0, 255)
+			love.graphics.printf("X", draw_x, draw_y + 4, self.tile_size, "center")
 		else
 			if T.neighbors > 0 then
 				love.graphics.setColor(128, 0, 0, 255)
-				love.graphics.printf(T.neighbors, draw_x, draw_y + 2, self.tile_size, "center")
+				love.graphics.printf(T.neighbors, draw_x, draw_y + 4, self.tile_size, "center")
 			end
 		end
 	else

@@ -12,7 +12,7 @@ function GameScreen:load()
 	--self.UI:addButton(484, 596, 152, 40, "Exit", nil, love.event.quit, "escape")
 	self.UI:addLabel(164, 4, 152, "Mines: %s", self.grid, self.grid.getMines)
 	self.UI:addLabel(324, 4, 152, "Marks: %s", self.grid, self.grid.getMarks)
-	self.UI:addButton(164, 36, 312, 40, "Verify", self.grid, self.grid.checkSolution, "enter")
+	self.UI:addButton(164, 36, 312, 40, "Verify", self, self.checkSolution, "return")
 	print("Loaded Game Screen")
 end
 
@@ -48,6 +48,10 @@ end
 function GameScreen:retry()
 	gameover = false
 	self:restart()
+end
+
+function GameScreen:checkSolution()
+	self.grid:checkSolution(self.UI)
 end
 
 return GameScreen
