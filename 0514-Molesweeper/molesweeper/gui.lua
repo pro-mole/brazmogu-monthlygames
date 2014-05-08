@@ -31,7 +31,7 @@ end
 function GUI:update(dt)
 	-- Only thing we do in GUI update is countdown the message stack items
 	for i = #self.messages,1,-1 do
-		local M = self.messages(i)
+		local M = self.messages[i]
 		M.timer = M.timer - dt
 		if M.timer <= 0 then
 			table.remove(self.messages, i)
@@ -42,7 +42,7 @@ end
 -- Add a message box
 -- This adds a message to a queue, and this queue will elminiate these messages one at a time
 function GUI:addMessage(x, y, width, text, timer)
-	local M = {x = x, y = y, w = width, text = text, timer = time}
+	local M = {x = x, y = y, w = width, text = text, timer = timer}
 	M.h = font.menustandard:getHeight() + 2*GUI.label_padding
 
 	table.insert(self.messages, M)
@@ -100,7 +100,21 @@ function GUI:draw()
 		love.graphics.translate(L.x, L.y)
 
 		love.graphics.rectangle("line", 0, 0, L.w, L.h)
-		love.graphics.printf(string.format(L.text, L.callback(L.object)), GUI.label_padding, GUI.label_padding, L.w - 2*GUI.label_padding, "center")
+		if L.callback then
+			love.graphics.printf(string.format(L.text, L.callback(L.object)), GUI.label_padding, GUI.label_padding, L.w - 2*GUI.label_padding, "center")
+		else
+			love.graphics.printf(string.format(L.text), GUI.label_padding, GUI.label_padding, L.w - 2*GUI.label_padding, "center")
+		end
+
+		love.graphics.pop()
+	end
+	
+	if #self.messages >= 1 then
+		local M = self.messages[#self.messages]
+		love.graphics.push()
+		love.graphics.translate(M.x, M.y)
+		
+		love.graphics.printf(string.format(M.text), GUI.label_padding, GUI.label_padding, M.w - 2*GUI.label_padding, "center")
 
 		love.graphics.pop()
 	end
