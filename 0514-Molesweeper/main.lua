@@ -1,29 +1,19 @@
-font = {}
-sound = {}
-bgm = {}
-backdrop = {}
-sprite = {}
-settings = {
-	minefield = {
-	width = 15,
-	height = 15,
-	start = {x = 8, y = 15},
-	mines = 8
-	}
-}
-
 -- Load game classes
+require("molesweeper/settings")
 require("molesweeper/gui")
 require("molesweeper/grid")
 require("molesweeper/mole")
 -- Load the screens
 require("screen/main")
+menuscreen = require("screen/menu")
 gamescreen = require("screen/game")
+helpscreen = nil
+aboutscreen = nil
 
 gameover = false;
 
 function love.load()
-	screens:push(gamescreen)
+	screens:push(menuscreen)
 
 	print("Loaded")
 end
