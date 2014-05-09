@@ -26,7 +26,7 @@ function generateMinefield(width, height, mines)
 		repeat
 			x = love.math.random(1, width)
 			y = love.math.random(1, height)
-		until F[y][x].content == "empty"
+		until validMine(F,x,y)
 
 		F[y][x].content = "mine"
 		-- Add neighbor count to neighbors
@@ -41,4 +41,10 @@ function generateMinefield(width, height, mines)
 	end
 
 	return F
+end
+
+-- Check if the place is good for mines
+-- Among other things, it cannot match false positive patterns
+function validMine(field, x, y)
+	return (x ~= settings.minefield.start.x or y~= settings.minefield.start.y) and field[y][x].content == "empty"
 end
