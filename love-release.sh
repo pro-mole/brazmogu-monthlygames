@@ -66,8 +66,8 @@ done
 if [ -d $lovefile ]
 then
 	lovedir=$lovefile
-	make -C $lovedir clean
-	make -C $lovedir
+	make -sC $lovedir clean
+	make -sC $lovedir
 	lovefile=`find $lovedir -maxdepth 1 -name *.love | head -n 1`
 	if [ -z $lovefile ]
 	then
@@ -80,7 +80,7 @@ fi
 
 releasedir=$lovedir/release
 . $lovedir/config.release
-make -C $lovedir
+make -sC $lovedir
 
 if [ ! -e $lovefile ]
 then
