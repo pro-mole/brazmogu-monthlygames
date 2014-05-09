@@ -6,7 +6,7 @@ function GameScreen:load()
 	self.mole = Mole.new(settings.minefield.start.x, settings.minefield.start.y, self.grid)
 	self.UI = GUI.new()
 
-	self.UI:addButton(4, 596, 152, 40, "Exit", nil, love.event.quit, "escape")
+	self.UI:addButton(4, 596, 152, 40, "Exit", screens, screens.pop, "escape")
 	self.UI:addButton(164, 596, 152, 40, "Restart", self, self.retry, "r")
 	--self.UI:addButton(324, 596, 152, 40, "Exit", nil, love.event.quit, "escape")
 	--self.UI:addButton(484, 596, 152, 40, "Exit", nil, love.event.quit, "escape")
