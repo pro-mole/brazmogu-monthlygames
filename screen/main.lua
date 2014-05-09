@@ -9,6 +9,9 @@ end
 function Screen:update(dt)
 end
 
+function Screen:keypressed(k, isrepeat)
+end
+
 function Screen:draw()
 end
 
