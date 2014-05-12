@@ -22,9 +22,9 @@ function GUI:keypressed(key, isrepeat)
 	-- Menu controls take precedence
 	if self.menu then
 		local M = self.menu.current
+		local I = M.items[M.pointer]
 		if key == "return" or key == " " then
 			-- Select option
-			local I = M.items[M.pointer]
 			if I.action == "goto" then
 				screens:push(I.goto)
 			elseif I.action == "back" then
@@ -51,8 +51,32 @@ function GUI:keypressed(key, isrepeat)
 			if M.pointer > #M.items then M.pointer = 1 end
 		elseif key == "right" then
 			-- Change value on multi-value options
+			if I.action == "setting" then
+				local V = loadSetting(I.var)
+				for i,_v in ipairs(I.values) do
+					if _v == V then
+						if i < #I.values then
+							saveSetting(I.var, I.values[i+1])
+						else
+							saveSetting(I.var, I.values[1])
+						end
+					end
+				end
+			end
 		elseif key == "left" then
 			-- Change value on multi-value options
+			if I.action == "setting" then
+				local V = loadSetting(I.var)
+				for i,_v in ipairs(I.values) do
+					if _v == V then
+						if i > 1  then
+							saveSetting(I.var, I.values[i-1])
+						else
+							saveSetting(I.var, I.values[#I.values])
+						end
+					end
+				end
+			end
 		end
 	else
 		for k,f in pairs(self.keys) do
@@ -175,6 +199,7 @@ function GUI:draw()
 			_y = _y + font.menustandard:getHeight() + GUI.menu_padding*2
 			
 			if item.action == "setting" then
+				love.graphics.printf(loadSetting(item.var), 0, _y, m.w, "center")	
 				_y = _y + font.menustandard:getHeight() + GUI.menu_padding*2
 			end
 		end

@@ -13,6 +13,7 @@ aboutscreen = nil
 gameover = false;
 
 function love.load()
+	load()
 	screens:push(menuscreen)
 
 	print("Loaded")
