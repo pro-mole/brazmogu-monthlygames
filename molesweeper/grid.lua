@@ -102,7 +102,7 @@ function Grid:drawTile(x, y)
 			love.graphics.setColor(128, 0, 0, 255)
 			love.graphics.printf("X", draw_x, draw_y + 4, self.tile_size, "center")
 		else
-			if T.neighbors > 0 then
+			if self.revealed and T.neighbors > 0 then
 				love.graphics.setColor(128, 0, 0, 255)
 				love.graphics.printf(T.neighbors, draw_x, draw_y + 4, self.tile_size, "center")
 			end

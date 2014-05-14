@@ -8,9 +8,9 @@ function MenuScreen:load()
 		--{text = 'Start', action = 'submenu', submenu = {"Game Setup", items={}}},
 		{text = 'Custom Game', action = 'submenu', submenu = {title="Game Setup", items={
 			{text = 'Start Game', action = 'goto', goto = gamescreen},
-			{text = 'Field Width', action = 'setting', varname = 'minefield.width', values = {9,11,13,15,17,19,21,23,25,27,29,31,33,35}},
-			{text = 'Field Height', action = 'setting', varname = 'minefield.height', values = {9,11,13,15,17,19,21,23,25,27,29,31,33,35}},
-			{text = 'Number of Mines', action = 'setting', varname = 'minefield.mines', values = {4,8,12,15,20,25,30,40,50}},
+			{text = 'Field Width', action = 'setting', varname = 'minefield.width', values = {9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39}},
+			{text = 'Field Height', action = 'setting', varname = 'minefield.height', values = {9,11,13,15,17,19,21,23,25,27,29}},
+			{text = 'Number of Mines', action = 'setting', varname = 'minefield.mines', values = {4,8,12,15,20,25,30,40}},
 			{text = 'Coppermoss', action = 'setting', varname = 'minefield.coppermoss', values = {"YES","NO"}},
 			{text = 'Ironcaps', action = 'setting', varname = 'minefield.ironcap', values = {"YES","NO"}},
 			{text = 'Goldendrops', action = 'setting', varname = 'minefield.goldendrop', values = {"YES","NO"}},
