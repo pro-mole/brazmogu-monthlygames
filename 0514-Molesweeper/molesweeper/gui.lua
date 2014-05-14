@@ -7,6 +7,10 @@ font['menustandard'] = love.graphics.newFont("assets/font/amiga4ever.ttf", 10)
 GUI = { menu_padding = 4,
 	button_padding = 4,
 	label_padding = 4}
+GUI.keynames = {}
+GUI.keynames["escape"] = "ESC"
+GUI.keynames["r"] = "R"
+GUI.keynames["return"] = "ENTER"
 GUI.__index = GUI
 
 function GUI.new()
@@ -125,7 +129,7 @@ function GUI:addButton(x, y, width, height, text, object, callback, shortcut)
 	B.text = text
 	if shortcut then
 		self.keys[shortcut] = {callback, object}
-		B.text = string.format("%s\n(%s)", text, shortcut)
+		B.text = string.format("%s\n(%s)", text, GUI.keynames[shortcut])
 	end
 
 	table.insert(self.buttons, B)
@@ -208,6 +212,7 @@ function GUI:draw()
 	end
 
 	love.graphics.setFont(font.menustandard)	
+
 	for i,B in ipairs(self.buttons) do
 		love.graphics.push()
 		love.graphics.translate(B.x, B.y)
