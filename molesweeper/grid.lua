@@ -10,6 +10,8 @@ function Grid.new(w, h, mines)
 	local N = {width = _w, height = _h, tile_size = 16, marks = 0, mines = _m}
 	N.offset = {x = (love.window.getWidth() - _w * N.tile_size)/2, y = (love.window.getHeight() - _h * N.tile_size)/2}
 
+	settings.minefield.start.x = math.ceil(_w)
+	settings.minefield.start.y = _h
 	N.tiles = generateMinefield(_w, _h, _m)
 	N.revealed = false
 

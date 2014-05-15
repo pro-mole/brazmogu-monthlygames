@@ -6,8 +6,8 @@ backdrop = {}
 sprite = {}
 settings = {
 	minefield = {
-	width = 39,
-	height = 29,
+	width = 11,
+	height = 11,
 	start = {x = 8, y = 15},
 	mines = 8,
 	coppermoss = "NO",
