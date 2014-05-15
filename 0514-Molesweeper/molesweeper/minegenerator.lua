@@ -46,5 +46,5 @@ end
 -- Check if the place is good for mines
 -- Among other things, it cannot match false positive patterns
 function validMine(field, x, y)
-	return (x ~= settings.minefield.start.x or y~= settings.minefield.start.y) and field[y][x].content == "empty"
+	return not (x ~= settings.minefield.start.x and y~= settings.minefield.start.y) and field[y][x].content == "empty"
 end

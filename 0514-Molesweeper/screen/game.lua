@@ -3,7 +3,7 @@ GameScreen = setmetatable({}, Screen)
 
 function GameScreen:load()
 	self.grid = Grid.new(settings.minefield.width, settings.minefield.height, settings.minefield.mines)
-	self.mole = Mole.new(math.ceil(settings.minefield.width/2), settings.minefield.height, self.grid)
+	self.mole = Mole.new(settings.start.x, settings.start.y, self.grid)
 	self.UI = GUI.new()
 
 	self.UI:addButton(4, 596, 152, 40, "Exit", screens, screens.pop, "escape")
