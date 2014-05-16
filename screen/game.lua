@@ -20,6 +20,9 @@ end
 
 function GameScreen:keypressed(k, isrepeat)
 	if not gameover then
+		if k == "`" then
+			self.grid.revealed = not self.grid.revealed
+		end	
 		self.mole:keypressed(k, isrepeat)
 	end
 	self.UI:keypressed(k, isrepeat)
@@ -91,7 +94,7 @@ function GameScreen:drawHUD()
 
 	love.graphics.pop()
 
-	-- Superfluous Technobabble
+	-- Superfluous Technobabble/Quick Ref
 	love.graphics.push()
 	love.graphics.translate(4, 4)
 
@@ -100,6 +103,7 @@ function GameScreen:drawHUD()
 	love.graphics.rectangle("line", 3, 3, 146, 54)
 
 	love.graphics.pop()
+	
 	-- Soil Survey
 	love.graphics.push()
 	love.graphics.translate(484, 4)
@@ -107,6 +111,17 @@ function GameScreen:drawHUD()
 	love.graphics.setColor(192,192,0,255)
 	love.graphics.rectangle("line", 0, 0, 152, 60)
 	love.graphics.rectangle("line", 3, 3, 146, 54)
+	
+	love.graphics.printf("Soil Analysis", 7, 7, 138, "center")
+	
+	local terrain = self.grid:getTile(self.mole.x, self.mole.y)
+	local total = terrain.dirt + terrain.water + terrain.humus
+	love.graphics.setColor(128,96,0,255)
+	love.graphics.printf(string.format("%d%%",terrain["dirt"]/total * 100), 7, 24, 46, "center")
+	love.graphics.setColor(0,96,128,255)
+	love.graphics.printf(string.format("%d%%",terrain["water"]/total * 100), 53, 24, 46, "center")
+	love.graphics.setColor(64,64,64,255)
+	love.graphics.printf(string.format("%d%%",terrain["humus"]/total * 100), 99, 24, 46, "center")
 
 	love.graphics.pop()
 
