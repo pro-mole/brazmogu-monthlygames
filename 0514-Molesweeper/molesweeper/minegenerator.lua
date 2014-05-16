@@ -3,11 +3,13 @@
 
 -- Default tile data; used as metatable, and overwritten locally
 _tile = {
-	content = "empty",									-- What is inside this tile
-	terrain = {dirt = 0.7, water = 0.2, sand = 0.1},	-- Soil in this tile(affected by false positives)
-	known = false,										-- Does the player know what is in this tile?
-	mark = false,										-- Did the player mark this tile?
-	neighbors = 0										-- Number of neighboring suspect tiles(mines or false positives)
+	content = "empty",								-- What is inside this tile
+	dirt = 10, 										-- Soil in this tile(affected by false positives)
+	water = 0,
+	humus = 0,
+	known = false,									-- Does the player know what is in this tile?
+	mark = false,									-- Did the player mark this tile?
+	neighbors = 0									-- Number of neighboring suspect tiles(mines or false positives)
 }
 Tile = {__index = _tile} -- Metatable
 
@@ -23,31 +25,123 @@ function generateMinefield(width, height, mines)
 	end
 
 	-- Add mines
+	local Mines = {}
+	local x
+	local y
 	for m = 1,mines do
 		repeat
 			x = love.math.random(1, width)
 			y = love.math.random(1, height)
 		until validMine(F,x,y)
 
-		F[y][x].content = "mine"
-		-- Add neighbor count to neighbors
-		for _x = -1,1 do
-			for _y = -1,1 do
-				if y + _y >= 1 and y + _y <= height and
-					x + _x >= 1 and x + _x <= width then
-					F[y+_y][x+_x].neighbors = F[y+_y][x+_x].neighbors + 1
+		addContent(F,x,y,"mine")
+		addNeighbors(F,x,y)
+		table.insert(Mines, {x,y})
+	end
+
+	-- Add false positives
+	if settings.minefield.coppermoss == "YES" then
+		moss = math.ceil(mines/4 * math.random())
+		
+		for m = 1,moss do
+			if #Mines == 0 then
+				break
+			end
+			local m = math.random(#Mines)
+			local x,y = unpack(Mines[m])
+			table.remove(Mines,m)
+			
+			local cluster = math.random(2,4) * 2
+			local adjacents = {{-1,0},{0,-1},{1,0},{0,1}}
+			local diags = {}
+			if cluster == 8 then
+				diags = {{-1,-1},{1,-1},{1,1},{-1,1}}
+			elseif cluster == 6 then
+				if math.random(2) == 1 then
+					diags = {{-1,-1},{1,1}}
+				else
+					diags = {{1,-1},{-1,1}}
+				end
+			end
+			
+			for i,P in ipairs(diags) do table.insert(adjacents, P) end
+			
+			for i,T in ipairs(adjacents) do
+				local _x,_y = x+T[1], y+T[2]
+				if addContent(F, _x, _y, "coppermoss") then
+					addNeighbors(F, _x, _y)
+					alterTerrain(F, _x, _y, {water = 8})
 				end
 			end
 		end
 	end
-
-	count = 0
+	
+	if settings.minefield.ironcap == "YES" then
+		caps = math.ceil(mines/3 * math.random())
+		
+		for m = 1,caps do
+			if #Mines == 0 then
+				break
+			end
+			local m = math.random(#Mines)
+			local x,y = unpack(Mines[m])
+			table.remove(Mines,m)
+			
+			local dir
+			local tips
+			if math.random(2) == 1 then
+				dir = "horz"
+				tips = {x,x}
+			else
+				dir = "vert"
+				tips = {y,y}
+			end
+			
+			local cluster = math.random(3,5)
+			
+			while cluster > 0 do
+				local _x, _y = x, y
+				if math.random(2) == 1 then
+					if dir == "horz" then
+						_x = tips[1]-1
+						if _x >= 1 then
+							tips[1] = _x
+						end
+					else
+						_y = tips[1]-1
+						if _y >= 1 then
+							tips[1] = _y
+						end
+					end
+				else
+					if dir == "horz" then
+						_x = tips[2]+1
+						if _x <= width then
+							tips[2]= _x
+						end
+					else
+						_y = tips[2]+1
+						if _y <= height then
+							tips[2]= _y
+						end
+					end
+				end
+				
+				if _x >= 1 and _y >= 1 and _x <= width and _y <= height then
+					if addContent(F, _x, _y, "ironcap") then
+						addNeighbors(F, _x, _y)
+						alterTerrain(F, _x, _y, {humus = 10})
+					end
+					if F[_y][_x].content ~= "mine" then cluster = cluster - 1 end
+				end
+			end
+		end
+	end
+	
 	if not validBoard(F) then
 		F = generateMinefield(width, height, mines)
 	end
-	count = count + 1
 	
-	print(count)
 	return F
 end
 
@@ -55,6 +149,61 @@ end
 -- Among other things, it cannot match false positive patterns
 function validMine(field, x, y)
 	return not (x == settings.minefield.start.x and y == settings.minefield.start.y) and field[y][x].content == "empty"
+end
+
+-- Change terrain composition at tile [x,y] and adjacents
+function alterTerrain(field, x, y, terrain)
+	local height = #field
+	local width = #field[1]
+	
+	for _x = -1,1 do
+		for _y = -1,1 do
+			if y + _y >= 1 and y + _y <= height and
+				x + _x >= 1 and x + _x <= width then
+				local d = math.abs(_x) + math.abs(_y)
+				for param,val in pairs(terrain) do
+					if d == 0 then
+						field[y+_y][x+_x][param] = field[y+_y][x+_x][param] + terrain[param]
+					elseif d == 1 then
+						field[y+_y][x+_x][param] = field[y+_y][x+_x][param] + terrain[param]/4
+					elseif d == 2 then
+						field[y+_y][x+_x][param] = field[y+_y][x+_x][param] + terrain[param]/16
+					end
+				end
+			end
+		end
+	end
+end
+
+-- Add to the neighbor count of all tiles adjacent to [x,y]
+function addNeighbors(field, x, y)
+	local height = #field
+	local width = #field[1]
+	
+	for _x = -1,1 do
+		for _y = -1,1 do
+			if y + _y >= 1 and y + _y <= height and
+				x + _x >= 1 and x + _x <= width then
+				field[y+_y][x+_x].neighbors = field[y+_y][x+_x].neighbors + 1
+			end
+		end
+	end
+end
+
+-- Change tile [x,y]'s content
+function addContent(field, x, y, content)
+	local height = #field
+	local width = #field[1]
+	
+	if x >= 1 and x <= width and
+		y >= 1 and y <= height then
+		if field[y][x].content == "empty" then
+			field[y][x].content = content
+			return true
+		end
+	end
+	
+	return false
 end
 
 -- Check if the board is fully navigable

@@ -15,21 +15,8 @@ The player controls a genetically engineered supermole who works as a live mine 
 The game also includes false positives. Besides mines, other features of the scenery can trigger the mole's senses, such as the local mutated plantlife. Coppermoss, ironcaps and goldendrops are such organisms that evolved to absorb metal from the soil to keep alive, but that also means they're metallic as hell. Each have a distinct tell that the player must use to differentiate it from actual mines and avoid false positives.
 
 Planned patterns:
-- Coppermoss: clutters in formations of 4 or more squares, all adjacent.
-e.g.:
-XX  X   XXX
-XX XXX XXX
+- Coppermoss: clutters around mines.
 
-- Ironcap: sprouts in neat lines of 3 or more squares.
-e.g.:
-X    XXXX
-X
-X
+- Ironcap: sprouts in neat lines of 3 or more squares, over one or more mines.
 
-- Goldendrops: sprouts in neat geometric patterns, either squares, crosses or octogons.
-e.g.:
- X   X  X      X X
-XXX           X   X
- X            
-     X  X     X   X
-	           X X
+- Goldendrop: sprouts alone, changes soil composition
