@@ -113,6 +113,12 @@ function Grid:drawTile(x, y)
 				draw_x + self.tile_size/3, draw_y + self.tile_size/4,
 				draw_x + self.tile_size/4, draw_y + self.tile_size/2,
 				draw_x + self.tile_size/4 * 3, draw_y + self.tile_size/2)
+		elseif T.content == "goldendrop" then
+			love.graphics.setColor(192, 128, 0, 255)
+			love.graphics.circle("fill", draw_x + self.tile_size/3, draw_y + self.tile_size/2, self.tile_size/8, 16)
+			love.graphics.circle("fill", draw_x + self.tile_size/3*2, draw_y + self.tile_size/2, self.tile_size/8, 16)
+			love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/3, self.tile_size/8, 16)
+			love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/3*2, self.tile_size/8, 16)
 		elseif T.mark then
 			love.graphics.setColor(128, 0, 0, 255)
 			love.graphics.printf("X", draw_x, draw_y + 4, self.tile_size, "center")
