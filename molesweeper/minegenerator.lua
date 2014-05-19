@@ -137,6 +137,24 @@ function generateMinefield(width, height, mines)
 			end
 		end
 	end
+
+	if settings.minefield.goldendrop == "YES" then
+		local flowers = math.ceil(mines/4 * math.random())
+
+		for f = 1,flowers do
+			local x,y = 0,0
+			repeat
+				x = math.random(1,width)
+				y = math.random(1,height)
+			until F[y][x].content == "empty"
+
+			print ("Goldendrop added")
+
+			addContent(F, x, y, "goldendrop")
+			addNeighbors(F, x, y)
+			alterTerrain(F, x, y, {humus = 8, water = 5})
+		end
+	end
 	
 	if not validBoard(F) then
 		F = generateMinefield(width, height, mines)
