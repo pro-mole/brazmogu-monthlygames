@@ -1,8 +1,8 @@
 function love.conf(t)
-	t.identity = nil -- Set this to have a proper save/data folder
+	t.identity = molesweeper -- Set this to have a proper save/data folder
 	t.version = "0.9.0"
 
-	t.window.title = "Molesweeper"
+	t.window.title = "Molesweeper DEMO"
 
 	t.window.width = 640
 	t.window.height = 640

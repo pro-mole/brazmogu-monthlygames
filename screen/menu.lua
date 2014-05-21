@@ -4,8 +4,12 @@ MenuScreen = setmetatable({}, Screen)
 function MenuScreen:load()
 	self.UI = GUI.new()
 	
+	-- Reset the Challenge level each time you're back to the menu
+	challenge.level = 1
+	challenge.begins = false
+	
 	self.UI:addMenu({title = "MOLESWEEPER", items = {
-		--{text = 'Start', action = 'submenu', submenu = {"Game Setup", items={}}},
+		{text = 'Challenge', action = 'goto', goto = storyscreen},
 		{text = 'Custom Game', action = 'submenu', submenu = {title="Game Setup", items={
 			{text = 'Start Game', action = 'goto', goto = gamescreen},
 			{text = 'Field Width', action = 'setting', varname = 'minefield.width', values = {9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39}},
@@ -17,6 +21,9 @@ function MenuScreen:load()
 			{text = 'Back', action = 'back'}
 		}}},
 		{text = 'Settings', action = 'submenu', submenu = {title="Settings", items={
+			{text = 'Sound', action = 'setting', varname = 'audio.sound', values = {"YES","NO"}},
+			{text = 'Music', action = 'setting', varname = 'audio.music', values = {"YES","NO"}},
+			{text = 'Fullscreen', action = 'setting', varname = 'video.fullscreen', values = {"YES","NO"}},
 			{text = 'Back', action = 'back'}
 		}}},
 		{text = 'Help', action = 'goto', goto = helpscreen},
@@ -40,6 +47,10 @@ end
 
 function MenuScreen:keypressed(k, isrepeat)
 	self.UI:keypressed(k, isrepeat)
+	
+	-- Check settings and apply changes
+	-- This is done mainly for audio and video settings
+	-- Also, to save global settings, but not custom game settings
 end
 
 return MenuScreen
