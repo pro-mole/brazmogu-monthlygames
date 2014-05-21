@@ -102,6 +102,34 @@ function GameScreen:drawHUD()
 	love.graphics.rectangle("line", 0, 0, 152, 60)
 	love.graphics.rectangle("line", 3, 3, 146, 54)
 
+	love.graphics.printf("Systems Online", 7, 7, 138, "center")
+
+	love.graphics.printf("Move", 7, 25, 69, "center")
+
+	love.graphics.push()
+	love.graphics.translate(25, 42)
+	love.graphics.polygon("fill",8,0, 0,4, 8,8)
+	
+	love.graphics.push()
+	love.graphics.translate(10, 0)
+	love.graphics.polygon("fill",0,0, 4,8, 8,0)
+	love.graphics.pop()
+	
+	love.graphics.push()
+	love.graphics.translate(17, 0)
+	love.graphics.polygon("fill",0,8, 4,0, 8,8)	
+	love.graphics.pop()
+	
+	love.graphics.push()
+	love.graphics.translate(27, 0)
+	love.graphics.polygon("fill",0,0, 8,4, 0,8)		
+	love.graphics.pop()
+	
+	love.graphics.pop()
+
+	love.graphics.printf("Mark", 76, 25, 69, "center")
+	love.graphics.printf("ASWD", 76, 42, 69, "center")
+
 	love.graphics.pop()
 	
 	-- Soil Survey
