@@ -4,6 +4,13 @@ sound = {}
 bgm = {}
 backdrop = {}
 sprite = {}
+challenge = {
+	begins = false,
+	level = 1,
+	level_settings = {
+		{9, 9, {5,9}, 4, "NO", "NO", "NO"} -- Level 1
+	}
+}
 settings = {
 	minefield = {
 	width = 11,
@@ -13,6 +20,13 @@ settings = {
 	coppermoss = "NO",
 	ironcap = "NO",
 	goldendrop = "NO"
+	},
+	audio = {
+		sound = "YES",
+		music = "YES"
+	},
+	video = {
+		fullscreen = "NO"
 	}
 }
 
