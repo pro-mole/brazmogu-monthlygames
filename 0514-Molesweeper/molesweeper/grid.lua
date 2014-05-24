@@ -99,26 +99,30 @@ function Grid:drawTile(x, y)
 			else
 				love.graphics.setColor(128, 0, 0, 255)
 			end
-			love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/2, self.tile_size/4, 16)
+			love.graphics.draw(spritesheet.grid, sprite.mine, draw_x, draw_y)
+			--love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/2, self.tile_size/4, 16)
 		elseif T.content == "coppermoss" then
-			love.graphics.setColor(128, 96, 0, 255)
+			love.graphics.draw(spritesheet.grid, sprite.coppermoss, draw_x, draw_y)
+			--[[love.graphics.setColor(128, 96, 0, 255)
 			love.graphics.circle("fill", draw_x + self.tile_size/3, draw_y + self.tile_size/2, self.tile_size/4, 16)
 			love.graphics.circle("fill", draw_x + self.tile_size/3*2, draw_y + self.tile_size/2, self.tile_size/4, 16)
 			love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/3, self.tile_size/4, 16)
-			love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/3*2, self.tile_size/4, 16)
+			love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/3*2, self.tile_size/4, 16)]]
 		elseif T.content == "ironcap" then
-			love.graphics.setColor(240, 240, 240, 255)
+			love.graphics.draw(spritesheet.grid, sprite.ironcap, draw_x, draw_y)
+			--[[love.graphics.setColor(240, 240, 240, 255)
 			love.graphics.rectangle("fill", draw_x + self.tile_size/2-2, draw_y + self.tile_size/2, 4, self.tile_size/4)
 			love.graphics.polygon("fill", draw_x + self.tile_size/3 * 2, draw_y + self.tile_size/4,
 				draw_x + self.tile_size/3, draw_y + self.tile_size/4,
 				draw_x + self.tile_size/4, draw_y + self.tile_size/2,
-				draw_x + self.tile_size/4 * 3, draw_y + self.tile_size/2)
+				draw_x + self.tile_size/4 * 3, draw_y + self.tile_size/2)]]
 		elseif T.content == "goldendrop" then
-			love.graphics.setColor(192, 128, 0, 255)
+			love.graphics.draw(spritesheet.grid, sprite.goldendrop, draw_x, draw_y)
+			--[[love.graphics.setColor(192, 128, 0, 255)
 			love.graphics.circle("fill", draw_x + self.tile_size/3, draw_y + self.tile_size/2, self.tile_size/8, 16)
 			love.graphics.circle("fill", draw_x + self.tile_size/3*2, draw_y + self.tile_size/2, self.tile_size/8, 16)
 			love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/3, self.tile_size/8, 16)
-			love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/3*2, self.tile_size/8, 16)
+			love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/3*2, self.tile_size/8, 16)]]
 		elseif T.mark then
 			love.graphics.setColor(128, 0, 0, 255)
 			love.graphics.printf("X", draw_x, draw_y + 4, self.tile_size, "center")
@@ -132,11 +136,12 @@ function Grid:drawTile(x, y)
 		love.graphics.setColor(128,128,128,255)
 		love.graphics.rectangle("fill", draw_x+1, draw_y+1, self.tile_size-2, self.tile_size-2)
 		if T.mark then
-			love.graphics.setColor(128, 0, 0, 255)
+			love.graphics.draw(spritesheet.grid, sprite.flag, draw_x, draw_y)
+			--[[love.graphics.setColor(128, 0, 0, 255)
 			love.graphics.polygon("fill",
 				draw_x + 2, draw_y + 2,
 				draw_x + 2, draw_y + self.tile_size - 2,
-				draw_x + self.tile_size - 2, draw_y + self.tile_size/2)
+				draw_x + self.tile_size - 2, draw_y + self.tile_size/2)]]
 		end
 	end
 end
