@@ -14,6 +14,13 @@ sprite = {
 	ironcap = love.graphics.newQuad(16,16,16,16,64,64),
 	goldendrop = love.graphics.newQuad(32,16,16,16,64,64)
 }
+challenge = {
+	begins = false,
+	level = 1,
+	level_settings = {
+		{9, 9, {5,9}, 4, "NO", "NO", "NO"} -- Level 1
+	}
+}
 settings = {
 	minefield = {
 	width = 11,
@@ -70,5 +77,4 @@ function load(slot)
 end
 
 function save(slot)
-
 end
