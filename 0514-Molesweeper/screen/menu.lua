@@ -23,7 +23,7 @@ function MenuScreen:load()
 		{text = 'Settings', action = 'submenu', submenu = {title="Settings", items={
 			{text = 'Sound', action = 'setting', varname = 'audio.sound', values = {"YES","NO"}},
 			{text = 'Music', action = 'setting', varname = 'audio.music', values = {"YES","NO"}},
-			{text = 'Fullscreen', action = 'setting', varname = 'video.fullscreen', values = {"YES","NO"}},
+			--{text = 'Fullscreen', action = 'setting', varname = 'video.fullscreen', values = {"YES","NO"}},
 			{text = 'Back', action = 'back'}
 		}}},
 		{text = 'Help', action = 'goto', goto = helpscreen},
@@ -39,7 +39,7 @@ function MenuScreen:draw()
 	love.graphics.setColor(255,255,255,255)
 	self.UI:draw()
 	
-	love.graphics.rectangle("line", 1,love.window.getHeight() - 9, 8, 8)
+	love.graphics.printf(love.window.getWidth(), 1,love.window.getHeight() - 9, 24, "left")
 end
 
 function MenuScreen:quit()
@@ -51,6 +51,15 @@ function MenuScreen:keypressed(k, isrepeat)
 	-- Check settings and apply changes
 	-- This is done mainly for audio and video settings
 	-- Also, to save global settings, but not custom game settings
+	if (settings.video.fullscreen == "YES" and not love.window.getFullscreen()) or
+		(settings.video.fullscreen == "NO" and love.window.getFullscreen()) then
+		love.window.setFullscreen(settings.video.fullscreen == "YES")
+		if settings.video.fullscreen == "YES" then
+			love.graphics.translate((love.window.getWidth() - 640)/2, (love.window.getHeight() - 640)/2)
+		else
+			love.graphics.origin()
+		end
+	end
 end
 
 return MenuScreen
