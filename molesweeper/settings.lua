@@ -3,7 +3,17 @@ font = {}
 sound = {}
 bgm = {}
 backdrop = {}
-sprite = {}
+spritesheet = {
+	grid = love.graphics.newImage("assets/sprite/minefield.png")
+}
+sprite = {
+	mole = love.graphics.newQuad(0,0,16,16,64,64),
+	mine = love.graphics.newQuad(16,0,16,16,64,64),
+	flag = love.graphics.newQuad(32,0,16,16,64,64),
+	coppermoss = love.graphics.newQuad(0,16,16,16,64,64),
+	ironcap = love.graphics.newQuad(16,16,16,16,64,64),
+	goldendrop = love.graphics.newQuad(32,16,16,16,64,64)
+}
 settings = {
 	minefield = {
 	width = 11,

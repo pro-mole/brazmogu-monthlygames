@@ -68,9 +68,12 @@ function Mole:draw()
 	local y = self.y-1
 	local x = self.x-1
 
+	love.graphics.draw(spritesheet.grid, sprite.mole, x*self.size, y*self.size)
+	--[[
 	love.graphics.setColor(72,60,50,255)
 	love.graphics.polygon("fill",
 		x*self.size + self.size/2, y*self.size + 2,
 		(x+1)*self.size - 2, (y+1)*self.size -2,
 		x*self.size + 2, (y+1)*self.size -2)
+	]]
 end
