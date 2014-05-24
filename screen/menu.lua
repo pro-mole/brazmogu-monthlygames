@@ -21,8 +21,8 @@ function MenuScreen:load()
 			{text = 'Back', action = 'back'}
 		}}},
 		{text = 'Settings', action = 'submenu', submenu = {title="Settings", items={
-			{text = 'Sound', action = 'setting', varname = 'audio.sound', values = {"YES","NO"}},
-			{text = 'Music', action = 'setting', varname = 'audio.music', values = {"YES","NO"}},
+			{text = 'Sound', action = 'setting', varname = 'audio.sound', values = {"ON","OFF"}},
+			{text = 'Music', action = 'setting', varname = 'audio.music', values = {"ON","OFF"}},
 			--{text = 'Fullscreen', action = 'setting', varname = 'video.fullscreen', values = {"YES","NO"}},
 			{text = 'Back', action = 'back'}
 		}}},
