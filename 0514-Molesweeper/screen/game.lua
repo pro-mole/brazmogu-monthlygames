@@ -7,7 +7,9 @@ function GameScreen:load()
 	self.UI = GUI.new()
 
 	self.UI:addButton(4, 596, 152, 40, "Exit", screens, screens.pop, "escape")
-	self.UI:addButton(484, 596, 152, 40, "Restart", self, self.retry, "r")
+	if not challenge.begins then
+		self.UI:addButton(484, 596, 152, 40, "Restart", self, self.retry, "r")
+	end
 	self.UI:addButton(164, 596, 312, 40, "Verify", self, self.checkSolution, "return")
 
 	--self.UI:addButton(324, 596, 152, 40, "Exit", nil, love.event.quit, "escape")
@@ -165,7 +167,17 @@ function GameScreen:quit()
 end
 
 function GameScreen:checkSolution()
-	self.grid:checkSolution(self.UI)
+	local win = self.grid:checkSolution(self.UI)
+	
+	if gameover then
+		if win then
+			settings.level = settings.level + 1
+			self.UI:addButton(484, 596, 152, 40, "Continue", screens, screens.pop, " ")
+		else
+			settings.level = 1
+			self.UI:addButton(484, 596, 152, 40, "Restart", screens, screens.pop, " ")
+		end
+	end
 end
 
 return GameScreen
