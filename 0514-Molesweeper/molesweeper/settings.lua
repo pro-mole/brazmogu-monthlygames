@@ -30,6 +30,13 @@ settings = {
 	coppermoss = "NO",
 	ironcap = "NO",
 	goldendrop = "NO"
+	},
+	video = {
+	fullscreen = "NO"
+	},
+	audio = {
+	music = "ON",
+	sound = "OFF"
 	}
 }
 
