@@ -87,12 +87,14 @@ function Grid:drawTile(x, y)
 	local draw_x = (x-1) * self.tile_size
 	local draw_y = (y-1) * self.tile_size
 	
-	love.graphics.setColor(64,64,64,255)
-	love.graphics.rectangle("line", draw_x, draw_y, self.tile_size, self.tile_size)
+	--love.graphics.setColor(64,64,64,255)
+	--love.graphics.rectangle("line", draw_x, draw_y, self.tile_size, self.tile_size)
 
+	love.graphics.setColor(255,255,255,255)
 	if T.known or self.revealed then
-		love.graphics.setColor(192,192,192,255)
-		love.graphics.rectangle("fill", draw_x+1, draw_y+1, self.tile_size-2, self.tile_size-2)
+		--[[love.graphics.setColor(192,192,192,255)
+		love.graphics.rectangle("fill", draw_x+1, draw_y+1, self.tile_size-2, self.tile_size-2)]]
+		love.graphics.draw(spritesheet.grid, sprite.underdirt, draw_x, draw_y)
 		if T.content == "mine" then
 			if T.mark then
 				love.graphics.setColor(0, 192, 0, 255)
@@ -124,7 +126,7 @@ function Grid:drawTile(x, y)
 			love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/3, self.tile_size/8, 16)
 			love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/3*2, self.tile_size/8, 16)]]
 		elseif T.mark then
-			love.graphics.setColor(128, 0, 0, 255)
+			--love.graphics.setColor(128, 0, 0, 255)
 			love.graphics.printf("X", draw_x, draw_y + 4, self.tile_size, "center")
 		else
 			if self.revealed and T.neighbors > 0 then
@@ -133,8 +135,9 @@ function Grid:drawTile(x, y)
 			end
 		end
 	else
-		love.graphics.setColor(128,128,128,255)
-		love.graphics.rectangle("fill", draw_x+1, draw_y+1, self.tile_size-2, self.tile_size-2)
+		--[[love.graphics.setColor(128,128,128,255)
+		love.graphics.rectangle("fill", draw_x+1, draw_y+1, self.tile_size-2, self.tile_size-2)]]
+		love.graphics.draw(spritesheet.grid, sprite.dirt, draw_x, draw_y)
 		if T.mark then
 			love.graphics.draw(spritesheet.grid, sprite.flag, draw_x, draw_y)
 			--[[love.graphics.setColor(128, 0, 0, 255)
