@@ -11,6 +11,7 @@ GUI.keynames = {}
 GUI.keynames["escape"] = "ESC"
 GUI.keynames["r"] = "R"
 GUI.keynames["return"] = "ENTER"
+GUI.keynames[" "] = "SPACEBAR"
 GUI.__index = GUI
 
 function GUI.new()

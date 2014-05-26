@@ -167,15 +167,18 @@ function GameScreen:quit()
 end
 
 function GameScreen:checkSolution()
-	local win = self.grid:checkSolution(self.UI)
-	
-	if gameover then
-		if win then
-			settings.level = settings.level + 1
-			self.UI:addButton(484, 596, 152, 40, "Continue", screens, screens.pop, " ")
-		else
-			settings.level = 1
-			self.UI:addButton(484, 596, 152, 40, "Restart", screens, screens.pop, " ")
+	if not gameover then
+		local win = self.grid:checkSolution(self.UI)
+		print("Checking solution...")
+		
+		if gameover and challenge.begins then
+			if win then
+				challenge.level = challenge.level + 1
+				self.UI:addButton(484, 596, 152, 40, "Continue", screens, screens.pop, " ")
+			else
+				challenge.level = 1
+				self.UI:addButton(484, 596, 152, 40, "Restart", screens, screens.pop, " ")
+			end
 		end
 	end
 end
