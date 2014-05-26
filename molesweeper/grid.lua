@@ -96,11 +96,11 @@ function Grid:drawTile(x, y)
 		love.graphics.rectangle("fill", draw_x+1, draw_y+1, self.tile_size-2, self.tile_size-2)]]
 		love.graphics.draw(spritesheet.grid, sprite.underdirt, draw_x, draw_y)
 		if T.content == "mine" then
-			if T.mark then
+			--[[if T.mark then
 				love.graphics.setColor(0, 192, 0, 255)
 			else
 				love.graphics.setColor(128, 0, 0, 255)
-			end
+			end]]
 			love.graphics.draw(spritesheet.grid, sprite.mine, draw_x, draw_y)
 			--love.graphics.circle("fill", draw_x + self.tile_size/2, draw_y + self.tile_size/2, self.tile_size/4, 16)
 		elseif T.content == "coppermoss" then
