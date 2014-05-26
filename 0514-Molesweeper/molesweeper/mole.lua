@@ -47,8 +47,7 @@ function Mole:keypressed(k, isrepeat)
 	else  -- if tile is not marked, check if we blow up
 		self.x, self.y = _x, _y
 		if T.content == "mine" then
-			gameover = true
-			self.grid.revealed = true
+			screen:lose()
 		end
 	end
 	self:revealTile()
