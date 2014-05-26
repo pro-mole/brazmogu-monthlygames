@@ -7,6 +7,7 @@ require("molesweeper/mole")
 require("screen/main")
 menuscreen = require("screen/menu")
 gamescreen = require("screen/game")
+storyscreen = require("screen/challenge")
 helpscreen = nil
 aboutscreen = nil
 

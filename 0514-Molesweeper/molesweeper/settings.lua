@@ -20,7 +20,8 @@ challenge = {
 	begins = false,
 	level = 1,
 	level_settings = {
-		{9, 9, {5,9}, 4, "NO", "NO", "NO"} -- Level 1
+		{width=9, height=9, start={5,9}, mines=4, coppermoss="NO", ironcap="NO", goldendrop="NO"}, -- Level 1
+		{width=11, height=11, start={6,11}, mines=8, coppermoss="NO", ironcap="NO", goldendrop="NO"} -- Level 2
 	}
 }
 settings = {

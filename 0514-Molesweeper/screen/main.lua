@@ -47,6 +47,7 @@ function screens:pop()
 		table.remove(self)
 	end
 	screen = self:top()
+	screen:load()
 end
 
 function screens:keypressed(k, isrepeat)
