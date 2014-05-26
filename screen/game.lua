@@ -183,4 +183,10 @@ function GameScreen:checkSolution()
 	end
 end
 
+function GameScreen:lose()
+	self.UI:addLabel(self.grid.offset.x, self.grid.offset.y + self.grid.height*self.grid.tile_size + 4, self.grid.width*self.grid.tile_size, "Sorry...")
+	self.grid.revealed = true
+	gameover = true
+end
+
 return GameScreen
