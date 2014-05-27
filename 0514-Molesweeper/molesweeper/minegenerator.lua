@@ -166,7 +166,7 @@ end
 -- Check if the place is good for mines
 -- Among other things, it cannot match false positive patterns
 function validMine(field, x, y)
-	return not (x == settings.minefield.start.x and y == settings.minefield.start.y) and field[y][x].content == "empty"
+	return (math.abs(x - settings.minefield.start.x) + math.abs(y - settings.minefield.start.y)) > 1 and field[y][x].content == "empty"
 end
 
 -- Change terrain composition at tile [x,y] and adjacents
