@@ -9,6 +9,9 @@ function ChallengeScreen:load()
 	self.UI:addLabel(164, 4, 312, "Level: %s", self, self.getLevel)
 
 	-- Load settings for the current level
+	if not challenge.begins then
+		challenge.level = 1
+	end
 	current_challenge = challenge.level_settings[challenge.level]
 	saveSetting("minefield.width", current_challenge.width)
 	saveSetting("minefield.height", current_challenge.height)
@@ -21,11 +24,10 @@ function ChallengeScreen:load()
 end
 
 function ChallengeScreen:keypressed(k, isrepeat)
-	self.UI:keypressed(k, isrepeat)
-
-	if k == 'escape' then
-
+	if k == "escape" then
+		challenge.level = 1
 	end
+	self.UI:keypressed(k, isrepeat)
 end
 
 function ChallengeScreen:startGame()
@@ -42,8 +44,7 @@ function ChallengeScreen:draw()
 end
 
 function ChallengeScreen:quit()
-	-- Go back to level 1, of course
-	challenge.level = 1
+	
 end
 
 return ChallengeScreen

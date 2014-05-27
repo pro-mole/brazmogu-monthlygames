@@ -27,6 +27,12 @@ function GameScreen:keypressed(k, isrepeat)
 		end	
 		self.mole:keypressed(k, isrepeat)
 	end
+
+	if challenge.begins then
+		if k == "escape" then
+			challenge.level = 1
+		end
+	end
 	self.UI:keypressed(k, isrepeat)
 end
 
