@@ -3,6 +3,7 @@ function love.conf(t)
 	t.version = "0.9.0"
 
 	t.window.title = "Molesweeper DEMO"
+    t.window.icon = "assets/icon/molesweeper.png"
 
 	t.window.width = 640
 	t.window.height = 640
