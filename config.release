@@ -4,7 +4,7 @@
 icoName="molesweeper.ico"
 
 # MAC OS
-bundleIdentifier="com.brazmgu.molesweeper"
+bundleIdentifier="com.brazmogu.molesweeper"
 bundleName="Molesweeper"
 icnsName="molesweeper.icns"
 
