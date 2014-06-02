@@ -6,7 +6,7 @@ function ChallengeScreen:load()
 	self.UI = GUI.new()
 	self.UI:addButton(164, 596, 312, 40, "Begin", self, self.startGame, "return")
 	self.UI:addButton(4, 596, 152, 40, "Go Back", screens, screens.pop, "escape")
-	self.UI:addLabel(164, 4, 312, "Level: %s", self, self.getLevel)
+	-- self.UI:addLabel(164, 4, 312, "Level: %s", self, self.getLevel)
 
 	-- Load settings for the current level
 	if not challenge.begins then
@@ -21,11 +21,17 @@ function ChallengeScreen:load()
 	saveSetting("minefield.coppermoss", current_challenge.coppermoss)
 	saveSetting("minefield.ironcap", current_challenge.ironcap)
 	saveSetting("minefield.goldendrop", current_challenge.goldendrop)
+	print(settings.minefield.maxNeighbors, current_challenge.maxNeighbors)
+	saveSetting("minefield.maxNeighbors", current_challenge.maxNeighbors)
+	print(settings.minefield.maxNeighbors, current_challenge.maxNeighbors)
+	saveSetting("minefield.forceNeighbors", current_challenge.forceNeighbors)
 end
 
 function ChallengeScreen:keypressed(k, isrepeat)
 	if k == "escape" then
 		challenge.level = 1
+		saveSetting("minefield.maxNeighbors", 9)
+		saveSetting("minefield.forceNeighbors", 1)
 	end
 	self.UI:keypressed(k, isrepeat)
 end
@@ -42,6 +48,10 @@ end
 function ChallengeScreen:draw()
 	love.graphics.draw(backdrop.printer, 0, 0)
 	self.UI:draw()
+	
+	love.graphics.setColor(24,24,24,255)
+	love.graphics.printf(string.format("MISSION #%02d BRIEFING", challenge.level), 4, 8, 632, "center")
+	love.graphics.printf(challenge.level_settings[challenge.level].briefing, 36, 24, 568, "left")
 end
 
 function ChallengeScreen:quit()
