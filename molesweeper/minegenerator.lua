@@ -288,11 +288,31 @@ function validBoard(field)
 	
 	for i,S in ipairs(safeSet) do
 		if not S.visited then
-			print(S.visited)
-			print(S.x, S.y)
+			-- print(S.visited)
+			-- print(S.x, S.y)
 			return false
 		end
 	end
 	
-	return true
+	-- Check further difficulty parameters
+	local maxneighbors = settings.minefield.maxNeighbors -- Maximum value of tiles in the minefield
+	print (maxneighbors)
+	for j,row in ipairs(field) do
+		for i,cell in ipairs(row) do
+			if cell.neighbors > maxneighbors then
+				return false
+			end
+		end
+	end
+	
+	local enforce = settings.minefield.forceNeighbors -- Have at least ONE tile with this value in the minefield
+	for j,row in ipairs(field) do
+		for i,cell in ipairs(row) do
+			if cell.neighbors == enforce then
+				return true
+			end
+		end
+	end
+	
+	return false
 end
