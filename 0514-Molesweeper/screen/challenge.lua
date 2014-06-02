@@ -19,8 +19,8 @@ function ChallengeScreen:load()
 	saveSetting("minefield.start.y", current_challenge.start[2])
 	saveSetting("minefield.mines", current_challenge.mines)
 	saveSetting("minefield.coppermoss", current_challenge.coppermoss)
-	saveSetting("minefield.ironcap", current_challenge.coppermoss)
-	saveSetting("minefield.goldendrop", current_challenge.coppermoss)
+	saveSetting("minefield.ironcap", current_challenge.ironcap)
+	saveSetting("minefield.goldendrop", current_challenge.goldendrop)
 end
 
 function ChallengeScreen:keypressed(k, isrepeat)
@@ -40,6 +40,7 @@ function ChallengeScreen:getLevel()
 end
 
 function ChallengeScreen:draw()
+	love.graphics.draw(backdrop.printer, 0, 0)
 	self.UI:draw()
 end
 
