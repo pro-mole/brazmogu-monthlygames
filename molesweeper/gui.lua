@@ -218,6 +218,9 @@ function GUI:draw()
 		love.graphics.push()
 		love.graphics.translate(B.x, B.y)
 
+		love.graphics.setColor(0,0,0,128)
+		love.graphics.rectangle("fill", 0, 0, B.w, B.h)
+		love.graphics.setColor(255,255,255,255)
 		love.graphics.rectangle("line", 0, 0, B.w, B.h)
 		love.graphics.rectangle("line", 3, 3, B.w-6, B.h-6)
 		local lines = select(2, string.gsub(B.text, "\n", "")) + 1
@@ -231,6 +234,9 @@ function GUI:draw()
 		love.graphics.push()
 		love.graphics.translate(L.x, L.y)
 
+		love.graphics.setColor(0,0,0,128)
+		love.graphics.rectangle("fill", 0, 0, L.w, L.h)
+		love.graphics.setColor(255,255,255,255)
 		love.graphics.rectangle("line", 0, 0, L.w, L.h)
 		if L.callback then
 			love.graphics.printf(string.format(L.text, L.callback(L.object)), GUI.label_padding, GUI.label_padding, L.w - 2*GUI.label_padding, "center")

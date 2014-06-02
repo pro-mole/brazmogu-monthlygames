@@ -36,6 +36,7 @@ function MenuScreen:update(dt)
 end
 
 function MenuScreen:draw()
+	love.graphics.draw(backdrop.dirtwall, 0, 0)
 	love.graphics.setColor(255,255,255,255)
 	self.UI:draw()
 	

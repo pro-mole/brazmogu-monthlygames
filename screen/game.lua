@@ -41,6 +41,8 @@ function GameScreen:update(dt)
 end
 
 function GameScreen:draw()
+	love.graphics.draw(backdrop.dirtwall)
+
 	love.graphics.push()
 
 	love.graphics.translate(self.grid.offset.x, self.grid.offset.y)
@@ -65,6 +67,8 @@ function GameScreen:drawHUD()
 	love.graphics.push()
 	love.graphics.translate(164, 4)
 
+	love.graphics.setColor(0,0,0,128)
+	love.graphics.rectangle("fill", 0, 0, 312, 60)
 	love.graphics.setColor(0,192,0,255)
 	love.graphics.rectangle("line", 0, 0, 312, 60)
 	love.graphics.rectangle("line", 3, 3, 306, 54)
@@ -106,6 +110,8 @@ function GameScreen:drawHUD()
 	love.graphics.push()
 	love.graphics.translate(4, 4)
 
+	love.graphics.setColor(0,0,0,128)
+	love.graphics.rectangle("fill", 0, 0, 152, 60)
 	love.graphics.setColor(0,64,192,255)
 	love.graphics.rectangle("line", 0, 0, 152, 60)
 	love.graphics.rectangle("line", 3, 3, 146, 54)
@@ -144,6 +150,8 @@ function GameScreen:drawHUD()
 	love.graphics.push()
 	love.graphics.translate(484, 4)
 
+	love.graphics.setColor(0,0,0,128)
+	love.graphics.rectangle("fill", 0, 0, 152, 60)
 	love.graphics.setColor(192,192,0,255)
 	love.graphics.rectangle("line", 0, 0, 152, 60)
 	love.graphics.rectangle("line", 3, 3, 146, 54)
@@ -193,6 +201,10 @@ function GameScreen:lose()
 	self.UI:addLabel(self.grid.offset.x, self.grid.offset.y + self.grid.height*self.grid.tile_size + 4, self.grid.width*self.grid.tile_size, "Sorry...")
 	self.grid.revealed = true
 	gameover = true
+	if challenge.begins then
+		challenge.level = 1
+		self.UI:addButton(484, 596, 152, 40, "Restart", screens, screens.pop, " ")
+	end
 end
 
 return GameScreen
