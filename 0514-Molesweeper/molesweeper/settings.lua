@@ -2,7 +2,10 @@
 font = {}
 sound = {}
 bgm = {}
-backdrop = {}
+backdrop = {
+	dirtwall = love.graphics.newImage("assets/gfx/dirt_bg.png"),
+	printer = love.graphics.newImage("assets/gfx/paper_bg.png")
+}
 spritesheet = {
 	grid = love.graphics.newImage("assets/sprite/minefield.png")
 }
