@@ -178,7 +178,7 @@ settings = {
 
 function loadSetting(identifier)
 	local pointer = settings
-	for token in string.gmatch(identifier, "[a-z]+") do
+	for token in string.gmatch(identifier, "[a-zA-Z]+") do
 		pointer = pointer[token]
 		if pointer == nil then
 			return nil
@@ -191,7 +191,7 @@ end
 function saveSetting(identifier, val)
 	local pointer = nil
 	local item = nil
-	for token in string.gmatch(identifier, "[a-z]+") do
+	for token in string.gmatch(identifier, "[a-zA-Z]+") do
 		if item == nil then
 			pointer = settings
 		else

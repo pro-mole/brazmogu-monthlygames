@@ -296,7 +296,7 @@ function validBoard(field)
 	
 	-- Check further difficulty parameters
 	local maxneighbors = settings.minefield.maxNeighbors -- Maximum value of tiles in the minefield
-	print (maxneighbors)
+	-- print (maxneighbors)
 	for j,row in ipairs(field) do
 		for i,cell in ipairs(row) do
 			if cell.neighbors > maxneighbors then
