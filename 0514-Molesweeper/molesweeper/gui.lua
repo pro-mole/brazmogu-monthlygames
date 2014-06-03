@@ -1,7 +1,7 @@
 -- GUI functions
 
 -- Load functions
-font['menutitle'] = love.graphics.newFont("assets/font/amiga4ever.ttf", 14)
+font['menutitle'] = love.graphics.newFont("assets/font/amiga4ever.ttf", 18)
 font['menustandard'] = love.graphics.newFont("assets/font/amiga4ever.ttf", 10)
 
 GUI = { menu_padding = 4,
@@ -187,7 +187,7 @@ function GUI:draw()
 		love.graphics.translate(0, m.y)
 		
 		love.graphics.setFont(font.menutitle)
-		love.graphics.printf(m.title, 0, -(font.menutitle:getHeight() + GUI.menu_padding*2), love.window.getWidth(), "center")
+		love.graphics.printf(m.title, 0, -(font.menutitle:getHeight() + font.menustandard:getHeight() + GUI.menu_padding), love.window.getWidth(), "center")
 		
 		love.graphics.push()
 		love.graphics.translate(m.x, 0)

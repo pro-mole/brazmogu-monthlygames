@@ -2,6 +2,9 @@
 -- This screen serves basically as a mediator to the challenge mode
 ChallengeScreen = setmetatable({}, Screen)
 
+font["brief_title"] = love.graphics.newFont("assets/font/amiga4ever.ttf", 18)
+font["brief_text"] = love.graphics.newFont("assets/font/amiga4ever.ttf", 14)
+
 function ChallengeScreen:load()
 	self.UI = GUI.new()
 	self.UI:addButton(164, 596, 312, 40, "Begin", self, self.startGame, "return")
@@ -21,9 +24,7 @@ function ChallengeScreen:load()
 	saveSetting("minefield.coppermoss", current_challenge.coppermoss)
 	saveSetting("minefield.ironcap", current_challenge.ironcap)
 	saveSetting("minefield.goldendrop", current_challenge.goldendrop)
-	print(settings.minefield.maxNeighbors, current_challenge.maxNeighbors)
 	saveSetting("minefield.maxNeighbors", current_challenge.maxNeighbors)
-	print(settings.minefield.maxNeighbors, current_challenge.maxNeighbors)
 	saveSetting("minefield.forceNeighbors", current_challenge.forceNeighbors)
 end
 
@@ -50,8 +51,10 @@ function ChallengeScreen:draw()
 	self.UI:draw()
 	
 	love.graphics.setColor(24,24,24,255)
+	love.graphics.setFont(font.brief_title)
 	love.graphics.printf(string.format("MISSION #%02d BRIEFING", challenge.level), 4, 8, 632, "center")
-	love.graphics.printf(challenge.level_settings[challenge.level].briefing, 36, 24, 568, "left")
+	love.graphics.setFont(font.brief_text)
+	love.graphics.printf(challenge.level_settings[challenge.level].briefing, 36, 24 + font.brief_text:getHeight(), 568, "left")
 end
 
 function ChallengeScreen:quit()

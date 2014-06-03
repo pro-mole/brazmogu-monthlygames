@@ -1,7 +1,7 @@
 #A simple Makefile to create our package
 
 EXECNAME=Molesweeper
-VERSION=0.5
+VERSION=0.7
 PACKNAME=$(EXECNAME)-$(VERSION).love
 
 all: $(PACKNAME)
