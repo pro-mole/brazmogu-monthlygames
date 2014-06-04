@@ -67,6 +67,7 @@ function Mole:draw()
 	local y = self.y-1
 	local x = self.x-1
 
+	love.graphics.setColor(255,255,255,255)
 	love.graphics.draw(spritesheet.grid, sprite.mole, x*self.size, y*self.size)
 	--[[
 	love.graphics.setColor(72,60,50,255)

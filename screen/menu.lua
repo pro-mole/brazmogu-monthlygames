@@ -1,6 +1,8 @@
 -- Main menu screen
 MenuScreen = setmetatable({}, Screen)
 
+backdrop["brazmogu_logo"] = love.graphics.newImage("/assets/gfx/logo.png")
+
 function MenuScreen:load()
 	self.UI = GUI.new()
 	
@@ -23,7 +25,7 @@ function MenuScreen:load()
 		{text = 'Settings', action = 'submenu', submenu = {title="Settings", items={
 			{text = 'Sound', action = 'setting', varname = 'audio.sound', values = {"ON","OFF"}},
 			{text = 'Music', action = 'setting', varname = 'audio.music', values = {"ON","OFF"}},
-			--{text = 'Fullscreen', action = 'setting', varname = 'video.fullscreen', values = {"YES","NO"}},
+			-- {text = 'Fullscreen', action = 'setting', varname = 'video.fullscreen', values = {"YES","NO"}},
 			{text = 'Back', action = 'back'}
 		}}},
 		{text = 'Help', action = 'goto', goto = helpscreen},
@@ -37,10 +39,13 @@ end
 
 function MenuScreen:draw()
 	love.graphics.draw(backdrop.dirtwall, 0, 0)
+	local logo = backdrop["brazmogu_logo"]
+	love.graphics.setColor(128,128,128,128)
+	love.graphics.draw(logo, (love.window.getWidth() - logo:getWidth())/2, love.window.getHeight() - logo:getHeight())
+	love.graphics.setColor(255,255,255,255)
+
 	love.graphics.setColor(255,255,255,255)
 	self.UI:draw()
-	
-	love.graphics.printf(love.window.getWidth(), 1,love.window.getHeight() - 9, 24, "left")
 end
 
 function MenuScreen:quit()
@@ -52,6 +57,12 @@ function MenuScreen:keypressed(k, isrepeat)
 	-- Check settings and apply changes
 	-- This is done mainly for audio and video settings
 	-- Also, to save global settings, but not custom game settings
+	if (settings.audio.music == "OFF" and bgm.main:isPlaying()) then
+		bgm.main:stop()
+	elseif (settings.audio.music == "ON" and not bgm.main:isPlaying()) then
+		bgm.main:play()
+	end
+
 	if (settings.video.fullscreen == "YES" and not love.window.getFullscreen()) or
 		(settings.video.fullscreen == "NO" and love.window.getFullscreen()) then
 		love.window.setFullscreen(settings.video.fullscreen == "YES")

@@ -171,7 +171,7 @@ function GUI:process(menu, parent)
 	
 	M.pointer = 1
 	
-	print(string.format("%s: %s;%s", M.title, M.w, M.h))
+	-- print(string.format("%s: %s;%s", M.title, M.w, M.h))
 	-- Center menu on the screen
 	M.x = M.x - M.w/2
 	M.y = M.y - M.h/2
