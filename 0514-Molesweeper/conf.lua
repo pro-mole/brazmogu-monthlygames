@@ -2,7 +2,7 @@ function love.conf(t)
 	t.identity = molesweeper -- Set this to have a proper save/data folder
 	t.version = "0.9.0"
 
-	t.window.title = "Molesweeper DEMO"
+	t.window.title = "Molesweeper"
     t.window.icon = "assets/icon/molesweeper.png"
 
 	t.window.width = 640

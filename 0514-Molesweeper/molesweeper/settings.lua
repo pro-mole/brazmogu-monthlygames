@@ -1,10 +1,18 @@
 -- Global settings and data module
 font = {}
 sound = {}
-bgm = {}
+bgm = {
+	main = love.audio.newSource("assets/bgm/NOT_SAFE.mp3", "stream")
+}
 backdrop = {
 	dirtwall = love.graphics.newImage("assets/gfx/dirt_bg.png"),
-	printer = love.graphics.newImage("assets/gfx/paper_bg.png")
+	printer = love.graphics.newImage("assets/gfx/paper_bg.png"),
+
+	mole = love.graphics.newImage("assets/gfx/themole.png"),
+	face = love.graphics.newImage("assets/gfx/moleface.png"),
+	coppermoss = love.graphics.newImage("assets/gfx/moss.png"),
+	ironcap = love.graphics.newImage("assets/gfx/shrooms.png"),
+	goldendrop = love.graphics.newImage("assets/gfx/flower.png")
 }
 spritesheet = {
 	grid = love.graphics.newImage("assets/sprite/minefield.png")
@@ -34,10 +42,14 @@ challenge = {
 		Remember your basic instructions:
 		
 		- You can move freely through the ground[Arrows]. Watch out to not set off any mines.
+
 		- You can mark the patches adjacent to your position on 4 directions[AWSD].
+
 		- Check the radar on the top of your HUD. The middle square is your position. The number on each square is the value of magnetic disturbance. It indicates the number of mines adjacent to the position.
+
 		- You cannot know the magnetic disturbance in places you haven't visited, but you will keep all the data you've gathered in the memory.
-		- When you're done, send the report back to the control center[ENTER].]]},
+
+		- When you're done, send the report back to the control center[ENTER].]], illustration = {{backdrop.mole, 158, 294}}},
 		{width=13 , height=13, start={7,13}, mines=8, coppermoss='NO', ironcap='NO', goldendrop='NO', -- Level 2
 		maxNeighbors = 4, forceNeighbors = 2,
 		briefing = [[Good job! Here is another one. This time you may find the field a little more cluttered than before. Explore carefully and use your brain to deduct where the mine must be.]]},
@@ -51,7 +63,9 @@ challenge = {
 		In any case, here are some important reminders:
 		
 		- There's no need to hurry. It's better to take your time than to ram into a mine thoughtlessly.
+
 		- In doubt, check the spots where you know a mine CANNOT be.
+
 		- It also may help to uncover ground to be sure the spot you suspect is the one where the mine must be.]]},
 		{width=25 , height=25, start={13,25}, mines=12, coppermoss='NO', ironcap='NO', goldendrop='NO', -- Level 5
 		maxNeighbors = 4, forceNeighbors = 3,
@@ -63,7 +77,8 @@ challenge = {
 		Keep calm, though, and remember these tips:
 		
 		- Coppermoss is found cluttered around mines, so if you find too many mines together, suspect your senses.
-		- Coppermoss needs a humid environment to thrive. Keep an eye on the soil analysis on the top-right of your HUD when making your decision.]]},
+
+		- Coppermoss needs a humid environment to thrive. Keep an eye on the soil analysis on the top-right of your HUD when making your decision.]], illustration = {{backdrop.coppermoss, 46, 324}}},
 		{width=21 , height=21, start={11,21}, mines=20, coppermoss='YES', ironcap='NO', goldendrop='NO', -- Level 7
 		maxNeighbors = 6, forceNeighbors = 3,
 		briefing = [[That was a close one. There's more coppermoss around, but I am sure you have learned to figure your way about them. You're a smart fellow, we made you that way. Go there and just remember to keep calm and no need to rush your judgment.
@@ -76,7 +91,8 @@ challenge = {
 		Bad news: the science team has found something else. Some kind of metallic fungi called "Ironcap", and it also has an affinity for those mines. Fortunately, we have some intel on their ecology as well:
 		
 		- Ironcap grows in long rows, so expect to find them in neat lines with the mines somewhere in the middle. Odd buggers.
-		- Being a fungus, it's expected that the earth where ironcap grows is very fertile. Again, check the soil when trying to figure out what's mine and what's a shroom.]]},
+
+		- Being a fungus, it's expected that the earth where ironcap grows is very fertile. Again, check the soil when trying to figure out what's mine and what's a shroom.]], illustration = {{backdrop.ironcap, 96, 294}}},
 		{width=13 , height=23, start={7,23}, mines=25, coppermoss='NO', ironcap='YES', goldendrop='NO', -- Level 9
 		maxNeighbors = 7, forceNeighbors = 3,
 		briefing = [[Excellent! The fungus menace keeps on growing around these fields, so be prepared. Just do the same you did last time, and I'm sure you will be A-OK.]]},
@@ -85,6 +101,7 @@ challenge = {
 		briefing = [[We have received reports of high interference in the fields. It's likely that the mines here have been attracting both moss and caps. For the sake of the mission, remember:
 		
 		- The things grow in recognizable patterns around mines, so not only they are a good warning, but also you can identify them with some good thinking.
+
 		- Also, they alter the soil composition. Use that in your favor to figure out where the mines are hidden.]]},
 		{width=31 , height=25, start={16,25}, mines=25, coppermoss='NO', ironcap='NO', goldendrop='NO', -- Level 11
 		maxNeighbors = 6, forceNeighbors = 2,
@@ -101,7 +118,8 @@ challenge = {
 		Here's what we know so far:
 		
 		- Goldendrops need some space to grow, so they won't be right around a mine or anything like that.
-		- Moreover, these flowers aren't just feeding on bare earth, so you can bet the soil will be different nearby. Mind the soil analysis, as usual.]]},
+
+		- Moreover, these flowers aren't just feeding on bare earth, so you can bet the soil will be different nearby. Mind the soil analysis, as usual.]], illustration = {{backdrop.goldendrop, 218, 312}}},
 		{width=33 , height=27, start={17,27}, mines=30, coppermoss='NO', ironcap='NO', goldendrop='YES', -- Level 14
 		maxNeighbors = 8, forceNeighbors = 3,
 		briefing = [[You did it, again, clever! Also, I'm now very happy that we didn't scrap the soil analysis drivers. We thought they'd be useless for our intended purpose, but someone had a hunch, and they were right. Gotta find that person and promote them right away.
@@ -116,7 +134,8 @@ challenge = {
 		Okay, just focus on your job. You can do it. You have surely proven so.]]},
 		{width=33 , height=25, start={17,25}, mines=40, coppermoss='YES', ironcap='NO', goldendrop='YES', -- Level 16
 		maxNeighbors = 9, forceNeighbors = 1,
-		briefing = [[No new freak species, at least, but now we have all of them combined. Life does find a way...]]},
+		briefing = [[No new freak species, at least, but now we have all of them combined. Life does find a way...]],
+		illustration = {{backdrop.coppermoss, 318, 108},{backdrop.ironcap, 144, 372},{backdrop.goldendrop, 48, 92}}},
 		{width=25 , height=27, start={13,27}, mines=40, coppermoss='YES', ironcap='YES', goldendrop='YES', -- Level 17
 		maxNeighbors = 9, forceNeighbors = 1,
 		briefing = [[All this vegetation on the minefields strike me odd. It's not like they would be born and thrive in a short time, so by the looks of it the enemy has already abandoned these minefields.
@@ -131,7 +150,9 @@ challenge = {
 		briefing = [[We're very close now. It's important to keep calm, though. Don't rush on your way back home. Keep calm and remember what we know:
 		
 		- Moss clutters around mines, caps are born in straigh lines. Flowers are scattered.
+
 		- Check the soil and figure the pattern that reveals where the mine is.
+
 		- Keep calm and think. It's more important that your job is done than you get back quicker.
 		
 		We're counting on you.]]},
@@ -150,7 +171,15 @@ challenge = {
 		
 		After all, you wouldn't be the first animal to be awarded a medal. The first mole, perhaps, but there's always a first right?
 		
-		Best of luck and, please, make me proud.]]}
+		Best of luck and, please, make me proud.]]},
+		-- FINAL MESSAGE
+		{briefing=[[We did it. We actually did it!
+
+		Well, you did it. It was long, challengign way through here but you faced it all and gave your best and you did what you had to do. The mission is over.
+
+		Now you can take a well-deserved rest. If anyone deserves a rest, that's definitely you. And who knows, maybe one day we'll be working together again. Word of your deeds will run fast, and this world is still filled with all sorts of nasty stuff that the wars left behind. Not to mention the stuff that grew in all wrong ways because of how horrible the world is after the war ravaged everything...
+
+		No use worrying now, though. Have a good life. And thanks for all the help.]], illustration = {{backdrop.face, 178, 328}} } 
 	},
 	cutscenes = {
 	}

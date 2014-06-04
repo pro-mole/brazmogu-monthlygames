@@ -17,14 +17,14 @@ function GameScreen:load()
 	--self.UI:addLabel(164, 4, 152, "Mines: %s", self.grid, self.grid.getMines)
 	--self.UI:addLabel(324, 4, 152, "Marks: %s", self.grid, self.grid.getMarks)
 	
-	print("Loaded Game Screen")
+	--print("Loaded Game Screen")
 end
 
 function GameScreen:keypressed(k, isrepeat)
 	if not gameover then
-		if k == "`" then
+		--[[if k == "`" then
 			self.grid.revealed = not self.grid.revealed
-		end	
+		end	]]
 		self.mole:keypressed(k, isrepeat)
 	end
 
@@ -183,7 +183,7 @@ end
 function GameScreen:checkSolution()
 	if not gameover then
 		local win = self.grid:checkSolution(self.UI)
-		print("Checking solution...")
+		--print("Checking solution...")
 		
 		if gameover and challenge.begins then
 			if win then

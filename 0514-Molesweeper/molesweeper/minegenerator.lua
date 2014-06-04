@@ -240,7 +240,7 @@ function validBoard(field)
 	local F = {}
 	
 	local safeSet, mineSet = {}, {} -- Set of safe tiles and mine tiles
-	local width,height = #field, #field[1]
+	local width,height = #field[1], #field
 	for j,row in ipairs(field) do
 		table.insert(F,{})
 		for i,cell in ipairs(row) do
@@ -261,8 +261,8 @@ function validBoard(field)
 	-- Check mine accessibility
 	for i,M in ipairs(mineSet) do
 		if not (M.paths["up"] or M.paths["down"] or M.paths["left"] or M.paths["right"]) then
-			print(M.paths["up"],M.paths["down"],M.paths["left"],M.paths["right"])
-			print(M.x, M.y)
+			-- print(M.paths["up"],M.paths["down"],M.paths["left"],M.paths["right"])
+			-- print(M.x, M.y)
 			return false
 		end
 	end

@@ -17,7 +17,10 @@ function love.load()
 	load()
 	screens:push(menuscreen)
 
-	print("Loaded")
+	bgm.main:setVolume(0.5)
+	bgm.main:setLooping(true)
+	bgm.main:play()
+	-- print("Loaded")
 end
 
 function love.keypressed(k, isrepeat)
