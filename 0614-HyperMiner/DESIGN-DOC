@@ -1,0 +1,34 @@
+HYPERMINER
+
+===========
+  Concept
+===========
+
+A gravity based puzzler flavored around interplanetary and deep-space mining operations.
+
+============
+  Gameplay
+============
+
+The player controls a launch station from a planet with a clever species in full expansion. Many launch stations around the solar system are planned to send mining probes into asteroids, comets, satellites and even distant planets and send back precious mineral by means of hyperdimensional transport.
+
+A level starts with a launchpad(which can be located in many places, such as a planet, a satellite, a space station, even a large ship) and a number of celestial bodies that can be mined or exploited in some way. The player has at their disposal a number of probes of different kinds(see below) and must deploy them in order to fill the productoin quota for the level.
+
+Each body in space has different potential outputs in different materials(which may be metals, solids, liquids, gases or energy) and different probes can be used to exploit them. The player must use gravity and active acceleration(probes have propulsion and fuel) to reach the bodies and fill the quota.
+
+==========
+  Probes
+==========
+
+Different types of probes include:
+
+- Mining probe: to gather minerals, must touch down on the body(gently)
+- Floater probe: to gather liquids, must touch down on the body(no need to be too gentle)
+- Glider probe: to gather gases, must stay in low orbit on the body
+- Plasma probe: to gather gases and plasma from stars, must stay in high orbit(because stars are really really detructive, you know)
+- Photovoltaic probe: to gather energy from stars, must stay in high orbit
+- Geothermic probe: to gather energy from bodies, must touch down(gently)
+
+==========
+  Bodies
+==========
