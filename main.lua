@@ -3,9 +3,16 @@ require("physics")
 debug_echo = false
 debug_interval = 1
 
+function print_debug(...)
+	if debug_echo then
+		print(...)
+	end
+end
+
+
 function love.load()
-	Body.new({x = 32, y = 32, v = 8, dir = 0, mass = 1, size = 8})
-	Body.new({x = 400, y = 300, v = 0, dir = 0, mass = 16, size = 32})
+	Body.new({name = "Tiny", x = 400, y = 172, v = 32, dir = 0, mass = 1, size = 8})
+	Body.new({name = "Big", x = 400, y = 300, v = 0, dir = 0, mass = 16, size = 32})
 end
 
 function love.update(dt)
