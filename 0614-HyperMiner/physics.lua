@@ -13,11 +13,11 @@ Physics = {
 	bodies = {},
 	update = function (self,dt)
 		for i,B in ipairs(self.bodies) do
-			if debug_echo then print("Body:", B) end
+			print_debug("Body:", B)
 			for j,C in ipairs(self.bodies) do
 				if B ~= C then
 					B:applyForce(gravityBodies(B,C), bodyDirection(B,C), dt)
-					if debug_echo then print("Gravity:", gravityBodies(B,C), bodyDirection(B,C)) end
+					print_debug("Gravity:", gravityBodies(B,C), bodyDirection(B,C))
 				end
 			end
 		end		
@@ -40,6 +40,7 @@ Physics = {
 
 -- A "body" is anything that has mass and occupies space. Thus, it moves around, exerts gravity and collisions happen
 Body = {
+	name = "",
 	x = 0, -- Position (of center of mass)
 	y = 0,
 	d = 0, -- Direction (of the body itself)
@@ -54,10 +55,18 @@ Body.__index = Body
 function Body.new(specs)
 	local T = specs or {}
 	
+	if not T["name"] then
+		T["name"] = "Body" + math.random(1000000)
+	end
+	
 	B = setmetatable(T, Body)
 	
 	table.insert(Physics.bodies, B)
 	return B
+end
+
+function Body:__tostring()
+	return self.name
 end
 
 -- Return composite vectors of a single vector
@@ -90,15 +99,15 @@ function gravityBodies(B1, B2)
 	end
 	
 	local d = squareBodyDistance(B1,B2)
-	local K = 10^6 -- Universal constant
-	return K*B2.mass/d, K*B1.mass/d
+	local K = 2^13 -- Universal constant
+	return K*B2.mass/d
 end
 
 -- Apply (vectorial) force on body
 function Body:applyForce(mag, dir, dt)
 	-- Defaults:
 	local F = mag or 0 -- no force
-	local d = math.rad(dir or 0) -- to the right
+	local d = dir or 0 -- to the right
 	local t = dt or 1 -- 1 second
 	
 	local Fx, Fy = compositeVectors(F, d)
@@ -113,12 +122,13 @@ end
 function Body:applyVelocity(v, dir, dt)
 	local vx,vy = compositeVectors(v, dir)
 	
+	--print_debug(self.vx, self.vy)
 	self.x, self.y = self.x + vx*dt, self.y + vy*dt
 end
 
 -- Basic updating for simulations
 function Body:update(dt)
-	if debug_echo then print("Speed:", self, self.v, self.dir) end
+	--print_debug("Speed:", self, self.v, self.dir)
 	self:applyVelocity(self.v, self.dir, dt)
 end
 
