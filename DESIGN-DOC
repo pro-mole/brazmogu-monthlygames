@@ -10,31 +10,81 @@ A gravity based puzzler flavored around interplanetary and deep-space mining ope
   Gameplay
 ============
 
-The player controls a launch station from a planet with a clever species in full expansion. Many launch stations around the solar system are planned to send mining probes into asteroids, comets, satellites and even distant planets and send back precious mineral by means of hyperdimensional transport.
+The player controls a mining probe launched in the deep vastness of space. The probe has limited control at first, but as the player progresses it can achieve better capabilities through upgrades.
 
-A level starts with a launchpad(which can be located in many places, such as a planet, a satellite, a space station, even a large ship) and a number of celestial bodies that can be mined or exploited in some way. The player has at their disposal a number of probes of different kinds(see below) and must deploy them in order to fill the productoin quota for the level.
+=============
+  The Probe
+=============
 
-Each body in space has different potential outputs in different materials(which may be metals, solids, liquids, gases or energy) and different probes can be used to exploit them. The player must use gravity and active acceleration(probes have propulsion and fuel) to reach the bodies and fill the quota.
+The probe is a spherical vessel of negligible mass equipped with modules to aid in its task of interplanetary mining.
 
-==========
-  Probes
-==========
+Default Modules:
+ - Engine: provides fine propulsion for manuevering. Consumes Fuel.
+ - Reaction Wheel: provides torque for spinning and stabilization. Consumes Energy.
+ - Booster: provides a burst of propulsion for launch and sudden acceleratoin. Consumes Booster Fuel.
+ - Drill: extracts minerals from the body to the Storage Crates. Consumes Energy and Fuel.
 
-Different types of probes include:
+Additional Modules:
+ - Pump: extracts liquids from the body to the Storage Tank. Consumes Energy and Fuel.
+ - Vacuum Chamber: extracts gases from the body's atmosphere. Has to be emptied to be used again. Consumes Energy and Fuel.
+ - Radar: maps the universe around the probe. Consumes Energy.
+ - Sensor Probe: used to gather info on the body. Consumable.
+ - Life Support: used to carry life-forms(temporary upgrades).
+ - Solar Panel: used to recharge energy when near stars.
+ - Fuel Still: used to produce fuel without the help of a Station. Consumes energy.
+ 
+Upgrades:
+ - Engine Thrust
+ - Engine Efficiency
+ - Fuel Capacity
+ - Booster Thrust
+ - Booster Power Level
+ - Booster Fuel Capacity
+ - Energy Efficiency
+ - Drilling Depth
+ - Storage Crate Capacity
+ - Pump Depth
+ - Storage Tank Capacity
+ - Vaccum Chamber Capacity
+ - Radar Range
+ - Radar Detailing
+ - Sensor Probe Number
+ - Life Support Capacity
+ - Solar Panel Efficiency
+ - Fuel Still Efficienty
+ 
+======================
+Physics Simulation
+======================
 
-- Mining probe: to gather minerals, must touch down on the body(gently)
-- Floater probe: to gather liquids, must touch down on the body(no need to be too gentle)
-- Glider probe: to gather gases, must stay in low orbit on the body
-- Plasma probe: to gather gases and plasma from stars, must stay in high orbit(because stars are really really detructive, you know)
-- Photovoltaic probe: to gather energy from stars, must stay in high orbit
-- Geothermic probe: to gather energy from bodies, must touch down(gently)
+In an ideal simulation, all bodies would be free and the universe's gravity pulls would regulate themselves nicely. This is not an ideal simulation, of course.
 
-==========
-  Bodies
-==========
+For simplicity purposes, objects are not subject to general gravity, only the gravity of objects in a class bigger or equal than itself. The classes and their mass ranges thus are:
 
-==================
-  Physics Design
-==================
+CLASS 0 - The Probe - 1
+CLASS 1 - Space Stations, Satellites - [2,16]
+CLASS 2 - Asteroids, Comets - [16,128]
+CLASS 3 - Natural Satellites - [128,1024]
+CLASS 4 - Planets - [2^10,2^20]
+CLASS 5 - Stars - [2^30,2^40]
+CLASS 6 - Black Holes - INFINITY
+ 
+(Black Holes may not actually exist, but if they do, they are a big deal, yes)
+ 
+In summary: the probe is affected gravitationally by everything, but it won't affect things like, say, planets or stars with its itty bitty gravitational pull. And, most important, we won't have Stars moving around accidentally because they are pulled by the planets they orbit. Just a matter of making navigation easier, yes.
 
-- RULE OF THUMB: Small objects(space stations/probes/meteors/comets) should be have mass smaller than 1. Large obejcts that do affect the gravity around them(planets, stars, satellites) should have mass larger than 1.
+=====================
+Universe Generation
+=====================
+
+The easiest and most intuitive way of going with the random generation of our univere would be to start with the biggest stuff around: stars.
+
+Generate each star and define the "maximum radius of planet influence". That would be the point in which gravity becomes negligible. This is the size of the stellar system for this star. Every star system should not overlap with each other.
+
+Next, generate everything that orbits the star itself. Comets, asteroids, planets. Place them in defined orbits and define initial velocity.
+
+For each planet, generate satellites, natural and artificial. Define their composition(rocky or gas giant) and what they can have, depending on distnace from their sun.
+
+Space stations should be stationed either around planets or satellites(or even, slow asteroids).
+
+Then throw the probe from a station, and there we go.
