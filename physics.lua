@@ -14,12 +14,10 @@ Physics = {
 	update = function (self,dt)
 		for i,B in ipairs(self.bodies) do
 			print_debug("Body:", B)
-			if not B.fixed then
-				for j,C in ipairs(self.bodies) do
-					if B ~= C then
-						B:applyForce(gravityBodies(B,C), bodyDirection(B,C), dt)
-						print_debug("Gravity:", gravityBodies(B,C), bodyDirection(B,C))
-					end
+			for j,C in ipairs(self.bodies) do
+				if B ~= C and B.class <= C.class then
+					B:applyForce(gravityBodies(B,C), bodyDirection(B,C), dt)
+					print_debug("Gravity:", gravityBodies(B,C), bodyDirection(B,C), math.sqrt(squareBodyDistance(B,C)))
 				end
 			end
 		end		
@@ -56,7 +54,7 @@ Body = {
 	vrot = 0, -- Rotation Velocity(in radians per second)
 	mass = 1, -- Mass in WUs (Whatever Units)
 	size = 1, -- All our objects will be spherical because that's already complicated enough :|
-	fixed = false, -- If body is fixed, it won't be affected by gravity
+	class = 0, -- Size class of the body; for checking gravity effect
 	}
 Body.__index = Body
 
@@ -125,17 +123,20 @@ function Body:applyForce(mag, dir, dt)
 	
 	local Fx, Fy = compositeVectors(F, d)
 	local vx, vy = compositeVectors(self.v, self.dir)
+	print_debug("Force:",self, F, dir, Fx, Fy)
 	
+	print_debug("Old Velocity:",self, self.v, self.dir, vx, vy)
 	local Vx, Vy = vx + t*Fx, vy + t*Fy
 	self.v = math.sqrt((Vx)^2 + (Vy)^2)
 	self.dir = math.atan2(Vy, Vx)
+	print_debug("New Velocity:",self, self.v, self.dir, Vx, Vy)
 end
 
 -- Move according to current velocity
 function Body:applyVelocity(v, dir, dt)
 	local vx,vy = compositeVectors(v, dir)
 	
-	--print_debug(self.vx, self.vy)
+	print_debug("Velocity:",self, v, dir, vx, vy)
 	self.x, self.y = self.x + vx*dt, self.y + vy*dt
 end
 
@@ -171,7 +172,8 @@ function Body:update(dt)
 				local dx,dy = compositeVectors(delta, dirdelta)
 				self.x = self.x + dx
 				self.y = self.y + dy
-				self.v = 0
+				self.v = B.v
+				self.dir = B.dir
 			end
 		end
 	end
@@ -188,12 +190,12 @@ end
 -- Basic drawing for basic simulations
 function Body:draw()
 	-- Draw the body
-	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.setColor(255, 255, 255, 128)
 	love.graphics.circle("line", self.x, self.y, self.size, 36)
 	
 	-- Draw speed and orientatino vectors
-	love.graphics.setColor(0, 255, 255, 255)
+	love.graphics.setColor(0, 255, 255, 128)
 	drawVector(self.x, self.y, self.size, self.d)
-	love.graphics.setColor(0, 255, 0, 255)
+	love.graphics.setColor(0, 255, 0, 128)
 	drawVector(self.x, self.y, self.v, self.dir)
 end

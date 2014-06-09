@@ -1,7 +1,9 @@
 require("physics")
+require("draw")
 
 Space = {
 	probes = {},
+	stars = {},
 	planets = {},
 	satellites = {},
 	meteors = {},
@@ -9,9 +11,11 @@ Space = {
 	stations = {}
 }
 require("probes")
+require("planets")
+require("stars")
 
 debug_echo = false
-debug_interval = 1
+debug_interval = 0
 
 function print_debug(...)
 	if debug_echo then
@@ -21,8 +25,10 @@ end
 
 
 function love.load()
-	Probe.new({name = "Tiny", x = 32, y = 300, v = 0, dir = 0, mass = 0.01, size = 8, active = true})
-	Body.new({name = "Big", x = 400, y = 300, v = 0, dir = 0, mass = 16, size = 32, fixed = true})
+	Probe.new({name = "Tiny", x = 144, y = 172, v = 48, dir = 0, mass = 0.01, size = 8, active = true})
+	--Star.new({name = "Huge", x = 400, y = 300, v = 0, dir = 0, mass = 128, size = 64})
+	Planet.new({name = "Big1", x = 144, y = 300, v = 32, dir = 0, mass = 16, size = 32})
+	--Planet.new({name = "Big2", x = 656, y = 300, v = 64, dir = math.rad(270), mass = 16, size = 32, atmosphere = {"oxygen", "hydrogen", "water"}, atmosphere_size = 64})
 end
 
 function love.update(dt)
@@ -32,6 +38,7 @@ function love.update(dt)
 	Physics:update(dt)
 	
 	if debug_echo then 
+		print(#Physics.bodies)
 		io.stdout:flush()
 		debug_interval = 1
 		debug_echo = false
