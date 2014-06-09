@@ -4,9 +4,9 @@
 -- Some constants
 
 RIGHT = 0
-DOWN = 90
-LEFT = 180
-UP = 270
+DOWN = math.pi/2
+LEFT = math.pi
+UP = 3 * math.pi/2
 
 -- An index of Physics stuff we need globally
 Physics = {
@@ -14,16 +14,23 @@ Physics = {
 	update = function (self,dt)
 		for i,B in ipairs(self.bodies) do
 			print_debug("Body:", B)
-			for j,C in ipairs(self.bodies) do
-				if B ~= C then
-					B:applyForce(gravityBodies(B,C), bodyDirection(B,C), dt)
-					print_debug("Gravity:", gravityBodies(B,C), bodyDirection(B,C))
+			if not B.fixed then
+				for j,C in ipairs(self.bodies) do
+					if B ~= C then
+						B:applyForce(gravityBodies(B,C), bodyDirection(B,C), dt)
+						print_debug("Gravity:", gravityBodies(B,C), bodyDirection(B,C))
+					end
 				end
 			end
 		end		
 		
 		for i,B in ipairs(self.bodies) do
 			B:update(dt)
+		end
+	end,
+	keypressed = function (self, key, isrepeat)
+		for i,B in ipairs(self.bodies) do
+			B:keypressed(key, isrepeat)
 		end
 	end,
 	draw = function (self)
@@ -46,9 +53,10 @@ Body = {
 	d = 0, -- Direction (of the body itself)
 	v = 0, -- Velocity(in pixels per second)
 	dir = 0, -- Velocity Direction
-	vrot = 0, -- Rotation Velocity(in angles per second)
+	vrot = 0, -- Rotation Velocity(in radians per second)
 	mass = 1, -- Mass in WUs (Whatever Units)
 	size = 1, -- All our objects will be spherical because that's already complicated enough :|
+	fixed = false, -- If body is fixed, it won't be affected by gravity
 	}
 Body.__index = Body
 
@@ -92,13 +100,18 @@ function bodyDirection(B1, B2)
 	return math.atan2(B2.y - B1.y, B2.x - B1.x)
 end
 
--- Returns the gravity acceleration between two bodies(for both bodies)
+-- Returns the gravity acceleration between two bodies(for B2 on B1)
 function gravityBodies(B1, B2)
 	if not B1 or not B2 then
 		return nil
 	end
-	
+
 	local d = squareBodyDistance(B1,B2)
+
+	if math.sqrt(d) <= B1.size + B2.size then
+		return 0
+	end
+
 	local K = 2^13 -- Universal constant
 	return K*B2.mass/d
 end
@@ -126,10 +139,45 @@ function Body:applyVelocity(v, dir, dt)
 	self.x, self.y = self.x + vx*dt, self.y + vy*dt
 end
 
+function Body:spin(angle)
+	local _d = self.d + angle
+	local pi = math.pi
+
+	if _d > 2*pi then
+		repeat
+			_d = _d - 2*pi
+		until _d <= 2*pi
+	end
+
+	if _d < 0 then
+		repeat
+			_d = _d + 2*pi
+		until _d >= 0
+	end
+
+	self.d = _d
+end
+
 -- Basic updating for simulations
 function Body:update(dt)
 	--print_debug("Speed:", self, self.v, self.dir)
 	self:applyVelocity(self.v, self.dir, dt)
+
+	for i,B in ipairs(Physics.bodies) do
+		if math.sqrt(squareBodyDistance(self, B)) < (self.size + B.size) then
+			if self.size < B.size then
+				local delta = math.sqrt(squareBodyDistance(self, B)) - (self.size + B.size)
+				local dirdelta = bodyDirection(self, B)
+				local dx,dy = compositeVectors(delta, dirdelta)
+				self.x = self.x + dx
+				self.y = self.y + dy
+				self.v = 0
+			end
+		end
+	end
+end
+
+function Body:keypressed(key, isrepest)
 end
 
 -- Drawing vectors

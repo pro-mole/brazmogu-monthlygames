@@ -10,7 +10,7 @@ $(PACKNAME): *.lua assets
 	zip -9 -q -r $(PACKNAME) *.lua assets
 	
 run: *.lua assets
-	open -n -a love ./
+	love ./
 
 clean:
 	rm -f *.love
