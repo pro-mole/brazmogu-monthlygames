@@ -32,3 +32,9 @@ Different types of probes include:
 ==========
   Bodies
 ==========
+
+==================
+  Physics Design
+==================
+
+- RULE OF THUMB: Small objects(space stations/probes/meteors/comets) should be have mass smaller than 1. Large obejcts that do affect the gravity around them(planets, stars, satellites) should have mass larger than 1.
