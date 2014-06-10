@@ -12,6 +12,9 @@ function GameScreen:load()
 	end
 	self.UI:addButton(164, 596, 312, 40, "Verify", self, self.checkSolution, "return")
 
+	self.fanfare = love.audio.newSource(sound.success)
+	self.failure = love.audio.newSource(sound.lose)
+
 	--self.UI:addButton(324, 596, 152, 40, "Exit", nil, love.event.quit, "escape")
 	--self.UI:addButton(484, 596, 152, 40, "Exit", nil, love.event.quit, "escape")
 	--self.UI:addLabel(164, 4, 152, "Mines: %s", self.grid, self.grid.getMines)
@@ -178,6 +181,14 @@ end
 
 function GameScreen:quit()
 	gameover = false
+
+	if self.failure:isPlaying() then
+		self.failure:stop()
+	end
+
+	if self.fanfare:isPlaying() then
+		self.fanfare:stop()
+	end
 end
 
 function GameScreen:checkSolution()
@@ -194,10 +205,17 @@ function GameScreen:checkSolution()
 				self.UI:addButton(484, 596, 152, 40, "Restart", screens, screens.pop, " ")
 			end
 		end
+
+		if win then
+			self.fanfare:play()
+		else
+			self.failure:play()
+		end
 	end
 end
 
 function GameScreen:lose()
+	self.failure:play()
 	self.UI:addLabel(self.grid.offset.x, self.grid.offset.y + self.grid.height*self.grid.tile_size + 4, self.grid.width*self.grid.tile_size, "Sorry...")
 	self.grid.revealed = true
 	gameover = true

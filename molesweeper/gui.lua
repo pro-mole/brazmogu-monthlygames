@@ -1,4 +1,4 @@
--- GUI functions
+	-- GUI functions
 
 -- Load functions
 font['menutitle'] = love.graphics.newFont("assets/font/amiga4ever.ttf", 18)
@@ -15,7 +15,10 @@ GUI.keynames[" "] = "SPACEBAR"
 GUI.__index = GUI
 
 function GUI.new()
-	local N = setmetatable({menu = nil, messages = {}, labels = {}, buttons = {}, keys = {}}, GUI)
+	local N = setmetatable({menu = nil, messages = {}, labels = {}, buttons = {}, keys = {},
+		beep = love.audio.newSource(sound.blip), bloop = love.audio.newSource(sound.success)}, GUI)
+	N.beep:setVolume(0.5)
+	N.bloop:setVolume(0.5)
 
 	return N
 end
@@ -31,12 +34,20 @@ function GUI:keypressed(key, isrepeat)
 		if key == "return" or key == " " then
 			-- Select option
 			if I.action == "goto" then
+				self.bloop:rewind()
+				self.bloop:play()
 				screens:push(I.goto)
 			elseif I.action == "back" then
+				self.bloop:rewind()
+				self.bloop:play()
 				self.menu.current = M.parent
 			elseif I.action == "quit" then
+				self.bloop:rewind()
+				self.bloop:play()
 				love.event.quit()
 			elseif I.action == "submenu" then
+				self.bloop:rewind()
+				self.bloop:play()
 				self.menu.current = I.submenu
 			end
 		elseif key == "escape" then
@@ -44,19 +55,27 @@ function GUI:keypressed(key, isrepeat)
 			if M.parent == nil then
 				love.event.quit()
 			else
+				self.bloop:rewind()
+				self.bloop:play()
 				self.menu.current = M.parent
 			end
 		elseif key == "up" then
 			-- Move up on the menu options
+			self.beep:rewind()
+			self.beep:play()
 			M.pointer = M.pointer - 1
 			if M.pointer <= 0 then M.pointer = #M.items end
 		elseif key == "down" then
 			-- Move down on the menu options
+			self.beep:rewind()
+			self.beep:play()
 			M.pointer = M.pointer + 1
 			if M.pointer > #M.items then M.pointer = 1 end
 		elseif key == "right" then
 			-- Change value on multi-value options
 			if I.action == "setting" then
+				self.beep:rewind()
+				self.beep:play()
 				local V = loadSetting(I.var)
 				for i,_v in ipairs(I.values) do
 					if _v == V then
@@ -71,6 +90,8 @@ function GUI:keypressed(key, isrepeat)
 		elseif key == "left" then
 			-- Change value on multi-value options
 			if I.action == "setting" then
+				self.beep:rewind()
+				self.beep:play()
 				local V = loadSetting(I.var)
 				for i,_v in ipairs(I.values) do
 					if _v == V then

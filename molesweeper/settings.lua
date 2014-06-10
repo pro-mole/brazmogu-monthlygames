@@ -1,6 +1,11 @@
 -- Global settings and data module
 font = {}
-sound = {}
+sound = {
+	step = love.sound.newSoundData("assets/sound/Blip 018.wav"),
+	success = love.sound.newSoundData("assets/sound/Power On 001.wav"),
+	lose = love.sound.newSoundData("assets/sound/Engine Bass 001.wav"),
+	blip = love.sound.newSoundData("assets/sound/Blip 005.wav")
+}
 bgm = {
 	main = love.audio.newSource("assets/bgm/NOT_SAFE.mp3", "stream")
 }
