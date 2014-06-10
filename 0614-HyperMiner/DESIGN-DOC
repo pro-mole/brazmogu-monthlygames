@@ -54,7 +54,7 @@ Upgrades:
  - Fuel Still Efficienty
  
 ======================
-Physics Simulation
+  Physics Simulation
 ======================
 
 In an ideal simulation, all bodies would be free and the universe's gravity pulls would regulate themselves nicely. This is not an ideal simulation, of course.
@@ -73,9 +73,15 @@ CLASS 6 - Black Holes - INFINITY
  
 In summary: the probe is affected gravitationally by everything, but it won't affect things like, say, planets or stars with its itty bitty gravitational pull. And, most important, we won't have Stars moving around accidentally because they are pulled by the planets they orbit. Just a matter of making navigation easier, yes.
 
-=====================
-Universe Generation
-=====================
+===================
+  Parametrization
+===================
+
+In short: defining a set of parameters by which our universal constants will be reverse engineered.
+
+=======================
+  Universe Generation
+=======================
 
 The easiest and most intuitive way of going with the random generation of our univere would be to start with the biggest stuff around: stars.
 
