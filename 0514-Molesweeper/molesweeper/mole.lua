@@ -9,6 +9,8 @@ function Mole.new(x, y, grid)
 	setmetatable(N, Mole)
 	N:revealTile()
 
+	N.stepSound = love.audio.newSource(sound.step)
+
 	return N
 end
 
@@ -46,6 +48,8 @@ function Mole:keypressed(k, isrepeat)
 		_x, _y = self.x, self.y
 	else  -- if tile is not marked, check if we blow up
 		self.x, self.y = _x, _y
+		if self.stepSound:isPlaying() then self.stepSound:stop() end
+		self.stepSound:play()
 		if T.content == "mine" then
 			screen:lose()
 		end
