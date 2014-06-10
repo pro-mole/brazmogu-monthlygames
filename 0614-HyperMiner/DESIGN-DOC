@@ -59,14 +59,14 @@ Upgrades:
 
 In an ideal simulation, all bodies would be free and the universe's gravity pulls would regulate themselves nicely. This is not an ideal simulation, of course.
 
-For simplicity purposes, objects are not subject to general gravity, only the gravity of objects in a class bigger or equal than itself. The classes and their mass ranges thus are:
+For simplicity purposes, objects are not subject to general gravity, only the gravity of objects in a class bigger or equal than itself. The classes and their mass ranges(in log2) thus are:
 
-CLASS 0 - The Probe - 1
-CLASS 1 - Space Stations, Satellites - [2,16]
-CLASS 2 - Asteroids, Comets - [16,128]
-CLASS 3 - Natural Satellites - [128,1024]
-CLASS 4 - Planets - [2^10,2^20]
-CLASS 5 - Stars - [2^30,2^40]
+CLASS 0 - The Probe - 0
+CLASS 1 - Space Stations, Satellites - [1,4] (15)
+CLASS 2 - Asteroids, Comets - [4,6] (~50)
+CLASS 3 - Natural Satellites - [7,9] (~400)
+CLASS 4 - Planets - [10,12] (~3,000)
+CLASS 5 - Stars - [20,25]
 CLASS 6 - Black Holes - INFINITY
  
 (Black Holes may not actually exist, but if they do, they are a big deal, yes)
@@ -78,6 +78,12 @@ In summary: the probe is affected gravitationally by everything, but it won't af
 ===================
 
 In short: defining a set of parameters by which our universal constants will be reverse engineered.
+
+- The probe size is 4. It should be small enough to look fine when docked on the space station.
+- The space stations are about the size of an average moon, but much lighter.
+- The probe should undock from the space station easily.
+- A planetary system(planet, moons) should fit about one screen(excepting cases of way too many moons)
+- A solar system shouldn't be wider than 10 screens(about 5 each size of of the star)
 
 =======================
   Universe Generation
