@@ -10,6 +10,7 @@ UP = 3 * math.pi/2
 
 -- An index of Physics stuff we need globally
 Physics = {
+	K = 2^5, -- Universal gravitation constant
 	bodies = {},
 	update = function (self,dt)
 		for i,B in ipairs(self.bodies) do
@@ -110,8 +111,7 @@ function gravityBodies(B1, B2)
 		return 0
 	end
 
-	local K = 2^13 -- Universal constant
-	return K*B2.mass/d
+	return Physics.K*B2.mass/d
 end
 
 -- Apply (vectorial) force on body

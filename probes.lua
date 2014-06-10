@@ -108,7 +108,7 @@ function Probe:draw()
 	love.graphics.pop()
 	
 	love.graphics.push()
-	love.graphics.translate(self.x - self.size - 4, self.y + self.size)
+	love.graphics.translate(self.x - self.size - 4, self.y - self.size)
 	
 	drawMeter(0, 0, 4, self.size*2, {255, 0, 0, 128}, {255, 0, 0, 255}, 10, self.boost_power, "up")
 	
