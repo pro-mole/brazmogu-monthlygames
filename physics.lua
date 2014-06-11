@@ -136,13 +136,13 @@ end
 function Body:applyVelocity(v, dir, dt)
 	local vx,vy = compositeVectors(v, dir)
 	
-	print_debug("Velocity:",self, v, dir, vx, vy)
+	-- print_debug("Velocity:",self, v, dir, vx, vy)
 	self.x, self.y = self.x + vx*dt, self.y + vy*dt
 end
 
 -- Rotate according to current rotation velocity
 function Body:applyRotation(vrot, dt)	
-	print_debug("Rotation Velocity:",self, vrot, d)
+	-- print_debug("Rotation Velocity:",self, vrot, d)
 	self:spin(vrot * dt)
 end
 
