@@ -111,7 +111,7 @@ function gravityBodies(B1, B2)
 		return 0
 	end
 
-	return Physics.K*B2.mass/d
+	return Physics.K*B1.mass*B2.mass/d
 end
 
 -- Apply (vectorial) force on body
@@ -121,7 +121,7 @@ function Body:applyForce(mag, dir, dt)
 	local d = dir or 0 -- to the right
 	local t = dt or 1 -- 1 second
 	
-	local Fx, Fy = compositeVectors(F, d)
+	local Fx, Fy = compositeVectors(F/self.mass, d)
 	local vx, vy = compositeVectors(self.v, self.dir)
 	print_debug("Force:",self, F, dir, Fx, Fy)
 	
@@ -138,6 +138,12 @@ function Body:applyVelocity(v, dir, dt)
 	
 	print_debug("Velocity:",self, v, dir, vx, vy)
 	self.x, self.y = self.x + vx*dt, self.y + vy*dt
+end
+
+-- Rotate according to current rotation velocity
+function Body:applyRotation(vrot, dt)	
+	print_debug("Rotation Velocity:",self, vrot, d)
+	self:spin(vrot * dt)
 end
 
 function Body:spin(angle)
@@ -163,6 +169,7 @@ end
 function Body:update(dt)
 	--print_debug("Speed:", self, self.v, self.dir)
 	self:applyVelocity(self.v, self.dir, dt)
+	self:applyRotation(self.vrot, dt)
 
 	for i,B in ipairs(Physics.bodies) do
 		if math.sqrt(squareBodyDistance(self, B)) < (self.size + B.size) then
@@ -190,7 +197,9 @@ end
 -- Basic drawing for basic simulations
 function Body:draw()
 	-- Draw the body
-	love.graphics.setColor(255, 255, 255, 128)
+	love.graphics.setColor(0, 0, 0, 255)
+	love.graphics.circle("fill", self.x, self.y, self.size, 36)
+	love.graphics.setColor(255, 255, 255, 255)
 	love.graphics.circle("line", self.x, self.y, self.size, 36)
 	
 	-- Draw speed and orientatino vectors

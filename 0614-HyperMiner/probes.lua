@@ -11,7 +11,7 @@ Probe = {
 	max_energy = 100, -- Energy capacity (percentage)
 	booster = 0,
 	max_booster = 100, -- Booster Fuel capacity (liters)
-	thrust = 0.1, -- Acceleration (pixels per second per second)
+	thrust = 1, -- Acceleration (pixels per second per second)
 	boost_power = 1, -- Booster power setting (1 to 10)
 	boost = 10, -- Booster base potency (instantaneous acceleration force)
 	fuel_rate = 1, -- Fuel rate for thrust (liters per second)
@@ -47,8 +47,8 @@ end
 
 function Probe:keypressed(key, isrepeat)
 	print(key)
-	if self.booster > 0 then
-		if key == " " then
+	if key == " " then
+		if self.booster > 0 then
 			self:applyForce(self.boost * 2^(self.boost_power/2), self.d)
 			self.booster = self.booster - self.boost_power*self.booster_rate
 		end
@@ -82,12 +82,12 @@ function Probe:update(dt)
 
 	if self.energy > 0 then
 		if love.keyboard.isDown("left") then
-			self:spin(-self.torque * dt)
+			self.vrot = self.vrot - self.torque*dt
 			self.energy = self.energy - self.energy_rate * dt
 		end
 
 		if love.keyboard.isDown("right") then
-			self:spin(self.torque * dt)
+			self.vrot = self.vrot + self.torque*dt
 			self.energy = self.energy - self.energy_rate * dt
 		end
 	end

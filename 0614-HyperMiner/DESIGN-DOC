@@ -64,9 +64,9 @@ For simplicity purposes, objects are not subject to general gravity, only the gr
 CLASS 0 - The Probe - 0
 CLASS 1 - Space Stations, Satellites - [1,4] (15)
 CLASS 2 - Asteroids, Comets - [4,6] (~50)
-CLASS 3 - Natural Satellites - [7,9] (~400)
-CLASS 4 - Planets - [10,12] (~3,000)
-CLASS 5 - Stars - [20,25]
+CLASS 3 - Natural Satellites - [7,8] (~250)
+CLASS 4 - Planets - [9,12] (~3,500)
+CLASS 5 - Stars - [15,18] (~20,000)
 CLASS 6 - Black Holes - INFINITY
  
 (Black Holes may not actually exist, but if they do, they are a big deal, yes)
