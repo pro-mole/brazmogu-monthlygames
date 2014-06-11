@@ -10,7 +10,7 @@ UP = 3 * math.pi/2
 
 -- An index of Physics stuff we need globally
 Physics = {
-	K = 2^5, -- Universal gravitation constant
+	K = 2^7, -- Universal gravitation constant
 	bodies = {},
 	update = function (self,dt)
 		for i,B in ipairs(self.bodies) do
