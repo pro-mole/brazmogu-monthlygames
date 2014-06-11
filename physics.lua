@@ -36,7 +36,7 @@ Physics = {
 		for i,B in ipairs(self.bodies) do
 			for j,C in ipairs(self.bodies) do
 				if B ~= C then
-					love.graphics.setColor(255, 0, 0, 255)
+					love.graphics.setColor(255, 0, 0, 128)
 					drawVector(B.x, B.y, gravityBodies(B,C), bodyDirection(B,C))
 				end
 			end
@@ -56,7 +56,8 @@ Body = {
 	mass = 1, -- Mass in WUs (Whatever Units)
 	size = 1, -- All our objects will be spherical because that's already complicated enough :|
 	class = 0, -- Size class of the body; for checking gravity effect
-	}
+	texture = { {"gradient", {255,255,255,255}, {128,128,128,255}} } -- Texture info; standard to solid white
+}
 Body.__index = Body
 
 function Body.new(specs)
@@ -67,6 +68,8 @@ function Body.new(specs)
 	end
 	
 	B = setmetatable(T, Body)
+	
+	B.texture = generateTexture(B.size, unpack(B.texture))
 	
 	table.insert(Physics.bodies, B)
 	return B
@@ -112,6 +115,26 @@ function gravityBodies(B1, B2)
 	end
 
 	return Physics.K*B1.mass*B2.mass/d
+end
+
+-- Get circular orbit radius around a body for given horizontal velocity
+function getOrbitRadius(B, v)
+	return Physics.K * B.mass / v^2
+end
+
+-- Get circular orbit velocity around a body for given distance
+function getOrbitVelocity(B, r)
+	return math.sqrt(Physics.K * B.mass / r)
+end
+
+-- Get escape velocity from a body's gravity for given distance
+function getEscapeVelocity(B, r)
+	return math.sqrt(2 * Physics.K * B.mass / r)
+end
+
+-- Get gravity field value at a given distance from a body
+function getGravityField(B, r)
+	return Physics.K * B.mass / r^2
 end
 
 -- Apply (vectorial) force on body
@@ -197,10 +220,14 @@ end
 -- Basic drawing for basic simulations
 function Body:draw()
 	-- Draw the body
-	love.graphics.setColor(0, 0, 0, 255)
+	--[[love.graphics.setColor(0, 0, 0, 255)
 	love.graphics.circle("fill", self.x, self.y, self.size, 36)
 	love.graphics.setColor(255, 255, 255, 255)
-	love.graphics.circle("line", self.x, self.y, self.size, 36)
+	love.graphics.circle("line", self.x, self.y, self.size, 36)]]
+	--love.graphics.setStencil(self.stencil)
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.draw(self.texture, self.x-self.size, self.y-self.size)
+	--love.graphics.setStencil()
 	
 	-- Draw speed and orientatino vectors
 	love.graphics.setColor(0, 255, 255, 128)
