@@ -33,11 +33,12 @@ function Planet.new(specs)
 end
 
 function Planet:draw()
-	Body.draw(self)
-	
 	if self.atmosphere then
-		love.graphics.setColor(255,255,255,128)
+		love.graphics.setColor(255,255,255,64)
 		love.graphics.circle("fill", self.x, self.y, self.atmosphere_size, 36)
+		love.graphics.circle("line", self.x, self.y, self.atmosphere_size, 36)
 		love.graphics.setColor(255,255,255,255)
 	end
+	
+	Body.draw(self)
 end
