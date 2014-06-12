@@ -73,6 +73,11 @@ function love.keypressed(key, isrepest)
 	if key == "escape" then
 		love.event.quit()
 	end
+	
+	if key == "f8" then
+		screenshot()
+	end
+	
 	Physics:keypressed(key, isrepeat)
 end
 

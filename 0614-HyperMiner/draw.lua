@@ -1,5 +1,11 @@
 -- Some drawing routines for the UI
 
+function screenshot()
+	local screenCanvas = love.graphics.getCanvas()
+	local screenData = screenCanvas:geImageData()
+	screenData:encode("screenshot-"..os.date("%Y%m%d%H%M%S")..(".png"))
+end
+
 function drawMeter(x, y, width, height, bgColor, fgColor, totalVal, currentVal, direction)
 	love.graphics.setColor(unpack(bgColor))
 	love.graphics.rectangle("fill", x, y, width, height)

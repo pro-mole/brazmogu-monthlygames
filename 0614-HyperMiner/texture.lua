@@ -28,8 +28,9 @@ function generateTexture(size, ...)
 		end
 		
 		if mode == "gradient" then
-			local _, color1, color2 = unpack(pattern)
-			for i = 0,1,0.1 do
+			local _, color1, color2, smooth = unpack(pattern)
+			if not smooth then smooth = 10 end
+			for i = 0,1,1/smooth do
 				local C = {}
 				for k = 1,4 do
 					C[k] = color1[k]*i + color2[k]*(1-i)
@@ -41,11 +42,10 @@ function generateTexture(size, ...)
 		
 		if mode == "scatter" then
 			local _, color, density = unpack(pattern)
-			local dots, area, alpha = 0, size^2 * math.pi/2, color[4]/255
+			local dots, area, alpha = 0, size^2, color[4]/255
 			while dots/area < density do
-				local r,a = math.random()*size, math.random()*2*math.pi
 				love.graphics.setColor(unpack(color))
-				love.graphics.point(math.cos(a)*r, math.sin(a)*r)
+				love.graphics.point(math.random()*size*2 - size, math.random()*size*2 - size)
 				dots = dots + alpha
 			end
 		end
@@ -55,4 +55,24 @@ function generateTexture(size, ...)
 	love.graphics.setCanvas()
 	love.graphics.setStencil()
 	return tex
+end
+
+-- Test Code
+modes = {"solid","gradient","scatter"}
+effects = {{"solid", {math.random(255),math.random(255),math.random(255),255}}}
+
+for i = 1,10 do
+	math.randomseed(i * os.time())
+	for i = 1,math.random(0,4) do
+		local new_effect = modes[math.random(#modes)]
+		if new_effect == "solid" then
+			table.insert(effects, {new_effect, {math.random(255),math.random(255),math.random(255), math.random(255)}})
+		elseif new_effect == "gradient" then
+			table.insert(effects, {new_effect, {math.random(255),math.random(255),math.random(255), math.random(255)}, {math.random(255),math.random(255),math.random(255), math.random(255)}, math.random(5,50)})
+		elseif new_effect == "scatter" then
+			table.insert(effects, {new_effect, {math.random(255),math.random(255),math.random(255), math.random(255)}, math.random()})
+		end
+	end
+	texture = generateTexture(2^math.random(5,8), unpack(effects))
+	texture:getImageData():encode(string.format("texture%05d.png", math.random(65535)), "png")
 end
