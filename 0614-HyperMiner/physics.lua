@@ -67,8 +67,9 @@ function Body.new(specs)
 		T["name"] = "Body" + math.random(1000000)
 	end
 	
-	B = setmetatable(T, Body)
+	local B = setmetatable(T, Body)
 	
+	print(string.format("Texture for %s",B))
 	B.texture = generateTexture(B.size, unpack(B.texture))
 	
 	table.insert(Physics.bodies, B)
