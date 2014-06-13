@@ -41,7 +41,8 @@ function love.load()
 	Probe.new({name = "Tiny", x = 400, y = 800, v = 0, dir = 0, mass = 1, size = 8, active = true})
 	
 	-- Space Station Test
-	Body.new({name = "Station", x = 400, y = 1196, v = 8, dir = 0, mass = 16, size = 16, class = 1})
+	Body.new({name = "Station", x = 400, y = 1196, v = 8, dir = 0, mass = 16, size = 16, class = 1,
+		texture = { {"gradient", {255,255,255,255}, {128,128,128,255}} } })
 	
 	--Star.new({name = "Huge", x = 400, y = 300, v = 0, dir = 0, mass = 128, size = 64})
 	--Planet.new({name = "Big1", x = 400, y = 300, v = 0, dir = 0, mass = 16, size = 32})
@@ -52,7 +53,8 @@ function love.load()
 		texture = { {"gradient", {0, 192, 255, 255}, {0, 96, 128, 255}}, {"scatter", {192, 144, 0, 204}, 0.8}} })
 	Body.new({name = "Luna", x = 400, y = 44, v = 32/math.sqrt(2), dir = 0, vrot = -math.pi/32, mass = 128, size = 16, class = 2,
 		texture = { {"solid", {192, 0, 0, 255}}, {"scatter", {0, 0, 0, 192}, 0.5}} })
-	Body.new({name = "Selene", x = 400, y = 1324, v = 16, dir = 0, vrot = -math.pi/4, mass = 64, size = 24, class = 2})
+	Body.new({name = "Selene", x = 400, y = 1324, v = 16, dir = 0, vrot = -math.pi/4, mass = 64, size = 24, class = 2,
+		texture = { {"solid", {192, 144, 255, 255}}, {"blotch", {128, 102, 48, 64}, 3, 0.7}, {"blotch", {72, 64, 16, 64}, 7, 0.5}} })
 end
 
 function love.update(dt)
