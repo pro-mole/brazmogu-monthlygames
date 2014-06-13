@@ -26,6 +26,49 @@ function drawMeter(x, y, width, height, bgColor, fgColor, totalVal, currentVal, 
 	love.graphics.setColor(255,255,255,255)
 end
 
+function drawNavWheel(navCanvas, refBody)
+	function wheelStencil()
+		love.graphics.circle("fill", 0, 0, navCanvas:getWidth()/2, 36)
+	end
+	
+	navCanvas:clear()
+	love.graphics.setCanvas(navCanvas)
+	
+	love.graphics.push()
+	love.graphics.translate(navCanvas:getWidth()/2, navCanvas:getHeight()/2)
+	
+	love.graphics.setStencil(wheelStencil)
+	
+	local radius = navCanvas:getWidth()/2
+	
+	love.graphics.setColor(0,64,0,128)
+	love.graphics.circle("fill", 0, 0, radius, 36)
+	
+	love.graphics.setColor(0,128,0,128)
+	for i = 0,71 do
+		local c,s = math.cos(math.rad(i*5)), math.sin(math.rad(i*5))
+		if i % 9 == 0 then
+			love.graphics.line(radius * 0.8 * c, radius * 0.8 * s, radius * c, radius * s)
+		else
+			love.graphics.line(radius * 0.9 * c, radius * 0.9 * s, radius * c, radius * s)
+		end
+	end
+	
+	local line_w = love.graphics.getLineWidth()
+	love.graphics.setColor(0,192,0,128)
+	love.graphics.setLineWidth(4)
+	love.graphics.line(radius * 0.1 * math.cos(refBody.d), radius * 0.1 * math.sin(refBody.d), radius * 0.6 * math.cos(refBody.d), radius * 0.6 * math.sin(refBody.d))
+	love.graphics.setLineWidth(line_w)
+	
+	love.graphics.setColor(255,255,255,192)
+	love.graphics.circle("line", 0, 0, navCanvas:getWidth()/2-0.5, 36)
+	
+	love.graphics.setStencil()
+	
+	love.graphics.pop()
+	love.graphics.setCanvas()
+end
+
 function drawRadar(rCanvas, centerBody, scale)
 	function stencil()
 		love.graphics.circle("fill", 0, 0, rCanvas:getWidth()/2, 36)

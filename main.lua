@@ -13,6 +13,7 @@ Space = {
 }
 
 Radar = love.graphics.newCanvas(128,128)
+NavWheel = love.graphics.newCanvas(128,128)
 
 radar_color = {
 	{255,255,255,255}, -- Class 0
@@ -100,5 +101,7 @@ function love.draw()
 	end
 	
 	drawRadar(Radar, Space.probes[1], 1/16)
-	love.graphics.draw(Radar, love.window.getWidth()-128, love.window.getHeight() - 128)
+	drawNavWheel(NavWheel, Space.probes[1])
+	love.graphics.draw(Radar, love.window.getWidth()-132, love.window.getHeight() - 132)
+	love.graphics.draw(NavWheel, 4, love.window.getHeight() - 132)
 end
