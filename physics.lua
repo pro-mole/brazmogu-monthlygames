@@ -10,7 +10,7 @@ UP = 3 * math.pi/2
 
 -- An index of Physics stuff we need globally
 Physics = {
-	K = 2^7, -- Universal gravitation constant
+	K = 2^9, -- Universal gravitation constant
 	bodies = {},
 	update = function (self,dt)
 		for i,B in ipairs(self.bodies) do
@@ -227,12 +227,16 @@ function Body:draw()
 	love.graphics.circle("line", self.x, self.y, self.size, 36)]]
 	--love.graphics.setStencil(self.stencil)
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(self.texture, self.x-self.size, self.y-self.size)
+	love.graphics.push()
+	love.graphics.translate(self.x, self.y)
+	love.graphics.rotate(self.d)
+	love.graphics.draw(self.texture, -self.size, -self.size)
+	love.graphics.pop()
 	--love.graphics.setStencil()
 	
 	-- Draw speed and orientatino vectors
-	love.graphics.setColor(0, 255, 255, 128)
+	--[[love.graphics.setColor(0, 255, 255, 128)
 	drawVector(self.x, self.y, self.size, self.d)
 	love.graphics.setColor(0, 255, 0, 128)
-	drawVector(self.x, self.y, self.v, self.dir)
+	drawVector(self.x, self.y, self.v, self.dir)]]
 end
