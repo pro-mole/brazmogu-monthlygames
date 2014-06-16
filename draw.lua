@@ -6,23 +6,61 @@ function screenshot()
 	screenData:encode("screenshot-"..os.date("%Y%m%d%H%M%S")..(".png"))
 end
 
-function drawMeter(x, y, width, height, bgColor, fgColor, totalVal, currentVal, direction)
-	love.graphics.setColor(unpack(bgColor))
-	love.graphics.rectangle("fill", x, y, width, height)
-	
-	love.graphics.setColor(unpack(fgColor))
+function drawMeter(x, y, long, thick, bgColor, fgColor, totalVal, currentVal, direction)
 	local direction = direction or "right"
 	local relSize = currentVal/totalVal
+
+	love.graphics.push()
+	love.graphics.translate(x, y)
+ 
 	if direction == "right" then
-		love.graphics.rectangle("fill", x+1, y+1, relSize*(width-2), height-2)
+		love.graphics.rotate(0)
 	elseif direction == "left" then
-		love.graphics.rectangle("fill", x+1+(1-relSize)*(width-2), y+1, relSize*(width-2), height-2)
+		love.graphics.rotate(math.pi/2)
 	elseif direction == "down" then
-		love.graphics.rectangle("fill", x+1, y+1, width-2, relSize*(height-2))
+		love.graphics.rotate(math.pi)
 	elseif direction == "up" then
-		love.graphics.rectangle("fill", x+1, y+1+(1-relSize)*(height-2), width-2, relSize*(height-2))
+		love.graphics.rotate(3*math.pi/2)
 	end
+
+	love.graphics.setColor(unpack(bgColor))
+	love.graphics.rectangle("fill", -long/2, -thick/2, long, thick)
+
+	love.graphics.setColor(unpack(fgColor))
+	love.graphics.rectangle("fill", -long/2 + 1, -thick/2 + 1, (long-2)* relSize, thick-2)
 	
+	love.graphics.pop()
+	love.graphics.setColor(255,255,255,255)
+end
+
+function drawSegMeter(x, y, long, thick, bgColor, fgColor, totalVal, currentVal, direction, segments)
+	local direction = direction or "right"
+	local segments = segments or 10
+	local segSize = long/segments
+
+	love.graphics.push()
+	love.graphics.translate(x, y)
+ 
+	if direction == "right" then
+		love.graphics.rotate(0)
+	elseif direction == "left" then
+		love.graphics.rotate(math.pi/2)
+	elseif direction == "down" then
+		love.graphics.rotate(math.pi)
+	elseif direction == "up" then
+		love.graphics.rotate(3*math.pi/2)
+	end
+
+	love.graphics.setColor(unpack(bgColor))
+	love.graphics.rectangle("fill", -long/2, -thick/2, long, thick)
+
+	local parts = math.ceil(currentVal / totalVal * segments)
+	love.graphics.setColor(unpack(fgColor))
+	for i = 0,parts-1 do
+		love.graphics.rectangle("fill", -long/2 + segSize*i + 1, -thick/2 + 1, segSize-2, thick-2)
+	end
+
+	love.graphics.pop()
 	love.graphics.setColor(255,255,255,255)
 end
 
@@ -41,7 +79,7 @@ function drawNavWheel(navCanvas, refBody)
 	
 	local radius = navCanvas:getWidth()/2
 	
-	love.graphics.setColor(0,64,0,128)
+	love.graphics.setColor(0,64,0,192)
 	love.graphics.circle("fill", 0, 0, radius, 36)
 	
 	love.graphics.setColor(0,128,0,128)
@@ -82,7 +120,7 @@ function drawRadar(rCanvas, centerBody, scale)
 	
 	love.graphics.setStencil(stencil)
 	
-	love.graphics.setColor(0,64,0,128)
+	love.graphics.setColor(0,64,0,192)
 	love.graphics.circle("fill", 0, 0, rCanvas:getWidth()/2, 36)
 	love.graphics.setColor(0,128,0,128)
 	for i = 1,8 do
@@ -95,7 +133,7 @@ function drawRadar(rCanvas, centerBody, scale)
 	for i,B in ipairs(Physics.bodies) do
 		local r, a = math.sqrt(squareBodyDistance(centerBody, B))*scale, bodyDirection(centerBody, B)
 		love.graphics.setColor(unpack(radar_color[B.class+1]))
-		love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, B.class+1, 8)
+		love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, math.max(B.class+1, B.size * scale), 8)
 	end
 	
 	love.graphics.setColor(255,255,255,192)
