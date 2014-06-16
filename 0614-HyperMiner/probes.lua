@@ -81,6 +81,17 @@ function Probe:update(dt)
 	end
 
 	if self.energy > 0 then
+		if love.keyboard.isDown("x") then -- Torque Break
+			if self.vrot ~= 0 then
+				if self.vrot > 0 then
+					self.vrot = self.vrot - self.torque*dt
+				elseif self.vrot < 0 then
+					self.vrot = self.vrot + self.torque*dt
+				end
+				self.energy = self.energy - self.energy_rate * dt
+			end
+		end
+
 		if love.keyboard.isDown("left") then
 			self.vrot = self.vrot - self.torque*dt
 			self.energy = self.energy - self.energy_rate * dt
@@ -92,14 +103,18 @@ function Probe:update(dt)
 		end
 	end
 
+	self.energy = math.max(0, self.energy)
+	self.fuel = math.max(0, self.fuel)
+	self.booster = math.max(0, self.booster)
+
 	Body.update(self, dt)
 end
 
 function Probe:draw()
 	Body.draw(self)
 
-	love.graphics.push()
-	love.graphics.translate(self.x - self.size, self.y - self.size - 12)
+	--[[love.graphics.push()
+	love.graphics.translate(self.x , self.y - self.size - 12)
 
 	drawMeter(0, 0, self.size*2, 4, {128, 192, 255, 128}, {128, 192, 255, 255}, self.max_energy, self.energy)
 	drawMeter(0, 4, self.size*2, 4, {255, 255, 0, 255}, {255, 255, 0, 255}, self.max_fuel, self.fuel)
@@ -108,9 +123,9 @@ function Probe:draw()
 	love.graphics.pop()
 	
 	love.graphics.push()
-	love.graphics.translate(self.x - self.size - 4, self.y - self.size)
+	love.graphics.translate(self.x - self.size - 4, self.y)
 	
-	drawMeter(0, 0, 4, self.size*2, {255, 0, 0, 128}, {255, 0, 0, 255}, 10, self.boost_power, "up")
+	drawSegMeter(0, 0, self.size*2, 4, {255, 0, 0, 128}, {255, 0, 0, 255}, 10, self.boost_power, "up")
 	
-	love.graphics.pop()
+	love.graphics.pop()]]
 end
