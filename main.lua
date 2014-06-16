@@ -8,8 +8,8 @@ require("screen/main")
 menuscreen = require("screen/menu")
 gamescreen = require("screen/game")
 storyscreen = require("screen/challenge")
-helpscreen = nil
-aboutscreen = nil
+helpscreen = require("screen/help")
+aboutscreen = require("screen/about")
 
 gameover = false;
 
