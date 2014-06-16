@@ -2,6 +2,33 @@
 
 -- Global 
 
+-- Create a wrapping for the background
+function generateBackground(size, density)
+	local sky = love.graphics.newCanvas(size, size)
+	love.graphics.setCanvas(sky)
+	love.graphics.setColor(0,0,0,255)
+	love.graphics.rectangle("fill", 0, 0, size, size)
+
+	-- Random white dots and stuff
+	local stars = 0
+	while stars < size/density do
+		local s = math.random() + 1
+		local x, y = math.random(size), math.random(size)
+
+		local alpha = math.random(64,255)
+		love.graphics.setColor(255,255,255,alpha)
+		love.graphics.circle("fill", x, y, s, 128)
+
+		stars = stars + math.pi * s^2 * (alpha/255)
+	end
+
+	love.graphics.setCanvas()
+
+	local index = math.random(65535)
+	sky:getImageData():encode(string.format("skybox%05d.png", index), "png")
+	return sky
+end
+
 -- Create a texture for a given body using predefined patterns
 -- Variable number of patterns will be applied in the order they are defined(as an array where the first element is the pattern name, follolwed by whatever else is needed)
 function generateTexture(size, ...)
