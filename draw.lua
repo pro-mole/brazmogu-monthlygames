@@ -132,8 +132,10 @@ function drawRadar(rCanvas, centerBody, scale)
 	
 	for i,B in ipairs(Physics.bodies) do
 		local r, a = math.sqrt(squareBodyDistance(centerBody, B))*scale, bodyDirection(centerBody, B)
-		love.graphics.setColor(unpack(radar_color[B.class+1]))
-		love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, math.max(B.class+1, B.size * scale), 8)
+		if r <= (rCanvas:getWidth()/2)^2 then
+			love.graphics.setColor(unpack(radar_color[B.class+1]))
+			love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, math.max(B.class+1, B.size * scale), 32)
+		end
 	end
 	
 	love.graphics.setColor(255,255,255,192)

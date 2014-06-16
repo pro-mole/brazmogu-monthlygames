@@ -29,6 +29,33 @@ function generateBackground(size, density)
 	return sky
 end
 
+-- Load texture from file
+-- For cases when we want to have fixed textures(probe, stations, etc)
+function loadTexture(size, filename)
+	local tex = love.graphics.newCanvas(size*2, size*2)
+	
+	love.graphics.setCanvas(tex)
+	
+	local tex_img = love.graphics.newImage(filename)
+	
+	love.graphics.setStencil(
+		function()
+			love.graphics.circle("fill", size, size, size, 32)
+		end
+	)
+	
+	if tex_img:getWidth() ~= tex:getWidth() and tex_img:getHeight() ~= tex:getHeight() then
+		love.graphics.scale(size*2 / math.max(tex_img:getWidth(),tex_img:getHidth()))
+	end
+	
+	love.graphics.draw(tex_img, 0, 0)
+	
+	love.graphics.origin()
+	love.graphics.setStencil()
+	love.graphics.setCanvas()
+	return tex
+end
+
 -- Create a texture for a given body using predefined patterns
 -- Variable number of patterns will be applied in the order they are defined(as an array where the first element is the pattern name, follolwed by whatever else is needed)
 function generateTexture(size, ...)
@@ -110,6 +137,7 @@ Pattern["blotch"] = function (size, color, avgsize, density)
 end
 
 -- Test Code
+--[[
 modes = {"gradient","scatter", "blotch"}
 
 for i = 1,10 do
@@ -134,3 +162,4 @@ for i = 1,10 do
 end
 
 print(love.filesystem.getSaveDirectory())
+]]

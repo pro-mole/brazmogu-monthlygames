@@ -15,12 +15,19 @@ Physics = {
 	update = function (self,dt)
 		for i,B in ipairs(self.bodies) do
 			print_debug("Body:", B)
+			B["influence_body"] = nil
 			for j,C in ipairs(self.bodies) do
+				local max_grav = 0
 				if B ~= C and B.class <= C.class then
 					B:applyForce(gravityBodies(B,C), bodyDirection(B,C), dt)
-					print_debug("Gravity:", gravityBodies(B,C), bodyDirection(B,C), math.sqrt(squareBodyDistance(B,C)))
+					if gravityBodies(B,C) > max_grav then
+						B["influence_body"] = C
+						max_grav = gravityBodies(B,C)
+					end
+					print_debug(string.format("Gravity(%s -> %s):",B,C), gravityBodies(B,C), bodyDirection(B,C), math.sqrt(squareBodyDistance(B,C)))
 				end
 			end
+			print_debug(string.format("Ifluence on %s: %s",B,B.influence_body))
 		end		
 		
 		for i,B in ipairs(self.bodies) do
@@ -37,7 +44,7 @@ Physics = {
 			for j,C in ipairs(self.bodies) do
 				if B ~= C then
 					love.graphics.setColor(255, 0, 0, 128)
-					drawVector(B.x, B.y, gravityBodies(B,C), bodyDirection(B,C))
+					drawVector(B.x, B.y, gravityBodies(B,C)*16, bodyDirection(B,C))
 				end
 			end
 		end		
@@ -56,7 +63,8 @@ Body = {
 	mass = 1, -- Mass in WUs (Whatever Units)
 	size = 1, -- All our objects will be spherical because that's already complicated enough :|
 	class = 0, -- Size class of the body; for checking gravity effect
-	texture = { {"gradient", {255,255,255,255}, {128,128,128,255}} } -- Texture info; standard to solid white
+	influence_body = nil,
+	texture_params = { {"gradient", {255,255,255,255}, {128,128,128,255}} } -- Texture info; standard to solid white
 }
 Body.__index = Body
 
@@ -68,9 +76,6 @@ function Body.new(specs)
 	end
 	
 	local B = setmetatable(T, Body)
-	
-	print(string.format("Texture for %s",B))
-	B.texture = generateTexture(B.size, unpack(B.texture))
 	
 	table.insert(Physics.bodies, B)
 	return B
@@ -115,7 +120,7 @@ function gravityBodies(B1, B2)
 		return 0
 	end
 
-	return Physics.K*B1.mass*B2.mass/d
+	return (Physics.K*B1.mass*B2.mass)/d
 end
 
 -- Get circular orbit radius around a body for given horizontal velocity
@@ -218,25 +223,36 @@ function drawVector(x, y, mag, dir)
 	love.graphics.line(x, y, x + mag*math.cos(dir), y + mag*math.sin(dir))
 end
 
+-- Generate texture for a Body
+function Body:loadTexture()
+	if self.texture_file then
+		self["texture"] = loadTexture(self.size, self.texture_file)
+	else
+		self["texture"] = generateTexture(self.size, unpack(self.texture_params))
+	end
+end
+
 -- Basic drawing for basic simulations
 function Body:draw()
-	-- Draw the body
-	--[[love.graphics.setColor(0, 0, 0, 255)
-	love.graphics.circle("fill", self.x, self.y, self.size, 36)
-	love.graphics.setColor(255, 255, 255, 255)
-	love.graphics.circle("line", self.x, self.y, self.size, 36)]]
-	--love.graphics.setStencil(self.stencil)
-	love.graphics.setColor(255,255,255,255)
-	love.graphics.push()
-	love.graphics.translate(self.x, self.y)
-	love.graphics.rotate(self.d)
-	love.graphics.draw(self.texture, -self.size, -self.size)
-	love.graphics.pop()
-	--love.graphics.setStencil()
-	
-	-- Draw speed and orientatino vectors
-	--[[love.graphics.setColor(0, 255, 255, 128)
-	drawVector(self.x, self.y, self.size, self.d)
-	love.graphics.setColor(0, 255, 0, 128)
-	drawVector(self.x, self.y, self.v, self.dir)]]
+	if self.texture then
+		-- Draw the body
+		--[[love.graphics.setColor(0, 0, 0, 255)
+		love.graphics.circle("fill", self.x, self.y, self.size, 36)
+		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.circle("line", self.x, self.y, self.size, 36)]]
+		--love.graphics.setStencil(self.stencil)
+		love.graphics.setColor(255,255,255,255)
+		love.graphics.push()
+		love.graphics.translate(self.x, self.y)
+		love.graphics.rotate(self.d)
+		love.graphics.draw(self.texture, -self.size, -self.size)
+		love.graphics.pop()
+		--love.graphics.setStencil()
+		
+		-- Draw speed and orientatino vectors
+		--[[love.graphics.setColor(0, 255, 255, 128)
+		drawVector(self.x, self.y, self.size, self.d)
+		love.graphics.setColor(0, 255, 0, 128)
+		drawVector(self.x, self.y, self.v, self.dir)]]
+	end
 end
