@@ -40,7 +40,7 @@ function loadTexture(size, filename)
 	
 	love.graphics.setStencil(
 		function()
-			love.graphics.circle("fill", size, size, size, 32)
+			love.graphics.circle("fill", size, size, size, size/2)
 		end
 	)
 	
@@ -67,7 +67,7 @@ function generateTexture(size, ...)
 	
 	love.graphics.setStencil(
 		function()
-			love.graphics.circle("fill", size, size, size, 32)
+			love.graphics.circle("fill", size, size, size, math.max(size/2, 32))
 		end
 	)
 	
