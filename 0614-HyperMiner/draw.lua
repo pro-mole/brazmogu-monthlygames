@@ -93,8 +93,13 @@ function drawNavWheel(navCanvas, refBody)
 	end
 	
 	local line_w = love.graphics.getLineWidth()
-	love.graphics.setColor(0,192,0,128)
 	love.graphics.setLineWidth(4)
+	if refBody.influence_body then
+		local D = bodyDirection(refBody, refBody.influence_body)
+		love.graphics.setColor(192,192,0,128)
+		love.graphics.line(radius * 0.1 * math.cos(D), radius * 0.1 * math.sin(D), radius * 0.6 * math.cos(D), radius * 0.6 * math.sin(D))
+	end
+	love.graphics.setColor(0,192,0,128)
 	love.graphics.line(radius * 0.1 * math.cos(refBody.d), radius * 0.1 * math.sin(refBody.d), radius * 0.6 * math.cos(refBody.d), radius * 0.6 * math.sin(refBody.d))
 	love.graphics.setLineWidth(line_w)
 	

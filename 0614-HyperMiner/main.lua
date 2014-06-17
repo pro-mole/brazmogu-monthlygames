@@ -44,7 +44,7 @@ function print_debug(...)
 end
  
 function love.load()
-	Probe.new({name = "Probe", x = 0, y = 1024, v = 10, dir = math.rad(270), mass = 1, size = 8, active = true})
+	Probe.new({name = "Probe", x = 0, y = 1024, v = 5, dir = math.rad(270), mass = 1, size = 8, active = true})
 	
 	-- Test environment
 	-- A planetary system with two moons around it
@@ -52,12 +52,12 @@ function love.load()
 	Star.new({name = "Sol", x = 12148, y = 1024, v = 0, dir = 0, vrot = math.pi/8, mass = 1024, size = 1024,
 		texture_params = { {"gradient", {144, 128, 0, 255}, {128, 32, 0, 255}, 100}, {"scatter", {255, 0, 0, 128}, 0.8} } })
 		
-	Planet.new({name = "Terra", x = 1024, y = 1024, v = 2, dir = math.rad(270), vrot = math.pi/8, mass = 128, size = 256, atmosphere = {H=0.1, O=0.6, H20=0.3}, atmosphere_size = 320,
+	Planet.new({name = "Terra", x = 1024, y = 1024, v = 2, dir = math.rad(270), vrot = math.pi/8, mass = 512, size = 256, atmosphere = {H=0.1, O=0.6, H20=0.3}, atmosphere_size = 320,
 		texture_params = { {"gradient", {64, 128, 144, 255}, {12, 64, 96, 255}, 50}, {"scatter", {0, 0, 128, 128}, 0.8}, {"blotch", {0, 64, 0, 204}, 8, 0.8} } })
 		
-	Satellite.new({name = "Luna", x = 1024, y = 1024 + 640, v = 10, dir = math.atan2(-2,14), vrot = -math.pi/16, mass = 24, size = 16,
+	Satellite.new({name = "Luna", x = 1024, y = 1024 + 640, v = 20, dir = math.atan2(-2,20), vrot = -math.pi/16, mass = 24, size = 16,
 		texture_params = { {"gradient", {128, 32, 32, 255}, {72, 0, 0, 255}, 32}, {"scatter", {0, 0, 0, 128}, 0.5} } })
-	Satellite.new({name = "Selena", x = 64, y = 1024, v = 9.5, dir = math.rad(90), vrot = math.pi/64, mass = 48, size = 32,
+	Satellite.new({name = "Selena", x = 64, y = 1024, v = 16.5, dir = math.rad(90), vrot = math.pi/64, mass = 48, size = 32,
 		texture_params = { {"gradient", {192, 128, 144, 255}, {128, 108, 128, 255}, 50}, {"blotch", {64, 64, 64, 64}, 4, 0.8}, {"blotch", {0, 0, 64, 64}, 3, 0.9} } })
 
 	-- Load all textures
