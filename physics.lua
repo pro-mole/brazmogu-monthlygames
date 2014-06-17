@@ -16,8 +16,8 @@ Physics = {
 		for i,B in ipairs(self.bodies) do
 			print_debug("Body:", B)
 			B["influence_body"] = nil
+			local max_grav = 0
 			for j,C in ipairs(self.bodies) do
-				local max_grav = 0
 				if B ~= C and B.class <= C.class then
 					B:applyForce(gravityBodies(B,C), bodyDirection(B,C), dt)
 					if gravityBodies(B,C) > max_grav then
