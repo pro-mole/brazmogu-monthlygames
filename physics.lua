@@ -44,7 +44,7 @@ Physics = {
 			for j,C in ipairs(self.bodies) do
 				if B ~= C then
 					love.graphics.setColor(255, 0, 0, 128)
-					drawVector(B.x, B.y, gravityBodies(B,C)*16, bodyDirection(B,C))
+					drawVector(B.x, B.y, gravityBodies(B,C), bodyDirection(B,C))
 				end
 			end
 		end		
@@ -88,6 +88,20 @@ end
 -- Return composite vectors of a single vector
 function compositeVectors(mag, dir)
 	return mag * math.cos(dir), mag * math.sin(dir)
+end
+
+-- Return magnitude, direction for a sum of N vectors
+function addVectors(...)
+	local V = {...}
+	assert(#V % 2 == 0, "Vector addition is missing one vector's direction")
+	
+	local Vx, Vy = 0, 0
+	for i = 1,#V,2 do
+		local tVx, tVy = compositeVectors(V[i], V[i+1])
+		Vx, Vy = Vx + tVx, Vy + tVy
+	end
+	
+	return math.sqrt(Vx^2 + Vy^2), math.atan2(Vy,Vx)
 end
 
 -- Squared distance between two bodies
@@ -150,7 +164,7 @@ function Body:applyForce(mag, dir, dt)
 	local d = dir or 0 -- to the right
 	local t = dt or 1 -- 1 second
 	
-	local Fx, Fy = compositeVectors(F/self.mass, d)
+	--[[local Fx, Fy = compositeVectors(F/self.mass, d)
 	local vx, vy = compositeVectors(self.v, self.dir)
 	print_debug("Force:",self, F, dir, Fx, Fy)
 	
@@ -158,7 +172,9 @@ function Body:applyForce(mag, dir, dt)
 	local Vx, Vy = vx + t*Fx, vy + t*Fy
 	self.v = math.sqrt((Vx)^2 + (Vy)^2)
 	self.dir = math.atan2(Vy, Vx)
-	print_debug("New Velocity:",self, self.v, self.dir, Vx, Vy)
+	print_debug("New Velocity:",self, self.v, self.dir, Vx, Vy)]]
+	
+	self.v, self.dir = addVectors(self.v, self.dir, F/self.mass * t, d)
 end
 
 -- Move according to current velocity
