@@ -66,6 +66,7 @@ end
 
 function drawNavWheel(navCanvas, refBody)
 	function wheelStencil()
+		love.graphics.setColor(255,255,255,255)
 		love.graphics.circle("fill", 0, 0, navCanvas:getWidth()/2, 36)
 	end
 	
@@ -79,7 +80,7 @@ function drawNavWheel(navCanvas, refBody)
 	
 	local radius = navCanvas:getWidth()/2
 	
-	love.graphics.setColor(0,64,0,192)
+	love.graphics.setColor(0,64,0,255)
 	love.graphics.circle("fill", 0, 0, radius, 36)
 	
 	love.graphics.setColor(0,128,0,128)
@@ -118,6 +119,7 @@ end
 
 function drawRadar(rCanvas, centerBody, scale)
 	function stencil()
+		love.graphics.setColor(255,255,255,255)
 		love.graphics.circle("fill", 0, 0, rCanvas:getWidth()/2, 36)
 	end
 
@@ -129,7 +131,7 @@ function drawRadar(rCanvas, centerBody, scale)
 	
 	love.graphics.setStencil(stencil)
 	
-	love.graphics.setColor(0,64,0,192)
+	love.graphics.setColor(0,64,0,255)
 	love.graphics.circle("fill", 0, 0, rCanvas:getWidth()/2, 36)
 	love.graphics.setColor(0,128,0,128)
 	for i = 1,8 do
@@ -153,4 +155,58 @@ function drawRadar(rCanvas, centerBody, scale)
 	love.graphics.setStencil()
 	love.graphics.pop()
 	love.graphics.setCanvas()
+end
+
+-- Draw the storage crates as a grid of mineral "boxes"
+function drawStorage(x, y, probe)
+	love.graphics.push()
+	love.graphics.translate(x, y)
+
+	local crate_size = 8
+
+	for x = 0,7 do
+		for y = 0,(Probe.max_storage_capacity/8)-1 do
+			love.graphics.push()
+			love.graphics.translate(x * (crate_size+4) , y * (crate_size+4))
+			if (x*8 + y) < Probe.storage_capacity then
+				love.graphics.setColor(32,64,32,255)
+			else
+				love.graphics.setColor(64,64,64,255)
+			end
+			love.graphics.rectangle("fill", 1, 1, crate_size+2, crate_size+2)
+			love.graphics.pop()
+		end
+	end
+
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.pop()
+end
+
+-- Draw the storage tank as a vertical bar of liquids
+function drawTank(x, y, probe)
+	love.graphics.push()
+	love.graphics.translate(x, y)
+
+	local tank_height, tank_width = 94, 48
+
+	love.graphics.setColor(32,32,32,255)
+	love.graphics.line(-1,0, -1,tank_height)
+	love.graphics.line(tank_width+1,0, tank_width+1,tank_height)
+	love.graphics.line(-1,tank_height+1, tank_width+1,tank_height+1)
+	love.graphics.setColor(128,128,128,255)
+	love.graphics.rectangle("fill", 0, 0, tank_width, tank_height)
+	love.graphics.setColor(64,64,64,255)
+	love.graphics.rectangle("fill", 0, 0, tank_width, tank_height * (Probe.max_tank_capacity - probe.tank_capacity)/Probe.max_tank_capacity)
+
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.pop()
+end
+
+-- Draw the vacuum chamber as a pie chart of gases
+function drawVacuum(x, y, probe)
+	love.graphics.push()
+	love.graphics.translate(x, y)
+
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.pop()
 end

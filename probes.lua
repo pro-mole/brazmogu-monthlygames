@@ -5,19 +5,42 @@ require("physics")
 
 Probe = {
 	active = false,
+
+	-- Engine
 	fuel = 0,
 	max_fuel = 100, -- Fuel capacity (liters)
+	thrust = 1, -- Acceleration (pixels per second per second per unit of mass)
+	fuel_rate = 1, -- Fuel rate for thrust (liters per second)
+
+	-- Energy
 	energy = 0,
 	max_energy = 100, -- Energy capacity (percentage)
+	energy_rate = 1, -- Energy rate for torque (percentage per second)
+
+	-- Reaction Wheels
+	torque = math.pi/4, -- Angular movement (radians per second)
+
+	-- Boosters
 	booster = 0,
 	max_booster = 100, -- Booster Fuel capacity (liters)
-	thrust = 1, -- Acceleration (pixels per second per second)
 	boost_power = 1, -- Booster power setting (1 to 10)
 	boost = 10, -- Booster base potency (instantaneous acceleration force)
-	fuel_rate = 1, -- Fuel rate for thrust (liters per second)
-	energy_rate = 1, -- Energy rate for torque (percentage per second)
 	booster_rate = 5, -- Booster base consumption (liters per boost per power level)
-	torque = math.pi/4 -- Angular movement (radians per second)
+	
+	-- Mineral Storage
+	storage = {},
+	storage_capacity = 16,
+	max_storage_capacity = 64,
+
+	-- Liquid Storage
+	tank = {},
+	tank_capacity = 100,
+	max_tank_capacity = 500,
+
+	-- Gas Storage
+	vacuum = {},
+	vacuum_capacity = 10,
+	max_vacuum_capacity = 80
 }
 
 Probe.__tostring = Body.__tostring

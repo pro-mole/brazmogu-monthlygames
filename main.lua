@@ -52,7 +52,7 @@ function love.load()
 	Star.new({name = "Sol", x = 12148, y = 1024, v = 0, dir = 0, vrot = math.pi/8, mass = 1024, size = 1024,
 		texture_params = { {"gradient", {144, 128, 0, 255}, {128, 32, 0, 255}, 100}, {"scatter", {255, 0, 0, 128}, 0.8} } })
 		
-	Planet.new({name = "Terra", x = 1024, y = 1024, v = 2, dir = math.rad(270), vrot = math.pi/8, mass = 512, size = 256, atmosphere = {H=0.1, O=0.6, H20=0.3}, atmosphere_size = 320,
+	Planet.new({name = "Terra", x = 1024, y = 1024, v = 2, dir = math.rad(270), vrot = math.pi/8, mass = 512, size = 128, atmosphere = {H=0.1, O=0.6, H20=0.3}, atmosphere_size = 240,
 		texture_params = { {"gradient", {64, 128, 144, 255}, {12, 64, 96, 255}, 50}, {"scatter", {0, 0, 128, 128}, 0.8}, {"blotch", {0, 64, 0, 204}, 8, 0.8} } })
 		
 	Satellite.new({name = "Luna", x = 1024, y = 1024 + 640, v = 20, dir = math.atan2(-2,20), vrot = -math.pi/16, mass = 24, size = 16,
@@ -125,6 +125,7 @@ function love.draw()
 	if #Space.probes >= 1 then
 		love.graphics.pop()
 
+		love.graphics.setColor(255,255,255,255)
 		drawRadar(Radar, probe, 1/16)
 		drawNavWheel(NavWheel, probe)
 		love.graphics.draw(Radar, love.window.getWidth()-132, love.window.getHeight() - 132)
@@ -139,5 +140,15 @@ function love.draw()
 		love.graphics.printf("FUEL:", 156, love.window.getHeight() - 60, 128, "left")
 		drawMeter(218, love.window.getHeight() - 74, 128, 16, {64, 128, 0, 255}, {192, 255, 0, 255}, probe.max_booster, probe.booster, "right")
 		love.graphics.printf("BOOSTER:", 156, love.window.getHeight() - 92, 128, "left")
+
+		local B = probe.influence_body
+		love.graphics.print(string.format("REF: %s", B), 156, love.window.getHeight() - 128)
+		love.graphics.print(string.format("V: %0.2f u/s", addVectors(probe.v, probe.dir, -B.v, B.dir)), 156, love.window.getHeight() - 118)
+		love.graphics.print(string.format("H: %0.2f u", math.sqrt(squareBodyDistance(probe,B)-probe.size-B.size)), 156, love.window.getHeight() - 108)
+
+		drawStorage(318, love.window.getHeight()-96, probe)
+		love.graphics.print("STORAGE:", 320, love.window.getHeight() - 104)
+		drawTank(424, love.window.getHeight()-96, probe)
+		love.graphics.print("TANK:", 422, love.window.getHeight() - 104)
 	end
 end
