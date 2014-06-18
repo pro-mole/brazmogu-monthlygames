@@ -95,18 +95,18 @@ function drawNavWheel(navCanvas, refBody)
 	end
 	
 	local line_w = love.graphics.getLineWidth()
-	love.graphics.setLineWidth(4)
+	love.graphics.setLineWidth(3)
 	if refBody.influence_body then
 		local I = refBody.influence_body
 		local D = bodyDirection(refBody, I)
 		local vm,vd = addVectors(refBody.v, refBody.dir, -I.v, I.dir)
 		love.graphics.setColor(192,192,0,128)
-		love.graphics.line(radius * 0.1 * math.cos(D), radius * 0.1 * math.sin(D), radius * 0.3 * math.cos(D), radius * 0.3 * math.sin(D))
+		love.graphics.line(radius * 0.8 * math.cos(D), radius * 0.8 * math.sin(D), radius * math.cos(D), radius *  math.sin(D))
 		love.graphics.setColor(0,0,192,128)
-		love.graphics.line(radius * 0.3 * math.cos(vd), radius * 0.3 * math.sin(vd), radius * 0.5 * math.cos(vd), radius * 0.5 * math.sin(vd))
+		love.graphics.line(radius * 0.6 * math.cos(vd), radius * 0.6 * math.sin(vd), radius * 0.8 * math.cos(vd), radius * 0.8 * math.sin(vd))
 	end
 	love.graphics.setColor(0,192,0,128)
-	love.graphics.line(radius * 0.5 * math.cos(refBody.d), radius * 0.5 * math.sin(refBody.d), radius * 0.7 * math.cos(refBody.d), radius * 0.7 * math.sin(refBody.d))
+	love.graphics.line(radius * 0.1 * math.cos(refBody.d), radius * 0.1 * math.sin(refBody.d), radius * 0.6 * math.cos(refBody.d), radius * 0.6 * math.sin(refBody.d))
 	love.graphics.setLineWidth(line_w)
 	
 	love.graphics.setColor(255,255,255,255)
@@ -148,6 +148,10 @@ function drawRadar(rCanvas, centerBody, scale)
 		if r <= (rCanvas:getWidth()/2)^2 then
 			love.graphics.setColor(unpack(radar_color[B.class+1]))
 			love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, math.max(B.class+1, B.size * scale), 32)
+			if B == centerBody.influence_body then
+				love.graphics.setColor(255,255,255,128)
+				love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, math.max(B.class+1, B.size * scale)-1, 32)
+			end
 		end
 	end
 	

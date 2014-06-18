@@ -189,9 +189,11 @@ function Probe:drawUI()
 	love.graphics.printf("BOOSTER:", 156, 52, 128, "left")
 
 	local B = self.influence_body
+	local vB, dB = addVectors(self.v, self.dir, -B.v, B.dir)
 	love.graphics.print(string.format("REF: %s", B), 156, 16)
-	love.graphics.print(string.format("V: %0.2f u/s", addVectors(self.v, self.dir, -B.v, B.dir)), 156, 26)
-	love.graphics.print(string.format("H: %0.2f u", math.sqrt(squareBodyDistance(self,B)-self.size-B.size)), 156, 36)
+	love.graphics.print(string.format("e: %0.2f", getEccentricity(B, math.sqrt(squareBodyDistance(self,B)), vB)), 256, 16)
+	love.graphics.print(string.format("V: %0.2f u/s", vB), 156, 26)
+	love.graphics.print(string.format("H: %0.2f u", math.sqrt(squareBodyDistance(self,B))-self.size-B.size), 156, 36)
 
 	drawStorage(318, 24, self)
 	love.graphics.print("STORAGE:", 320, 16)
