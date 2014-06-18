@@ -104,18 +104,44 @@ function love.draw()
 		love.graphics.translate(love.window.getWidth()/2 - probe.x, love.window.getHeight()/2 - probe.y)
 	end
 	
-	local _x = math.floor(Tx / 1024) * 1024
-	local _y = math.floor(Ty / 1024) * 1024
+	local S = SpaceBG:getWidth()
+	local _x = math.floor(Tx / S) * S
+	local _y = math.floor(Ty / S) * S
+	local _dx = Tx %S
+	local _dy = Ty %S
 
-	love.graphics.draw(SpaceBG, _x-1024, _y-1024)
-	love.graphics.draw(SpaceBG, _x, _y-1024)
-	love.graphics.draw(SpaceBG, _x+1024, _y-1024)
-	love.graphics.draw(SpaceBG, _x-1024, _y)
 	love.graphics.draw(SpaceBG, _x, _y)
-	love.graphics.draw(SpaceBG, _x+1024, _y)
-	love.graphics.draw(SpaceBG, _x-1024, _y+1024)
-	love.graphics.draw(SpaceBG, _x, _y+1024)
-	love.graphics.draw(SpaceBG, _x+1024, _y+1024)
+	
+	if _dx < S/2 then
+		love.graphics.draw(SpaceBG, _x-S, _y)
+	elseif _dx > S/2 then
+		love.graphics.draw(SpaceBG, _x+S, _y)
+	end
+	
+	if _dy < S/2 then
+		love.graphics.draw(SpaceBG, _x, _y-S)
+	elseif _dy > S/2 then
+		love.graphics.draw(SpaceBG, _x, _y+S)
+	end
+	
+	if _dx < S/2 and _dy < S/2 then
+		love.graphics.draw(SpaceBG, _x-S, _y-S)
+	elseif _dx > S/2 and _dy < S/2 then
+		love.graphics.draw(SpaceBG, _x+S, _y-S)
+	elseif _dx < S/2 and _dy > S/2 then
+		love.graphics.draw(SpaceBG, _x-S, _y+S)
+	elseif _dx > S/2 and _dy > S/2 then
+		love.graphics.draw(SpaceBG, _x+S, _y+S)
+	end
+	--[[love.graphics.draw(SpaceBG, _x-S, _y-S)
+	love.graphics.draw(SpaceBG, _x, _y-S)
+	love.graphics.draw(SpaceBG, _x+S, _y-S)
+	love.graphics.draw(SpaceBG, _x-S, _y)
+	love.graphics.draw(SpaceBG, _x, _y)
+	love.graphics.draw(SpaceBG, _x+S, _y)
+	love.graphics.draw(SpaceBG, _x-S, _y+S)
+	love.graphics.draw(SpaceBG, _x, _y+S)
+	love.graphics.draw(SpaceBG, _x+S, _y+S)]]
 
 	for i,B in ipairs(Physics.bodies) do
 		B:draw()
@@ -125,30 +151,9 @@ function love.draw()
 	if #Space.probes >= 1 then
 		love.graphics.pop()
 
-		love.graphics.setColor(255,255,255,255)
-		drawRadar(Radar, probe, 1/16)
-		drawNavWheel(NavWheel, probe)
-		love.graphics.draw(Radar, love.window.getWidth()-132, love.window.getHeight() - 132)
-		love.graphics.draw(NavWheel, 4, love.window.getHeight() - 132)
-
-		drawSegMeter(144, love.window.getHeight() - 66, 128, 16, {128, 0, 0, 255}, {255, 0, 0, 255}, 10, probe.boost_power, "up")
-
-		love.graphics.setFont(font.standard)
-		drawMeter(218, love.window.getHeight() - 10, 128, 16, {0, 64, 96, 255}, {0, 192, 255, 255}, probe.max_energy, probe.energy, "right")
-		love.graphics.printf("ENERGY:", 156, love.window.getHeight() - 28, 128, "left")
-		drawMeter(218, love.window.getHeight() - 42, 128, 16, {128, 64, 0, 255}, {255, 192, 0, 255}, probe.max_fuel, probe.fuel, "right")
-		love.graphics.printf("FUEL:", 156, love.window.getHeight() - 60, 128, "left")
-		drawMeter(218, love.window.getHeight() - 74, 128, 16, {64, 128, 0, 255}, {192, 255, 0, 255}, probe.max_booster, probe.booster, "right")
-		love.graphics.printf("BOOSTER:", 156, love.window.getHeight() - 92, 128, "left")
-
-		local B = probe.influence_body
-		love.graphics.print(string.format("REF: %s", B), 156, love.window.getHeight() - 128)
-		love.graphics.print(string.format("V: %0.2f u/s", addVectors(probe.v, probe.dir, -B.v, B.dir)), 156, love.window.getHeight() - 118)
-		love.graphics.print(string.format("H: %0.2f u", math.sqrt(squareBodyDistance(probe,B)-probe.size-B.size)), 156, love.window.getHeight() - 108)
-
-		drawStorage(318, love.window.getHeight()-96, probe)
-		love.graphics.print("STORAGE:", 320, love.window.getHeight() - 104)
-		drawTank(424, love.window.getHeight()-96, probe)
-		love.graphics.print("TANK:", 422, love.window.getHeight() - 104)
+		probe:drawUI()
 	end
+	
+	love.graphics.print(string.format("%d;%d",_x,_y), 0, 8)
+	love.graphics.print(string.format("%d;%d",Tx,Ty), 0, 0)
 end

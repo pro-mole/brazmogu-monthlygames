@@ -74,13 +74,14 @@ function drawNavWheel(navCanvas, refBody)
 	love.graphics.setCanvas(navCanvas)
 	
 	love.graphics.push()
+	love.graphics.origin()
 	love.graphics.translate(navCanvas:getWidth()/2, navCanvas:getHeight()/2)
 	
 	love.graphics.setStencil(wheelStencil)
 	
 	local radius = navCanvas:getWidth()/2
 	
-	love.graphics.setColor(0,64,0,255)
+	love.graphics.setColor(0,32,0,255)
 	love.graphics.circle("fill", 0, 0, radius, 36)
 	
 	love.graphics.setColor(0,128,0,128)
@@ -108,7 +109,7 @@ function drawNavWheel(navCanvas, refBody)
 	love.graphics.line(radius * 0.5 * math.cos(refBody.d), radius * 0.5 * math.sin(refBody.d), radius * 0.7 * math.cos(refBody.d), radius * 0.7 * math.sin(refBody.d))
 	love.graphics.setLineWidth(line_w)
 	
-	love.graphics.setColor(255,255,255,192)
+	love.graphics.setColor(255,255,255,255)
 	love.graphics.circle("line", 0, 0, navCanvas:getWidth()/2-0.5, 36)
 	
 	love.graphics.setStencil()
@@ -127,11 +128,12 @@ function drawRadar(rCanvas, centerBody, scale)
 	love.graphics.setCanvas(rCanvas)
 	
 	love.graphics.push()
+	love.graphics.origin()
 	love.graphics.translate(rCanvas:getWidth()/2, rCanvas:getHeight()/2)
 	
 	love.graphics.setStencil(stencil)
 	
-	love.graphics.setColor(0,64,0,255)
+	love.graphics.setColor(0,32,0,255)
 	love.graphics.circle("fill", 0, 0, rCanvas:getWidth()/2, 36)
 	love.graphics.setColor(0,128,0,128)
 	for i = 1,8 do
@@ -149,7 +151,7 @@ function drawRadar(rCanvas, centerBody, scale)
 		end
 	end
 	
-	love.graphics.setColor(255,255,255,192)
+	love.graphics.setColor(255,255,255,255)
 	love.graphics.circle("line", 0, 0, rCanvas:getWidth()/2-0.5, 36)
 	
 	love.graphics.setStencil()
