@@ -130,9 +130,9 @@ function gravityBodies(B1, B2)
 
 	local d = squareBodyDistance(B1,B2)
 
-	if math.sqrt(d) <= B1.size + B2.size then
+	--[[if math.sqrt(d) <= B1.size + B2.size then
 		return 0
-	end
+	end]]
 
 	return (Physics.K*B1.mass*B2.mass)/d
 end
