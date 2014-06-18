@@ -152,6 +152,12 @@ function getEscapeVelocity(B, r)
 	return math.sqrt(2 * Physics.K * B.mass / r)
 end
 
+-- Get eccentricity of orbit based on velocity and distance from body
+function getEccentricity(B, r, v)
+	local Vo, Ve = getOrbitVelocity(B, r), getEscapeVelocity(B, r)
+	return (v - Vo)/(Ve - Vo)
+end
+
 -- Get gravity field value at a given distance from a body
 function getGravityField(B, r)
 	return Physics.K * B.mass / r^2
