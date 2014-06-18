@@ -9,16 +9,17 @@ Probe = {
 	-- Engine
 	fuel = 0,
 	max_fuel = 100, -- Fuel capacity (liters)
-	thrust = 1, -- Acceleration (pixels per second per second per unit of mass)
+	thrust = 0.1, -- Acceleration (pixels per second per second per unit of mass)
 	fuel_rate = 1, -- Fuel rate for thrust (liters per second)
 
 	-- Energy
 	energy = 0,
 	max_energy = 100, -- Energy capacity (percentage)
-	energy_rate = 1, -- Energy rate for torque (percentage per second)
 
 	-- Reaction Wheels
 	torque = math.pi/4, -- Angular movement (radians per second)
+	torque_power = 1, -- Energy usage for torque (percentage per second)
+	autobreak = false, -- Autobreaking makes it so that when the player is not turning, the reaction wheels will attempt to stop rotation automatically
 
 	-- Boosters
 	booster = 0,
@@ -26,6 +27,10 @@ Probe = {
 	boost_power = 1, -- Booster power setting (1 to 10)
 	boost = 10, -- Booster base potency (instantaneous acceleration force)
 	booster_rate = 5, -- Booster base consumption (liters per boost per power level)
+	
+	-- Drill
+	drill_power = 1, -- Energy usage for drill (percentage per second)
+	drill_rate = 1, -- Tons of material per second
 	
 	-- Mineral Storage
 	storage = {},
@@ -40,7 +45,10 @@ Probe = {
 	-- Gas Storage
 	vacuum = {},
 	vacuum_capacity = 10,
-	max_vacuum_capacity = 80
+	max_vacuum_capacity = 80,
+	
+	-- Radar
+	scope = 32,
 }
 
 Probe.__tostring = Body.__tostring
@@ -77,6 +85,10 @@ function Probe:keypressed(key, isrepeat)
 		end
 	end
 	
+	if key == "z" then
+		self.autobreak = not self.autobreak
+	end
+	
 	if key == "=" then
 		if self.boost_power < 10 then
 			self.boost_power = self.boost_power + 1
@@ -104,25 +116,25 @@ function Probe:update(dt)
 	end
 
 	if self.energy > 0 then
-		if love.keyboard.isDown("x") then -- Torque Break
-			if self.vrot ~= 0 then
+		if love.keyboard.isDown("x") or self.autobreak then -- Torque Break
+			if self.vrot ~= 0 and not (love.keyboard.isDown("left") or love.keyboard.isDown("right"))then
 				if self.vrot > 0 then
 					self.vrot = self.vrot - self.torque*dt
 				elseif self.vrot < 0 then
 					self.vrot = self.vrot + self.torque*dt
 				end
-				self.energy = self.energy - self.energy_rate * dt
+				self.energy = self.energy - self.torque_power * dt
 			end
 		end
 
 		if love.keyboard.isDown("left") then
 			self.vrot = self.vrot - self.torque*dt
-			self.energy = self.energy - self.energy_rate * dt
+			self.energy = self.energy - self.torque_power * dt
 		end
 
 		if love.keyboard.isDown("right") then
 			self.vrot = self.vrot + self.torque*dt
-			self.energy = self.energy - self.energy_rate * dt
+			self.energy = self.energy - self.torque_power * dt
 		end
 	end
 
@@ -151,4 +163,40 @@ function Probe:draw()
 	drawSegMeter(0, 0, self.size*2, 4, {255, 0, 0, 128}, {255, 0, 0, 255}, 10, self.boost_power, "up")
 	
 	love.graphics.pop()]]
+end
+
+function Probe:drawUI()
+	love.graphics.push()
+	love.graphics.origin()
+	love.graphics.translate(0,love.window.getHeight()-144)
+	
+	love.graphics.setColor(0,24,0,192)
+	love.graphics.rectangle("fill",0,0,love.window.getWidth(),144)
+	
+	drawRadar(Radar, self, 1/16)
+	drawNavWheel(NavWheel, self)
+	love.graphics.draw(Radar, love.window.getWidth()-132, 12)
+	love.graphics.draw(NavWheel, 4, 12)
+
+	drawSegMeter(144, 78, 128, 16, {128, 0, 0, 255}, {255, 0, 0, 255}, 10, self.boost_power, "up")
+
+	love.graphics.setFont(font.standard)
+	drawMeter(218, 134, 128, 16, {0, 64, 96, 255}, {0, 192, 255, 255}, self.max_energy, self.energy, "right")
+	love.graphics.printf("ENERGY:", 156, 116, 128, "left")
+	drawMeter(218, 102, 128, 16, {128, 64, 0, 255}, {255, 192, 0, 255}, self.max_fuel, self.fuel, "right")
+	love.graphics.printf("FUEL:", 156, 84, 128, "left")
+	drawMeter(218, 70, 128, 16, {64, 128, 0, 255}, {192, 255, 0, 255}, self.max_booster, self.booster, "right")
+	love.graphics.printf("BOOSTER:", 156, 52, 128, "left")
+
+	local B = self.influence_body
+	love.graphics.print(string.format("REF: %s", B), 156, 16)
+	love.graphics.print(string.format("V: %0.2f u/s", addVectors(self.v, self.dir, -B.v, B.dir)), 156, 26)
+	love.graphics.print(string.format("H: %0.2f u", math.sqrt(squareBodyDistance(self,B)-self.size-B.size)), 156, 36)
+
+	drawStorage(318, 24, self)
+	love.graphics.print("STORAGE:", 320, 16)
+	drawTank(424, 24, self)
+	love.graphics.print("TANK:", 422, 16)
+	
+	love.graphics.pop()
 end
