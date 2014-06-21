@@ -35,7 +35,7 @@ function Universe.createPlanet(x, y, type)
 	-- Add planetary space stations
 end
 
-function Univesre.createSatellite(x, y)
+function Universe.createSatellite(x, y)
 	-- Genearte satellite
 	
 	-- Add space station
