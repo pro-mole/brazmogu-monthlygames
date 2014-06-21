@@ -180,6 +180,14 @@ function drawStorage(x, y, probe)
 				love.graphics.setColor(64,64,64,255)
 			end
 			love.graphics.rectangle("fill", 1, 1, crate_size+2, crate_size+2)
+			if probe.drill_q > 0 and (x*8 + y) == #probe.storage then
+				love.graphics.setColor(32,128,32,255)
+				love.graphics.rectangle("fill", 1, 1, crate_size+2, (crate_size+2) * probe.drill_q)
+			end
+			if probe.storage[x*8 + y + 1] then
+				love.graphics.setColor(255,255,255,255)
+				love.graphics.printf(probe.storage[x*8 + y + 1], 2, 2, crate_size, "center")
+			end
 			love.graphics.pop()
 		end
 	end

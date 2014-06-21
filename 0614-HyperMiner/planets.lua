@@ -5,7 +5,9 @@ require("physics")
 
 Planet = {
 	metals = nil, -- Set of metallic concentration on the planet's composition
+	metal_depth = 1, -- Depth of metal deposits; raises as player drills
 	liquids = nil, -- Liquid composition on the planet's surface
+	liquid_depth = 1, -- Depth of liquid pools; raises as player pumps
 	atmosphere = nil, -- Atmospheric composition (nil if there's not atmosphere at all)
 	atmosphere_size = 0 -- If there is an atmosphere, this should be the height it expands to
 }
@@ -27,6 +29,10 @@ function Planet.new(specs)
 	
 	local P = setmetatable(T, Planet)
 	P.class = 4
+
+	if P.metals then
+		P.metal_depth = 1
+	end
 	
 	table.insert(Space.planets, P)
 	return P
