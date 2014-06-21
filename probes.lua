@@ -71,6 +71,12 @@ function Probe.new(specs)
 	P.fuel = P.max_fuel
 	P.energy = P.max_energy
 	P.booster = P.max_booster
+
+	P.storage = {}
+	P.tank = {}
+	P.vacuum = {}
+
+	P.drill_q = 0
 	
 	table.insert(Space.probes, P)
 	return P
@@ -107,6 +113,11 @@ function Probe:update(dt)
 		if love.keyboard.isDown("up") then
 			self:applyForce(self.thrust, self.d)
 			self.fuel = self.fuel - self.fuel_rate * dt
+			if math.random(10) == 1 then
+				local ddir = (math.random()-0.5)*math.pi
+				local pv, pdir = addVectors(self.v, self.d, -self.thrust, self.d + ddir)
+				Particles:add(PartSquare, self.x - math.cos(pdir)*self.size, self.y - math.sin(pdir)*self.size, math.random(1,3), -pv, pdir, math.pi/(math.random(1,6)), 64, 128, math.random()*2)
+			end
 		end
 
 		if love.keyboard.isDown("down") then
@@ -135,6 +146,21 @@ function Probe:update(dt)
 		if love.keyboard.isDown("right") then
 			self.vrot = self.vrot + self.torque*dt
 			self.energy = self.energy - self.torque_power * dt
+		end
+
+		if love.keyboard.isDown("q") then -- Drill
+			local B = self.influence_body
+			if math.sqrt(squareBodyDistance(self,B))-self.size-B.size <= 1 then
+				self.drill_q = self.drill_q + 1/B.metal_depth * dt
+				self.energy = self.energy - self.drill_power * dt
+				while self.drill_q >= 1 do
+					if #self.storage < self.storage_capacity then
+						table.insert(self.storage, selectRandomly(B.metals))
+						B.metal_depth = B.metal_depth + 1
+					end
+					self.drill_q = self.drill_q - 1
+				end
+			end
 		end
 	end
 
@@ -191,7 +217,6 @@ function Probe:drawUI()
 	local B = self.influence_body
 	local vB, dB = addVectors(self.v, self.dir, -B.v, B.dir)
 	love.graphics.print(string.format("REF: %s", B), 156, 16)
-	love.graphics.print(string.format("e: %0.2f", getEccentricity(B, math.sqrt(squareBodyDistance(self,B)), vB)), 256, 16)
 	love.graphics.print(string.format("V: %0.2f u/s", vB), 156, 26)
 	love.graphics.print(string.format("H: %0.2f u", math.sqrt(squareBodyDistance(self,B))-self.size-B.size), 156, 36)
 

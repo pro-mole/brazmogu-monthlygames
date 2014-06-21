@@ -90,6 +90,10 @@ function compositeVectors(mag, dir)
 	return mag * math.cos(dir), mag * math.sin(dir)
 end
 
+function toVector(vx, vy)
+	return math.sqrt(vx^2 + vy^2), math.atan2(vy,vx)
+end
+
 -- Return magnitude, direction for a sum of N vectors
 function addVectors(...)
 	local V = {...}
@@ -101,7 +105,7 @@ function addVectors(...)
 		Vx, Vy = Vx + tVx, Vy + tVy
 	end
 	
-	return math.sqrt(Vx^2 + Vy^2), math.atan2(Vy,Vx)
+	return toVector(Vx, Vy)
 end
 
 -- Squared distance between two bodies
@@ -150,12 +154,6 @@ end
 -- Get escape velocity from a body's gravity for given distance
 function getEscapeVelocity(B, r)
 	return math.sqrt(2 * Physics.K * B.mass / r)
-end
-
--- Get eccentricity of orbit based on velocity and distance from body
-function getEccentricity(B, r, v)
-	local Vo, Ve = getOrbitVelocity(B, r), getEscapeVelocity(B, r)
-	return (v - Vo)/(Ve - Vo)
 end
 
 -- Get gravity field value at a given distance from a body
