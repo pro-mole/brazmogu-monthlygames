@@ -31,7 +31,9 @@ Physics = {
 		end		
 		
 		for i,B in ipairs(self.bodies) do
-			B:update(dt)
+			if B.class > 1 then
+				B:update(dt)
+			end
 		end
 	end,
 	keypressed = function (self, key, isrepeat)
