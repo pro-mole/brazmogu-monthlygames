@@ -31,7 +31,7 @@ Physics = {
 		end		
 		
 		for i,B in ipairs(self.bodies) do
-			if B.class > 1 then
+			if B.class > 0 then
 				B:update(dt)
 			end
 		end
