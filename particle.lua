@@ -8,8 +8,8 @@ function Particles:reset()
 	parts = {}
 end
 
-function Particles:add(particleType, x, y, size, v, vdir, vrot, fade, alpha, timer)
-	local P = particleType.new(x, y, size, v, vdir, vrot, fade, alpha, timer)
+function Particles:add(particleType, ...)
+	local P = particleType.new(unpack({...}))
 
 	table.insert(self.parts, P)
 end
@@ -102,9 +102,35 @@ function PartSquare:draw()
 	love.graphics.translate(self.x, self.y)
 	love.graphics.rotate(self.angle)
 
-	love.graphics.rectangle("fill", -self.size/2, -self.size/2, self.size, self.size)
+	love.graphics.rectangle("line", -self.size/2, -self.size/2, self.size, self.size)
 
 	love.graphics.pop()
+end
+
+PartDust = {update = _Particle.update}
+
+function PartDust.new(x, y, v, vdir, vrot, fade, alpha, color, timer)
+	local P = {
+		x = x,
+		y = y,
+		v = v or 0,
+		vdir = vdir or 0,
+		vrot = vrot or 0,
+		angle = 0,
+		fade = fade or 64,
+		alpha = alpha or 255,
+		color = color or {255,255,255},
+		timer = timer or 2,
+	}
+
+	return setmetatable(P, {__index = PartDust})
+end
+
+function PartDust:draw()
+	local _color = {unpack(self.color)}
+	table.insert(_color, self.alpha)
+	love.graphics.setColor(unpack(_color))
+	love.graphics.point(self.x, self.y)
 end
 
 return Particles

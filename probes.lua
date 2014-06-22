@@ -114,15 +114,37 @@ function Probe:update(dt)
 			self:applyForce(self.thrust, self.d)
 			self.fuel = self.fuel - self.fuel_rate * dt
 			if math.random(10) == 1 then
-				local ddir = (math.random()-0.5)*math.pi
-				local pv, pdir = addVectors(self.v, self.d, -self.thrust, self.d + ddir)
-				Particles:add(PartSquare, self.x - math.cos(pdir)*self.size, self.y - math.sin(pdir)*self.size, math.random(1,3), -pv, pdir, math.pi/(math.random(1,6)), 64, 128, math.random()*2)
+				local ddir = (math.random()-0.5)*math.pi/2
+				local pv, pdir = addVectors(self.v, self.d, -self.thrust, ddir)
+				Particles:add(PartSquare,
+					self.x - math.cos(ddir)*self.size,
+					self.y - math.sin(ddir)*self.size,
+					math.random(self.size/4,self.size/2),
+					-pv,
+					pdir,
+					math.pi/(math.random(1,6)),
+					64,
+					128,
+					math.random()*2)
 			end
 		end
 
 		if love.keyboard.isDown("down") then
 			self:applyForce(-self.thrust, self.d)
 			self.fuel = self.fuel - self.fuel_rate * dt
+			if math.random(10) == 1 then
+				local ddir = (math.random()-0.5)*math.pi/2
+				local pv, pdir = addVectors(self.v, self.d, self.thrust, ddir)
+				Particles:add(PartSquare,
+					self.x + math.cos(ddir)*self.size,
+					self.y + math.sin(ddir)*self.size,
+					math.random(self.size/4,self.size/2),
+					pv,
+					pdir,
+					math.pi/(math.random(1,6)),
+					64,
+					192, math.random()*2)
+			end
 		end
 	end
 
@@ -159,6 +181,16 @@ function Probe:update(dt)
 						B.metal_depth = B.metal_depth + 1
 					end
 					self.drill_q = self.drill_q - 1
+				end
+				if math.random(4) == 1 then
+					local B = self.influence_body
+					local ddir = (math.random()-0.5)*(self.size/B.size)*math.pi
+					local pv,pdir = addVectors(B.v, B.dir, math.random(1,4), bodyDirection(B, self) + ddir)
+					pdir = bodyDirection(B, self) + ddir
+					Particles:add(PartDust,
+						B.x + math.cos(pdir)*B.size,
+						B.y + math.sin(pdir)*B.size,
+						pv, pdir, 0, 64, 192, B.color or {128,128,128}, math.random()*1)
 				end
 			end
 		end

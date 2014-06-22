@@ -64,6 +64,9 @@ function love.load()
 		metals = {["Fe"] = 5, ["C"] = 3},
 		texture_params = { {"gradient", {192, 128, 144, 255}, {128, 108, 128, 255}, 50}, {"blotch", {64, 64, 64, 64}, 4, 0.8}, {"blotch", {0, 0, 64, 64}, 3, 0.9} } })
 
+	table.insert(Space.stations, Body.new({name = "ST001", x = 1024 + 320, y = 1024, v = 30.6, dir = math.pi*1.5, vrot = -math.pi/48, mass = 8, size = 16, class = 1,
+		texture_params = { {"gradient", {255, 255, 255, 255}, {64, 64, 64, 255}, 50} } }))
+
 	-- Load all textures
 	for k,v in pairs(Space) do
 		for i = 1,#v do
@@ -88,6 +91,9 @@ function love.update(dt)
 	end
 
 	Particles:update(dt)
+	for i,P in ipairs(Space.probes) do
+		P:update(dt)
+	end
 end
 
 function love.keypressed(key, isrepest)
@@ -151,10 +157,10 @@ function love.draw()
 	love.graphics.draw(SpaceBG, _x, _y+S)
 	love.graphics.draw(SpaceBG, _x+S, _y+S)]]
 
-	Particles:draw()
 	for i,B in ipairs(Physics.bodies) do
 		B:draw()
 	end
+	Particles:draw()
 	-- Physics:draw()
 	
 	if #Space.probes >= 1 then
