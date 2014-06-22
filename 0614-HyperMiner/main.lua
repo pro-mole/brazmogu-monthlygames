@@ -47,7 +47,7 @@ function print_debug(...)
 end
  
 function love.load()
-	Probe.new({name = "Probe", x = 0, y = 1024, v = 5, dir = math.rad(270), mass = 1, size = 8, active = true})
+	Probe.new({name = "Probe", x = -8, y = 1024, v = 5, dir = math.rad(270), mass = 1, size = 8, active = true})
 	
 	-- Test environment
 	-- A planetary system with two moons around it
@@ -64,7 +64,7 @@ function love.load()
 		metals = {["Fe"] = 5, ["C"] = 3},
 		texture_params = { {"gradient", {192, 128, 144, 255}, {128, 108, 128, 255}, 50}, {"blotch", {64, 64, 64, 64}, 4, 0.8}, {"blotch", {0, 0, 64, 64}, 3, 0.9} } })
 
-	table.insert(Space.stations, Body.new({name = "ST001", x = 1024 + 320, y = 1024, v = 30.6, dir = math.pi*1.5, vrot = -math.pi/48, mass = 8, size = 16, class = 1,
+	table.insert(Space.stations, Body.new({name = "ST001", x = 0, y = 1024, v = 18, dir = math.pi*1.5, vrot = -math.pi/48, mass = 16, size = 16, class = 1,
 		texture_params = { {"gradient", {255, 255, 255, 255}, {64, 64, 64, 255}, 50} } }))
 
 	-- Load all textures

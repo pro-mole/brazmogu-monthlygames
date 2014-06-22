@@ -88,6 +88,20 @@ function Probe:keypressed(key, isrepeat)
 		if self.booster > 0 then
 			self:applyForce(self.boost * 2^(self.boost_power/2), self.d)
 			self.booster = self.booster - self.boost_power*self.booster_rate
+			for i = 1,self.boost_power*5 do
+				local ddir = (math.random()-0.5)*math.pi/2
+				local pv, pdir = addVectors(self.v, self.d, -self.boost/10, ddir)
+				Particles:add(PartSquare,
+					self.x - math.cos(ddir)*self.size*1/self.boost_power*5,
+					self.y - math.sin(ddir)*self.size*1/self.boost_power*5,
+					math.random(self.size/4,self.size/2),
+					-pv,
+					pdir,
+					math.pi/(math.random(1,6)),
+					64,
+					128,
+					math.random()*2)
+			end
 		end
 	end
 	
@@ -152,9 +166,9 @@ function Probe:update(dt)
 		if love.keyboard.isDown("x") or self.autobreak then -- Torque Break
 			if self.vrot ~= 0 and not (love.keyboard.isDown("left") or love.keyboard.isDown("right"))then
 				if self.vrot > 0 then
-					self.vrot = self.vrot - self.torque*dt
+					self.vrot = self.vrot - math.min(self.torque*dt, self.vrot)
 				elseif self.vrot < 0 then
-					self.vrot = self.vrot + self.torque*dt
+					self.vrot = self.vrot + math.min(self.torque*dt, -self.vrot)
 				end
 				self.energy = self.energy - self.torque_power * dt
 			end
