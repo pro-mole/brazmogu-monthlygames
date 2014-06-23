@@ -1,21 +1,12 @@
 require("random")
 require("physics")
-require("universegenerator")
 require("draw")
 require("texture")
 require("particle")
 
 font = {standard = love.graphics.newFont("assets/font/imagine_font.otf", 10)}
 
-Space = {
-	probes = {},
-	stars = {},
-	planets = {},
-	satellites = {},
-	meteors = {},
-	comets = {},
-	stations = {}
-}
+Space = require("universegenerator")
 
 Radar = love.graphics.newCanvas(128,128)
 NavWheel = love.graphics.newCanvas(128,128)
@@ -47,7 +38,7 @@ function print_debug(...)
 end
  
 function love.load()
-	Probe.new({name = "Probe", x = -8, y = 1024, v = 5, dir = math.rad(270), mass = 1, size = 8, active = true})
+	--[[Probe.new({name = "Probe", x = -8, y = 1024, v = 5, dir = math.rad(270), mass = 1, size = 8, active = true})
 	
 	-- Test environment
 	-- A planetary system with two moons around it
@@ -66,12 +57,14 @@ function love.load()
 
 	table.insert(Space.stations, Body.new({name = "ST001", x = 0, y = 1024, v = 18, dir = math.pi*1.5, vrot = -math.pi/48, mass = 16, size = 16, class = 1,
 		texture_params = { {"gradient", {255, 255, 255, 255}, {64, 64, 64, 255}, 50} } }))
+	]]
+
+	Universe:generate()
 
 	-- Load all textures
-	for k,v in pairs(Space) do
-		for i = 1,#v do
-			v[i]:loadTexture()
-		end
+	for k,v in Space:iterator() do
+		print (k,v,v.x,v.y)
+		v:loadTexture()
 	end
 	-- Clear all events before actually starting the game
 	love.event.clear()
@@ -91,7 +84,7 @@ function love.update(dt)
 	end
 
 	Particles:update(dt)
-	for i,P in ipairs(Space.probes) do
+	for i,P in ipairs(Universe.probes) do
 		P:update(dt)
 	end
 end
@@ -111,8 +104,8 @@ end
 function love.draw()
 	local probe
 	local Tx, Ty = 0, 0
-	if #Space.probes >= 1 then
-		probe = Space.probes[1]
+	if #Universe.probes >= 1 then
+		probe = Universe.probes[1]
 		love.graphics.push()
 		Tx, Ty = probe.x, probe.y
 		love.graphics.translate(love.window.getWidth()/2 - probe.x, love.window.getHeight()/2 - probe.y)
@@ -163,7 +156,7 @@ function love.draw()
 	Particles:draw()
 	-- Physics:draw()
 	
-	if #Space.probes >= 1 then
+	if #Universe.probes >= 1 then
 		love.graphics.pop()
 
 		probe:drawUI()
