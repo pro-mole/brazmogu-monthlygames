@@ -100,3 +100,20 @@ For each planet, generate satellites, natural and artificial. Define their compo
 Space stations should be stationed either around planets or satellites(or even, slow asteroids).
 
 Then throw the probe from a station, and there we go.
+
+=====================
+  Material Exchange
+=====================
+
+Upon docking with a space station, the material exchange UI is activated. Here the player can exchange material in stock for upgrades, refills or just dump material away for points(yep, let's make it a score game for the demo)
+
+Fuel Refil: C - 5%, H - 20%
+Energy Refil: Ni - 5%, Li - 5%, Cl - 10%
+Booster Refil: H - 10%
+Storage Capacity: 5 Fe
+Tank Capacity: 6 Si
+Vaccum Chamber: 4 Ti
+Engine Upgrade: 8 Fe
+Torque Upgrade: 4 C + 2 Li + 2 Ni
+Booster Upgrade: 12 Fe
+Radar Upgrade: 2 Si + 1 Ra/U/Pu
