@@ -78,7 +78,7 @@ function Probe.new(specs)
 
 	P.drill_q = 0
 	
-	table.insert(Space.probes, P)
+	table.insert(Universe.probes, P)
 	return P
 end
 
@@ -245,7 +245,7 @@ function Probe:drawUI()
 	love.graphics.setColor(0,24,0,192)
 	love.graphics.rectangle("fill",0,0,love.window.getWidth(),144)
 	
-	drawRadar(Radar, self, 1/16)
+	drawRadar(Radar, self, 1/self.scope)
 	drawNavWheel(NavWheel, self)
 	love.graphics.draw(Radar, love.window.getWidth()-132, 12)
 	love.graphics.draw(NavWheel, 4, 12)
