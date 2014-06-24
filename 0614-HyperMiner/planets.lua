@@ -42,9 +42,11 @@ function Planet:draw()
 	Body.draw(self)
 	
 	if self.atmosphere then
-		love.graphics.setColor(255,255,255,32)
-		love.graphics.circle("fill", self.x, self.y, self.atmosphere_size, 36)
-		love.graphics.circle("line", self.x, self.y, self.atmosphere_size, 36)
-		love.graphics.setColor(255,255,255,64)
+		love.graphics.setColor(255,255,255,255)
+		love.graphics.push()
+		love.graphics.translate(self.x, self.y)
+		love.graphics.rotate(self.d)
+		love.graphics.draw(self.atmosphere_texture, -self.size-self.atmosphere_size, -self.size-self.atmosphere_size)
+		love.graphics.pop()
 	end
 end
