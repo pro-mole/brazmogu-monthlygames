@@ -120,6 +120,18 @@ function Probe:keypressed(key, isrepeat)
 			self.boost_power = self.boost_power - 1
 		end
 	end
+	
+	-- DEBUG
+	if key == "." then
+		if self.scope < 1024 then
+			self.scope = self.scope * 2
+		end
+	end
+	if key == "," then
+		if self.scope > 1 then
+			self.scope = self.scope / 2
+		end
+	end
 end
 
 function Probe:update(dt)
