@@ -58,7 +58,7 @@ function love.load()
 		texture_params = { {"gradient", {255, 255, 255, 255}, {64, 64, 64, 255}, 50} } }))
 	]]
 
-	Universe:generate()
+	Universe:generate(arg[1])
 
 	-- Load all textures
 	for k,v in Space:iterator() do
