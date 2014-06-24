@@ -20,3 +20,21 @@ function selectRandomly(T)
 	-- This should never happen
 	return nil
 end
+
+-- Normalize a probability array
+-- Useful for getting percentages and such :D
+function normalize(T, n)
+	local N = n or 100
+	local total = 0
+	for v,c in pairs(T) do
+		total = total + c
+	end
+	local r = n/total
+	
+	N = {}
+	for v,c in pairs(T) do
+		N[v] = c * r
+	end
+	
+	return N
+end
