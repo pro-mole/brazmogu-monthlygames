@@ -168,7 +168,7 @@ function drawStorage(x, y, probe)
 	love.graphics.push()
 	love.graphics.translate(x, y)
 
-	local crate_size = 8
+	local crate_size = 10
 
 	for x = 0,7 do
 		for y = 0,(Probe.max_storage_capacity/8)-1 do
@@ -194,26 +194,31 @@ function drawStorage(x, y, probe)
 
 	love.graphics.setColor(255,255,255,255)
 	love.graphics.pop()
+	
+	return Probe.max_storage_capacity/8 * (crate_size+4), 8 * (crate_size+4)
 end
 
 -- Draw the storage tank as a vertical bar of liquids
-function drawTank(x, y, probe)
+function drawTank(x, y, w, h, probe)
 	love.graphics.push()
 	love.graphics.translate(x, y)
 
-	local tank_height, tank_width = 94, 48
+	local tank_height, tank_width = h, w
 
-	love.graphics.setColor(32,32,32,255)
-	love.graphics.line(-1,0, -1,tank_height)
-	love.graphics.line(tank_width+1,0, tank_width+1,tank_height)
-	love.graphics.line(-1,tank_height+1, tank_width+1,tank_height+1)
 	love.graphics.setColor(128,128,128,255)
 	love.graphics.rectangle("fill", 0, 0, tank_width, tank_height)
 	love.graphics.setColor(64,64,64,255)
 	love.graphics.rectangle("fill", 0, 0, tank_width, tank_height * (Probe.max_tank_capacity - probe.tank_capacity)/Probe.max_tank_capacity)
+	
+	love.graphics.setColor(32,32,32,255)
+	love.graphics.line(0,0, 0,tank_height)
+	love.graphics.line(tank_width,0, tank_width,tank_height)
+	love.graphics.line(0,tank_height, tank_width,tank_height)
 
 	love.graphics.setColor(255,255,255,255)
 	love.graphics.pop()
+	
+	return w, h
 end
 
 -- Draw the vacuum chamber as a pie chart of gases

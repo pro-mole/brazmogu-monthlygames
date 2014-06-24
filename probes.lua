@@ -250,6 +250,8 @@ function Probe:draw()
 end
 
 function Probe:drawUI()
+	love.graphics.setFont(font.standard)
+	-- Lower UI
 	love.graphics.push()
 	love.graphics.origin()
 	love.graphics.translate(0,love.window.getHeight()-144)
@@ -257,31 +259,69 @@ function Probe:drawUI()
 	love.graphics.setColor(0,24,0,192)
 	love.graphics.rectangle("fill",0,0,love.window.getWidth(),144)
 	
-	drawRadar(Radar, self, 1/self.scope)
-	drawNavWheel(NavWheel, self)
-	love.graphics.draw(Radar, love.window.getWidth()-132, 12)
-	love.graphics.draw(NavWheel, 4, 12)
+		love.graphics.translate(0,12)
+		--Radar
+		drawRadar(Radar, self, 1/self.scope)
+		love.graphics.draw(Radar, love.window.getWidth()-132, 0)
+		--Nav Wheel
+		drawNavWheel(NavWheel, self)
+		love.graphics.draw(NavWheel, 4, 0)
 
-	drawSegMeter(144, 78, 128, 16, {128, 0, 0, 255}, {255, 0, 0, 255}, 10, self.boost_power, "up")
+		love.graphics.translate(136,0) -- ()
+		-- Consumables
+		-- Boost Meter
+		drawSegMeter(8, 64, 128, 16, {128, 0, 0, 255}, {255, 0, 0, 255}, 10, self.boost_power, "up")
 
-	love.graphics.setFont(font.standard)
-	drawMeter(218, 134, 128, 16, {0, 64, 96, 255}, {0, 192, 255, 255}, self.max_energy, self.energy, "right")
-	love.graphics.printf("ENERGY:", 156, 116, 128, "left")
-	drawMeter(218, 102, 128, 16, {128, 64, 0, 255}, {255, 192, 0, 255}, self.max_fuel, self.fuel, "right")
-	love.graphics.printf("FUEL:", 156, 84, 128, "left")
-	drawMeter(218, 70, 128, 16, {64, 128, 0, 255}, {192, 255, 0, 255}, self.max_booster, self.booster, "right")
-	love.graphics.printf("BOOSTER:", 156, 52, 128, "left")
+		love.graphics.translate(20,12) -- (156,24)
+		-- Energy Meter
+		drawMeter(64, 108, 128, 16, {0, 64, 96, 255}, {0, 192, 255, 255}, self.max_energy, self.energy, "right")
+		love.graphics.printf("ENERGY:", 2, 88, 128, "left")
+		-- Engine Fuel Meter
+		drawMeter(64, 74, 128, 16, {128, 64, 0, 255}, {255, 192, 0, 255}, self.max_fuel, self.fuel, "right")
+		love.graphics.printf("FUEL:", 2, 56, 128, "left")
+		-- Booster Fuel Meter
+		drawMeter(64, 42, 128, 16, {64, 128, 0, 255}, {192, 255, 0, 255}, self.max_booster, self.booster, "right")
+		love.graphics.printf("BOOSTER:", 2, 24, 128, "left")
 
-	local B = self.influence_body
-	local vB, dB = addVectors(self.v, self.dir, -B.v, B.dir)
-	love.graphics.print(string.format("REF: %s", B), 156, 16)
-	love.graphics.print(string.format("V: %0.2f u/s", vB), 156, 26)
-	love.graphics.print(string.format("H: %0.2f u", math.sqrt(squareBodyDistance(self,B))-self.size-B.size), 156, 36)
+		love.graphics.translate(0,-12)
+		-- Mechanic Info HUD
+		local B = self.influence_body
+		local vB, dB = addVectors(self.v, self.dir, -B.v, B.dir)
+		love.graphics.print(string.format("REF: %s", B), 0, 0)
+		love.graphics.print(string.format("V: %0.2f u/s", vB), 0, 10)
+		love.graphics.print(string.format("H: %0.2f u", math.sqrt(squareBodyDistance(self,B))-self.size-B.size), 0, 20)
 
-	drawStorage(318, 24, self)
-	love.graphics.print("STORAGE:", 320, 16)
-	drawTank(424, 24, self)
-	love.graphics.print("TANK:", 422, 16)
+		love.graphics.translate(162,12) -- (318,24)
+		-- Mineral Storage (Crates)
+		local Sw,Sh = drawStorage(0, 0, self)
+		love.graphics.setBlendMode("replace")
+		love.graphics.setColor(192,255,192,192)
+		love.graphics.rectangle("line", -4, -4, Sw+8, Sh+8)
+		love.graphics.setColor(0,24,0,192)
+		love.graphics.rectangle("fill", -1, -9, font.standard:getWidth("STORAGE:")+2, font.standard:getHeight()+2)
+		love.graphics.setBlendMode("alpha")
+		love.graphics.setColor(255,255,255,255)
+		love.graphics.print("STORAGE:", 1, -8)
+
+		love.graphics.translate(142,0) -- (460,24)
+		-- Liquid Storage (Tank)
+		local Tw,Th = drawTank(0, 1, Sw/2, Sh, self)
+		love.graphics.setBlendMode("replace")
+		love.graphics.setColor(192,255,192,192)
+		love.graphics.rectangle("line", -4, -4, Tw+8, Th+8)
+		love.graphics.setColor(0,24,0,192)
+		love.graphics.rectangle("fill", -1, -9, font.standard:getWidth("TANK:")+2, font.standard:getHeight()+2)
+		love.graphics.setBlendMode("alpha")
+		love.graphics.setColor(255,255,255,255)
+		love.graphics.print("TANK:", 1, -8)
+		
+		-- Gas Storage (Vacuum Chamber)
+	
+	love.graphics.pop()
+	
+	-- Upper UI
+	love.graphics.push()
+	love.graphics.origin()
 	
 	love.graphics.pop()
 end
