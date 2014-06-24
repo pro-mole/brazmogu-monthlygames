@@ -252,24 +252,26 @@ function Body:loadTexture()
 	else
 		self["texture"] = generateTexture(self.size, unpack(self.texture_params))
 	end
+	
+	if self.atmosphere then
+		if self.atmosphere_file then
+			self["atmosphere_texture"] = loadTexture(self.size+self.atmosphere_size, self.atmosphere_file)
+		else
+			self["atmosphere_texture"] = generateTexture(self.size+self.atmosphere_size, unpack(self.atmosphere_params))
+		end
+	end
 end
 
 -- Basic drawing for basic simulations
 function Body:draw()
 	if self.texture then
-		-- Draw the body
-		--[[love.graphics.setColor(0, 0, 0, 255)
-		love.graphics.circle("fill", self.x, self.y, self.size, 36)
-		love.graphics.setColor(255, 255, 255, 255)
-		love.graphics.circle("line", self.x, self.y, self.size, 36)]]
-		--love.graphics.setStencil(self.stencil)
+
 		love.graphics.setColor(255,255,255,255)
 		love.graphics.push()
 		love.graphics.translate(self.x, self.y)
 		love.graphics.rotate(self.d)
 		love.graphics.draw(self.texture, -self.size, -self.size)
 		love.graphics.pop()
-		--love.graphics.setStencil()
 		
 		-- Draw speed and orientatino vectors
 		--[[love.graphics.setColor(0, 255, 255, 128)
