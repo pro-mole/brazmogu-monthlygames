@@ -7,6 +7,7 @@ require("particle")
 font = {standard = love.graphics.newFont("assets/font/imagine_font.otf", 10)}
 
 Space = require("universegenerator")
+main_probe = nil
 
 Radar = love.graphics.newCanvas(128,128)
 NavWheel = love.graphics.newCanvas(128,128)
@@ -24,6 +25,7 @@ radar_color = {
 
 require("probes")
 require("satellite")
+require("station")
 require("planets")
 require("stars")
 
@@ -59,6 +61,9 @@ function love.load()
 	]]
 
 	Universe:generate(arg[2])
+	if #Space.probes >= 1 then
+		main_probe = Space.probes[1]
+	end
 
 	-- Load all textures
 	for k,v in Space:iterator() do
@@ -102,6 +107,15 @@ function love.keypressed(key, isrepest)
 	Physics:keypressed(key, isrepeat)
 end
 
+-- Drawing layers(all canvasses)
+layers = {
+	BG = love.graphics.newCanvas(),
+	bot = love.graphics.newCanvas(),
+	mid = love.graphics.newCanvas(),
+	top = love.graphics.newCanvas(),
+	UI = love.graphics.newCanvas()
+}
+
 function love.draw()
 	local probe
 	local Tx, Ty = 0, 0
@@ -118,6 +132,7 @@ function love.draw()
 	local _dx = Tx %S
 	local _dy = Ty %S
 
+	love.graphics.setCanvas(layers.BG)
 	love.graphics.draw(SpaceBG, _x, _y)
 	
 	if _dx < S/2 then
@@ -163,6 +178,13 @@ function love.draw()
 		probe:drawUI()
 	end
 	
-	love.graphics.print(string.format("%d;%d",_x,_y), 0, 8)
-	love.graphics.print(string.format("%d;%d",Tx,Ty), 0, 0)
+	love.graphics.origin()
+	love.graphics.setCanvas()
+	for i,L in ipairs({"BG","bot","mid","top","UI"}) do
+		love.graphics.draw(layers[L],0,0)
+		layers[L]:clear()
+	end
+	
+	--love.graphics.print(string.format("%d;%d",_x,_y), 0, 8)
+	--love.graphics.print(string.format("%d;%d",Tx,Ty), 0, 0)
 end

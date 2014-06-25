@@ -42,6 +42,7 @@ function Planet:draw()
 	Body.draw(self)
 	
 	if self.atmosphere then
+		love.graphics.setCanvas(layers.top)
 		love.graphics.setColor(255,255,255,255)
 		love.graphics.push()
 		love.graphics.translate(self.x, self.y)

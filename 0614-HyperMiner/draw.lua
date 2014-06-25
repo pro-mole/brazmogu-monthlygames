@@ -71,6 +71,7 @@ function drawNavWheel(navCanvas, refBody)
 	end
 	
 	navCanvas:clear()
+	local _canvas = love.graphics.getCanvas()
 	love.graphics.setCanvas(navCanvas)
 	
 	love.graphics.push()
@@ -115,7 +116,7 @@ function drawNavWheel(navCanvas, refBody)
 	love.graphics.setStencil()
 	
 	love.graphics.pop()
-	love.graphics.setCanvas()
+	love.graphics.setCanvas(_canvas)
 end
 
 function drawRadar(rCanvas, centerBody, scale)
@@ -125,6 +126,7 @@ function drawRadar(rCanvas, centerBody, scale)
 	end
 
 	rCanvas:clear()
+	local _canvas = love.graphics.getCanvas()
 	love.graphics.setCanvas(rCanvas)
 	
 	love.graphics.push()
@@ -160,7 +162,7 @@ function drawRadar(rCanvas, centerBody, scale)
 	
 	love.graphics.setStencil()
 	love.graphics.pop()
-	love.graphics.setCanvas()
+	love.graphics.setCanvas(_canvas)
 end
 
 -- Draw the storage crates as a grid of mineral "boxes"

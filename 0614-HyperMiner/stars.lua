@@ -32,11 +32,12 @@ function Star.new(specs)
 end
 
 function Star:draw()
+	Body.draw(self)
+	
 	if self.magnetosphere then
+		love.graphics.setCanvas(layers.bot)
 		love.graphics.setColor(255,255,255,16)
 		love.graphics.circle("fill", self.x, self.y, self.magnetosphere_size, 36)
 		love.graphics.setColor(255,255,255,255)
 	end
-	
-	Body.draw(self)
 end

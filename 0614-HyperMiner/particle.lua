@@ -8,8 +8,9 @@ function Particles:reset()
 	parts = {}
 end
 
-function Particles:add(particleType, ...)
+function Particles:add(particleType, layer, ...)
 	local P = particleType.new(unpack({...}))
+	P["layer"] = layer or layers.mid
 
 	table.insert(self.parts, P)
 end
@@ -31,6 +32,7 @@ end
 
 function Particles:draw()
 	for i,P in ipairs(self.parts) do
+		love.graphics.setCanvas(P.layer)
 		P:draw()
 	end
 end
