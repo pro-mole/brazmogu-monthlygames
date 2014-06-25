@@ -83,6 +83,17 @@ function Body.new(specs)
 	return B
 end
 
+function Body:delete()
+	for i,B in ipairs(Physics.bodies) do
+		if B == self then
+			table.remove(Physics.bodies, i)
+			return true
+		end
+	end
+
+	return false
+end
+
 function Body:__tostring()
 	return self.name
 end

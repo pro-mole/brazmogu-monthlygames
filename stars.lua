@@ -27,7 +27,7 @@ function Star.new(specs)
 	local S = setmetatable(T, Star)
 	S.class = 5
 	
-	table.insert(Universe.stars, S)
+	--table.insert(Universe.stars, S)
 	return S
 end
 

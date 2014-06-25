@@ -78,7 +78,7 @@ function Probe.new(specs)
 
 	P.drill_q = 0
 	
-	table.insert(Universe.probes, P)
+	--table.insert(Universe.probes, P)
 	return P
 end
 
@@ -286,10 +286,12 @@ function Probe:drawUI()
 		love.graphics.translate(0,-12)
 		-- Mechanic Info HUD
 		local B = self.influence_body
-		local vB, dB = addVectors(self.v, self.dir, -B.v, B.dir)
-		love.graphics.print(string.format("REF: %s", B), 0, 0)
-		love.graphics.print(string.format("V: %0.2f u/s", vB), 0, 10)
-		love.graphics.print(string.format("H: %0.2f u", math.sqrt(squareBodyDistance(self,B))-self.size-B.size), 0, 20)
+		if B then
+			local vB, dB = addVectors(self.v, self.dir, -B.v, B.dir)
+			love.graphics.print(string.format("REF: %s", B), 0, 0)
+			love.graphics.print(string.format("V: %0.2f u/s", vB), 0, 10)
+			love.graphics.print(string.format("H: %0.2f u", math.sqrt(squareBodyDistance(self,B))-self.size-B.size), 0, 20)
+		end
 
 		love.graphics.translate(162,12) -- (318,24)
 		-- Mineral Storage (Crates)

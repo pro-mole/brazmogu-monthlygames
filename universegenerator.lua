@@ -12,62 +12,41 @@ Universe = {
 }
 
 function Universe:iterator()
+	local pointer = 0
+	local bodyTables = {"probes", "stars", "planets", "satellites", "meteors", "comets", "stations"}
 	return function()
-		if not self.pointer then
-			self.pointer = 1
+		pointer = pointer + 1
+		if pointer <= #bodyTables then
+			return pointer, bodyTables[pointer]
 		else
-			self.pointer = self.pointer + 1
-		end
-
-		local p = self.pointer
-		if p <= #self.probes then
-			return self.pointer, self.probes[p]
-		else
-			p = p - #self.probes
-			if p <= #self.stars then
-				return self.pointer, self.stars[p]
-			else
-				p = p - #self.stars
-				if p <= #self.planets then
-					return self.pointer, self.planets[p]
-				else
-					p = p - #self.planets
-					if p <= #self.satellites then
-						return self.pointer, self.satellites[p]
-					else
-						p = p - #self.satellites
-						if p <= #self.meteors then
-							return self.pointer, self.meteors[p]
-						else
-							p = p - #self.meteors
-							if p <= #self.comets then
-								return self.pointer, self.comets[p]
-							else
-								p = p - #self.comets
-								if p <= #self.stations then
-									return self.pointer, self.stations[p]
-								else
-									self.pointer = nil
-									return nil
-								end
-							end
-						end
-					end
-				end
-			end
+			return nil
 		end
 	end
 end
 
+-- Temporary heap of bodies
+-- For when we need to backtrack
+backtrack = {
+	probes = {},
+	stars = {},
+	planets = {},
+	satellites = {},
+	meteors = {},
+	comets = {},
+	stations = {},
+	iterator = Universe.iterator
+}
+
 function Universe:generate(seed)
 	-- Create star systems randomly
 	math.randomseed(seed or os.time())
-	local x,y = math.random(-65535,65535),math.random(-65535,65535)
+	local x,y = math.random(-1024,1024),math.random(-1024,1024)
 
-	self:createStar(x,y)
+	S = self:createStar(x,y)
+	table.insert(Universe.stars, S)
 
 	local P = self.planets[math.random(#self.planets)]
-	Probe.new({name = "PROBE", x = P.x, y = P.y - P.size*2 , mass = 1, size = 8})
+	table.insert(Universe.probes, Probe.new({name = "PROBE", x = P.x, y = P.y - P.size*2 , mass = 1, size = 8}))
 end
 
 function Universe:createStar(x, y)
@@ -80,15 +59,15 @@ function Universe:createStar(x, y)
 	if density > 64 then
 		texture[1] = {"gradient", {255, 255, 255, 255}, {192, 192, 192, 255}, 100}
 	elseif density > 32 then
-		texture[1] = {"gradient", {192, 255, 255, 255}, {144, 192, 192, 255}, 100}
+		texture[1] = {"gradient", {128, 255, 255, 255}, {64, 192, 192, 255}, 100}
 	elseif density > 16 then
-		texture[1] = {"gradient", {144, 192, 255, 255}, {128, 144, 192, 255}, 100}
+		texture[1] = {"gradient", {128, 192, 255, 255}, {128, 64, 192, 255}, 100}
 	elseif density > 4 then
-		texture[1] = {"gradient", {255, 255, 128, 255}, {192, 192, 144, 255}, 100}
+		texture[1] = {"gradient", {255, 255, 64, 255}, {192, 192, 64, 255}, 100}
 	elseif density > 1 then
-		texture[1] = {"gradient", {255, 192, 128, 255}, {192, 144, 96, 255}, 100}
+		texture[1] = {"gradient", {255, 192, 64, 255}, {192, 64, 48, 255}, 100}
 	else
-		texture[1] = {"gradient", {255, 0, 0, 255}, {144, 0, 0, 255}, 100}
+		texture[1] = {"gradient", {192, 0, 0, 255}, {64, 0, 0, 255}, 100}
 	end
 
 	texture[2] = {"scatter", {64,64,64,64}, 0.8}
@@ -98,46 +77,59 @@ function Universe:createStar(x, y)
 	local S = Star.new({name = string.format("STR%03d", math.random(999)), x = x, y = y, mass = mass, size = size,
 		texture_params = texture})
 
-	local omax = math.sqrt(S.mass * Physics.K / 0.01)
-	local omin = math.max(omax/16, S.size + 2^10)
+	local omax = math.sqrt(S.mass * Physics.K / 2^-7)
+	local omin = math.sqrt(S.mass * Physics.K / 2^-3)
 	
 	-- Add planetary sistems randomly
 	local validrange = {omin,omax}
-	local n = math.random(math.floor(omax-omin / 2^9)/1000)
+	local n = math.random(math.floor(omax-omin / S.size)/2048)
 	print ("Planets:",n)
 	io.stdout:flush()
 	for i = 1,n do
-		local angle = math.rad(math.random(360))
-		local dangle = 0
-		if math.random(2) == 1 then
-			dangle = math.pi/2
-		else
-			dangle = -math.pi/2
-		end
-		local dist, valid
-		repeat
-			valid = false
-			dist = omin + math.random() * omax-omin
-			for i = 1,#validrange,2 do
-				if dist > validrange[i] and dist < validrange[i+1] then
-					valid = true
+		local valid = false
+
+		while not valid do
+			local angle = math.rad(math.random(360))
+			local dangle = 0
+			if math.random(2) == 1 then
+				dangle = math.pi/2
+			else
+				dangle = -math.pi/2
+			end
+
+			local intvl = 0
+			for j = 1,#validrange/2 do
+				if intvl == 0 or (validrange[j*2] - validrange[j*2-1] > validrange[intvl*2] - validrange[intvl*2-1]) then
+					intvl = j
 				end
 			end
-		until valid
-		
-		local P,I = self:createPlanet(x + math.cos(angle)*dist, y + math.sin(angle)*dist, getOrbitVelocity(S, dist), angle + dangle)
-		
-		for j,D in ipairs(validrange) do
-			if dist > D then
-				table.insert(validrange, j+1, dist - I)
-				table.insert(validrange, j+2, dist + I)
-				print(j,unpack(validrange))
-				io.stdout:flush()
-				love.timer.sleep(1)
-				break
+			local dist = math.random(validrange[intvl*2-1], validrange[intvl*2])
+			
+			local P,I = self:createPlanet(x + math.cos(angle)*dist, y + math.sin(angle)*dist, getOrbitVelocity(S, dist), angle + dangle)
+			
+			valid = false
+			for j = 1,#validrange,2 do
+				if dist - I >= validrange[j] and dist + I <= validrange[j+1] then
+					valid = true
+					print (P,I,math.sqrt(squareBodyDistance(P,S)),P.v)
+					table.insert(validrange,j+1,dist-I)
+					table.insert(validrange,j+2,dist+I)
+					print(unpack(validrange))
+				end
 			end
+
+			for k,T in backtrack:iterator() do
+				for l,B in ipairs(backtrack[T]) do
+					if valid then
+						table.insert(Universe[T], B)
+					else
+						B:delete()
+					end
+				end
+				backtrack[T] = {}
+			end
+			love.timer.sleep(1)
 		end
-		
 	end
 	
 	-- Add comets
@@ -151,7 +143,7 @@ end
 
 function Universe:createPlanet(x, y, v, vdir)
 	-- Generate planet
-	local mass = math.random(2^6, 2^9)
+	local mass = math.random(2^7, 2^9)
 	local size = math.random(2^4, 2^9)
 	local density = mass/size
 	local atmosize = math.max((density * size) - size, 0)
@@ -212,11 +204,11 @@ function Universe:createPlanet(x, y, v, vdir)
 		texture_params = texture})
 		
 	-- Add satellites
-	local omax = math.sqrt(P.mass * Physics.K / 0.1)
-	local omin = math.max(omax/8, P.size + 2^6)
+	local omax = math.sqrt(P.mass * Physics.K / 2^-3)
+	local omin = math.sqrt(P.mass * Physics.K / 2^-1)
 	
 	local occupied = {}
-	local n = math.random(0,math.floor(omax-omin / 2^6)/1000)
+	local n = math.random(0,math.floor(omax-omin / (P.size + P.atmosphere_size)/1024)
 	print ("Moons:",n)
 	io.stdout:flush()
 	for i = 1,n do
@@ -237,7 +229,8 @@ function Universe:createPlanet(x, y, v, vdir)
 				end
 			end
 		until valid
-		local S = self:createSatellite(x + math.cos(angle)*dist, y + math.sin(angle)*dist, getOrbitVelocity(P, dist), angle + dangle)
+		local Sv,Sdir = addVectors(P.v, P.dir, getOrbitVelocity(P, dist), angle + dangle)
+		local S = self:createSatellite(x + math.cos(angle)*dist, y + math.sin(angle)*dist, Sv, Sdir)
 		table.insert(occupied, dist)
 	end
 	
@@ -245,6 +238,7 @@ function Universe:createPlanet(x, y, v, vdir)
 	
 	print(P)
 	io.stdout:flush()
+	table.insert(backtrack.planets, P)
 	return P, omax
 end
 
@@ -284,10 +278,13 @@ function Universe:createSatellite(x, y, v, vdir)
 		texture_params = texture})
 	
 	-- Add space station
-	
+	local omax = math.sqrt(P.mass * Physics.K / 2^-1)
+	local omin = math.sqrt(P.mass * Physics.K / 1)
+
 	print(S)
 	io.stdout:flush()
-	return S
+	table.insert(backtrack.satellites, S)
+	return S,omax
 end
 
 return Universe
