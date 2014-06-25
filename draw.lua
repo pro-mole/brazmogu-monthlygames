@@ -147,10 +147,10 @@ function drawRadar(rCanvas, centerBody, scale)
 		local r, a = math.sqrt(squareBodyDistance(centerBody, B))*scale, bodyDirection(centerBody, B)
 		if r <= (rCanvas:getWidth()/2)^2 then
 			love.graphics.setColor(unpack(radar_color[B.class+1]))
-			love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, math.max(B.class+1, B.size * scale), 32)
+			love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, B.size * scale, 32)
 			if B == centerBody.influence_body then
 				love.graphics.setColor(255,255,255,128)
-				love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, math.max(B.class+1, B.size * scale)-1, 32)
+				love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, (B.size * scale)-1, 32)
 			end
 		end
 	end
