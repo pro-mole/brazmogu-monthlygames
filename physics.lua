@@ -74,7 +74,7 @@ function Body.new(specs)
 	local T = specs or {}
 	
 	if not T["name"] then
-		T["name"] = "Body" + math.random(1000000)
+		T["name"] = string.format("Body %d", math.random(1000000))
 	end
 	
 	local B = setmetatable(T, Body)
@@ -172,6 +172,11 @@ end
 -- Get gravity field value at a given distance from a body
 function getGravityField(B, r)
 	return Physics.K * B.mass / r^2
+end
+
+-- Check if bodies are touching
+function bodiesTouching(B, C)
+	return squareBodyDistance(B,C) <= (B.size + C.size)^2
 end
 
 -- Apply (vectorial) force on body
@@ -277,6 +282,7 @@ end
 function Body:draw()
 	if self.texture then
 
+		love.graphics.setCanvas(layers.mid)
 		love.graphics.setColor(255,255,255,255)
 		love.graphics.push()
 		love.graphics.translate(self.x, self.y)

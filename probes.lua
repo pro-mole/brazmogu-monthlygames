@@ -68,15 +68,21 @@ function Probe.new(specs)
 	
 	local P = setmetatable(T, Probe)
 	P.class = 0
+	P.size = 8
+	P.mass = 1
+	P.texture_params = {
+		{"gradient",{255,255,255,255},{128,128,128,255},16}
+	}
+	
 	P.fuel = P.max_fuel
 	P.energy = P.max_energy
 	P.booster = P.max_booster
 
 	P.storage = {}
-	P.tank = {}
-	P.vacuum = {}
-
 	P.drill_q = 0
+	P.tank = {}
+	P.pump_q = 0
+	P.vacuum = {}
 	
 	--table.insert(Universe.probes, P)
 	return P
@@ -91,7 +97,7 @@ function Probe:keypressed(key, isrepeat)
 			for i = 1,self.boost_power*5 do
 				local ddir = (math.random()-0.5)*math.pi/2
 				local pv, pdir = addVectors(self.v, self.d, -self.boost/10, ddir)
-				Particles:add(PartSquare,
+				Particles:add(PartSquare, layers.bot,
 					self.x - math.cos(ddir)*self.size*1/self.boost_power*5,
 					self.y - math.sin(ddir)*self.size*1/self.boost_power*5,
 					math.random(self.size/4,self.size/2),
@@ -142,7 +148,7 @@ function Probe:update(dt)
 			if math.random(10) == 1 then
 				local ddir = (math.random()-0.5)*math.pi/2
 				local pv, pdir = addVectors(self.v, self.d, -self.thrust, ddir)
-				Particles:add(PartSquare,
+				Particles:add(PartSquare, layers.bot,
 					self.x - math.cos(ddir)*self.size,
 					self.y - math.sin(ddir)*self.size,
 					math.random(self.size/4,self.size/2),
@@ -160,12 +166,12 @@ function Probe:update(dt)
 			self.fuel = self.fuel - self.fuel_rate * dt
 			if math.random(10) == 1 then
 				local ddir = (math.random()-0.5)*math.pi/2
-				local pv, pdir = addVectors(self.v, self.d, self.thrust, ddir)
-				Particles:add(PartSquare,
+				local pv, pdir = addVectors(-self.v, self.d, -self.thrust, ddir)
+				Particles:add(PartSquare, layers.bot,
 					self.x + math.cos(ddir)*self.size,
 					self.y + math.sin(ddir)*self.size,
 					math.random(self.size/4,self.size/2),
-					pv,
+					-pv,
 					pdir,
 					math.pi/(math.random(1,6)),
 					64,
@@ -198,7 +204,7 @@ function Probe:update(dt)
 
 		if love.keyboard.isDown("q") then -- Drill
 			local B = self.influence_body
-			if math.sqrt(squareBodyDistance(self,B))-self.size-B.size <= 1 then
+			if B.metals and bodiesTouching(self,B) then
 				self.drill_q = self.drill_q + 1/B.metal_depth * dt
 				self.energy = self.energy - self.drill_power * dt
 				while self.drill_q >= 1 do
@@ -213,7 +219,7 @@ function Probe:update(dt)
 					local ddir = (math.random()-0.5)*(self.size/B.size)*math.pi
 					local pv,pdir = addVectors(B.v, B.dir, math.random(1,4), bodyDirection(B, self) + ddir)
 					pdir = bodyDirection(B, self) + ddir
-					Particles:add(PartDust,
+					Particles:add(PartDust, layers.top,
 						B.x + math.cos(pdir)*B.size,
 						B.y + math.sin(pdir)*B.size,
 						pv, pdir, 0, 64, 192, B.color or {128,128,128}, math.random()*1)
@@ -250,6 +256,7 @@ function Probe:draw()
 end
 
 function Probe:drawUI()
+	love.graphics.setCanvas(layers.UI)
 	love.graphics.setFont(font.standard)
 	-- Lower UI
 	love.graphics.push()
