@@ -52,8 +52,8 @@ end
 
 function Universe:createStar(x, y)
 	-- Generate star
-	local mass = math.random(2^10, 2^12)
-	local size = math.random(2^8, 2^11)
+	local mass = math.random(2^10, 2^15)
+	local size = math.random(2^8, 2^10)
 	local density = mass/size
 
 	local texture = {}
@@ -78,15 +78,16 @@ function Universe:createStar(x, y)
 	local S = Star.new({name = string.format("STR-%03X", math.random(0xfff)), x = x, y = y, mass = mass, size = size,
 		texture_params = texture})
 
-	local omax = math.sqrt(S.mass * Physics.K / 2^-7)
-	local omin = math.sqrt(S.mass * Physics.K / 2^-3)
+	local omax = math.sqrt(S.mass * Physics.K / 2^-10)
+	local omin = math.sqrt(S.mass * Physics.K / 2^-4)
 	
 	-- Add planetary sistems randomly
 	local validrange = {omin,omax}
-	local n = math.random(math.floor(omax-omin / S.size)/2048)
+	local n = math.random(math.floor(omax-omin / S.size)/16384)
 	print ("Planets:",n)
 	io.stdout:flush()
 	for i = 1,n do
+		print(i)
 		local valid = false
 
 		while not valid do
@@ -104,8 +105,8 @@ function Universe:createStar(x, y)
 					intvl = j
 				end
 			end
-			print (validrange[intvl*2-1] - validrange[intvl*2])
-			local dist = math.random(validrange[intvl*2-1], validrange[intvl*2])
+			print (validrange[intvl*2] - validrange[intvl*2-1])
+			local dist = validrange[intvl*2-1] + love.math.randomNormal(0.1,0.5) * (validrange[intvl*2] - validrange[intvl*2-1])
 		
 			local oV, oD = addVectors(S.v,S.dir, getOrbitVelocity(S, dist),angle + dangle)
 			local P,I = self:createPlanet(x + math.cos(angle)*dist, y + math.sin(angle)*dist, oV, oD)
@@ -141,6 +142,53 @@ function Universe:createStar(x, y)
 	-- Add meteors(roaming and belts)
 	
 	-- Add stellar space stations
+	local s = math.random(math.ceil(n/2) + 1)
+	print("Stations", s)
+	for i = 1,s do
+		local valid = false
+
+		while not valid do
+			local angle = math.rad(math.random(360))
+			local dangle = 0
+			if math.random(2) == 1 then
+				dangle = math.pi/2
+			else
+				dangle = -math.pi/2
+			end
+
+			local intvl = 0
+			for j = 1,#validrange/2 do
+				if intvl == 0 or (validrange[j*2] - validrange[j*2-1] > validrange[intvl*2] - validrange[intvl*2-1]) then
+					intvl = j
+				end
+			end
+			local dist = math.random(validrange[intvl*2-1], validrange[intvl*2])
+			
+			local oV, oD = addVectors(S.v,S.dir, getOrbitVelocity(S, dist),angle + dangle)
+			local St = Station.new({name = string.format("STATION-%02X", math.random(0xff)), x = x + math.cos(angle)*dist, y = y + math.sin(angle)*dist, v = oV, dir = oD, vrot = (math.random()-0.5) * math.pi/36})
+			local I = math.sqrt(St.mass * Physics.K / 1)
+			
+			valid = false
+			for j = 1,#validrange,2 do
+				if dist - I >= validrange[j] and dist + I <= validrange[j+1] then
+					valid = true
+					print (S,I,math.sqrt(squareBodyDistance(St,S)),St.v)
+					table.insert(validrange,j+1,dist-I)
+					table.insert(validrange,j+2,dist+I)
+					print(unpack(validrange))
+				end
+			end
+
+			-- Remove body from Physics table or insert it into the backtracking table
+			if valid then
+				table.insert(backtrack.stations, S)
+			else
+				S:delete()
+			end
+			
+			love.timer.sleep(1)
+		end
+	end
 
 	return S, omax
 end
@@ -196,6 +244,8 @@ function Universe:createPlanet(x, y, v, vdir)
 		atmo["He"] = math.random(1,3)
 		atmo["Cl"] = math.random(2,6)
 		atmo["F"] = math.random(1,4)
+	else
+		atmosize = 0
 	end
 	
 	local atmo_alpha = density
@@ -208,12 +258,12 @@ function Universe:createPlanet(x, y, v, vdir)
 		texture_params = texture})
 		
 	-- Add satellites
-	local omax = math.sqrt(P.mass * Physics.K / 2^-3)
-	local omin = math.sqrt(P.mass * Physics.K / 2^-1)
+	local omax = math.sqrt(P.mass * Physics.K / 2^-7)
+	local omin = math.sqrt(P.mass * Physics.K / 2^-4)
 	
 	local validrange = {omin,omax}
-	print(omax,omin)
-	local n = math.random(0,math.floor((omax-omin) / (P.size + P.atmosphere_size))/256)
+	print(omax,omin,(omax-omin) / (P.size + P.atmosphere_size) / 8)
+	local n = math.random(0,math.floor((omax-omin) / (P.size + P.atmosphere_size) / 8))
 	print ("Moons:",n)
 	io.stdout:flush()
 	for i = 1,n do
@@ -234,7 +284,8 @@ function Universe:createPlanet(x, y, v, vdir)
 					intvl = j
 				end
 			end
-			local dist = math.random(validrange[intvl*2-1], validrange[intvl*2])
+			print (validrange[intvl*2] - validrange[intvl*2-1])
+			local dist = validrange[intvl*2-1] + love.math.randomNormal(0.1,0.5) * (validrange[intvl*2] - validrange[intvl*2-1])
 			
 			local oV, oD = addVectors(P.v,P.dir, getOrbitVelocity(P, dist),angle + dangle)
 			local S,I = self:createSatellite(x + math.cos(angle)*dist, y + math.sin(angle)*dist, oV, oD)
@@ -351,6 +402,7 @@ function Universe:createSatellite(x, y, v, vdir)
 	-- Add space station(maybe?)
 	local omax = math.sqrt(S.mass * Physics.K / 2^-1)
 	local omin = math.sqrt(S.mass * Physics.K / 1)
+	print(omax,omin)
 
 	print(S)
 	io.stdout:flush()

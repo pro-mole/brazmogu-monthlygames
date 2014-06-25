@@ -176,7 +176,7 @@ end
 
 -- Check if bodies are touching
 function bodiesTouching(B, C)
-	return squareBodyDistance(B,C) <= (B.size + C.size)^2
+	return (squareBodyDistance(B,C) - (B.size + C.size)^2) <= 1
 end
 
 -- Apply (vectorial) force on body
