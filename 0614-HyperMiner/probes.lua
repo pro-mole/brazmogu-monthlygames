@@ -9,7 +9,7 @@ Probe = {
 	-- Engine
 	fuel = 0,
 	max_fuel = 100, -- Fuel capacity (liters)
-	thrust = 0.1, -- Acceleration (pixels per second per second per unit of mass)
+	thrust = 1, -- Acceleration (pixels per second per second per unit of mass)
 	fuel_rate = 1, -- Fuel rate for thrust (liters per second)
 
 	-- Energy
@@ -143,7 +143,7 @@ end
 function Probe:update(dt)
 	if self.fuel > 0 then
 		if love.keyboard.isDown("up") then
-			self:applyForce(self.thrust, self.d)
+			self:applyForce(self.thrust*dt, self.d)
 			self.fuel = self.fuel - self.fuel_rate * dt
 			if math.random(10) == 1 then
 				local ddir = (math.random()-0.5)*math.pi/2
@@ -162,7 +162,7 @@ function Probe:update(dt)
 		end
 
 		if love.keyboard.isDown("down") then
-			self:applyForce(-self.thrust, self.d)
+			self:applyForce(-self.thrust*dt, self.d)
 			self.fuel = self.fuel - self.fuel_rate * dt
 			if math.random(10) == 1 then
 				local ddir = (math.random()-0.5)*math.pi/2
