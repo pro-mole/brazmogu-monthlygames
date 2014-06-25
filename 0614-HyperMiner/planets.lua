@@ -34,7 +34,7 @@ function Planet.new(specs)
 		P.metal_depth = 1
 	end
 	
-	table.insert(Universe.planets, P)
+	--table.insert(Universe.planets, P)
 	return P
 end
 

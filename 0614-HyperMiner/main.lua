@@ -58,12 +58,14 @@ function love.load()
 		texture_params = { {"gradient", {255, 255, 255, 255}, {64, 64, 64, 255}, 50} } }))
 	]]
 
-	Universe:generate(arg[1])
+	Universe:generate(arg[2])
 
 	-- Load all textures
 	for k,v in Space:iterator() do
-		print (k,v,v.x,v.y)
-		v:loadTexture()
+		print(string.format("Loading %s textures...", v))
+		for l,B in ipairs(Space[v]) do
+			B:loadTexture()
+		end
 	end
 	-- Clear all events before actually starting the game
 	love.event.clear()

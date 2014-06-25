@@ -32,7 +32,7 @@ function Satellite.new(specs)
 		S.metal_depth = 1
 	end
 	
-	table.insert(Space.satellites, S)
+	--table.insert(Space.satellites, S)
 	return S
 end
 
