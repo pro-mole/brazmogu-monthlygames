@@ -27,8 +27,19 @@ function Star.new(specs)
 	local S = setmetatable(T, Star)
 	S.class = 5
 	
-	--table.insert(Universe.stars, S)
+	table.insert(Universe.stars, S)
 	return S
+end
+
+function Star:delete()
+	Body.delete(self)
+	
+	for i,S in ipairs(Universe.stars) do
+		if S == self then
+			table.remove(Universe.stars, i)
+			break
+		end
+	end
 end
 
 function Star:draw()

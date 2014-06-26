@@ -38,6 +38,17 @@ function Planet.new(specs)
 	return P
 end
 
+function Planet:delete()
+	Body.delete(self)
+	
+	for i,P in ipairs(Universe.planets) do
+		if P == self then
+			table.remove(Universe.planets, i)
+			break
+		end
+	end
+end
+
 function Planet:draw()	
 	Body.draw(self)
 	
