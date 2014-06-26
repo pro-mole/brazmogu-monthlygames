@@ -38,3 +38,9 @@ function normalize(T, n)
 	
 	return N
 end
+
+-- Normal Distribution with mean phi and variance sigma
+-- Adding this to the math API
+function math.randomNormal(phi, sigma)
+	return phi + math.sqrt(-2 * math.log(math.random())) * math.cos(2 * math.pi * math.random()) * sigma
+end

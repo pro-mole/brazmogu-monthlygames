@@ -32,8 +32,19 @@ function Satellite.new(specs)
 		S.metal_depth = 1
 	end
 	
-	--table.insert(Space.satellites, S)
+	table.insert(Space.satellites, S)
 	return S
+end
+
+function Satellite:delete()
+	Body.delete(self)
+	
+	for i,S in ipairs(Universe.satellites) do
+		if S == self then
+			table.remove(Universe.satellites, i)
+			break
+		end
+	end
 end
 
 function Satellite:draw()	

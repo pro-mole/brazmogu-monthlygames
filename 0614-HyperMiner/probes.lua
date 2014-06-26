@@ -84,8 +84,19 @@ function Probe.new(specs)
 	P.pump_q = 0
 	P.vacuum = {}
 	
-	--table.insert(Universe.probes, P)
+	table.insert(Universe.probes, P)
 	return P
+end
+
+function Probe:delete()
+	Body.delete(self)
+	
+	for i,P in ipairs(Universe.probes) do
+		if P == self then
+			table.remove(Universe.probes, i)
+			break
+		end
+	end
 end
 
 function Probe:keypressed(key, isrepeat)
