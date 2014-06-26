@@ -136,6 +136,20 @@ Pattern["blotch"] = function (size, color, avgsize, density)
 	end
 end
 
+-- Noise - randomly scatter pixels using Simplex Noise
+-- Params: Color, Seed(optional)
+Pattern["noise"] = function (size, color, seed)
+	love.math.setRandomSeed(seed or os.time())
+	for x = 1,size*2 do
+		for y = 1,size*2 do
+			local _c = {unpack(color)}
+			_c[4] = love.math.noise(x,y) * _c[4]
+			love.graphics.setColor(unpack(_c))
+			love.graphics.point(x, y)
+		end
+	end
+end
+
 -- Test Code
 --[[
 modes = {"gradient","scatter", "blotch"}
