@@ -53,7 +53,7 @@ function love.load()
 	Satellite.new({name = "Luna", x = 1024, y = 1024 + 640, v = 20, dir = math.atan2(-2,20), vrot = -math.pi/16, mass = 24, size = 16,
 		texture_params = { {"gradient", {128, 32, 32, 255}, {72, 0, 0, 255}, 32}, {"scatter", {0, 0, 0, 128}, 0.5} } })
 	Satellite.new({name = "Selena", x = 64, y = 1024, v = 16.5, dir = math.rad(90), vrot = math.pi/64, mass = 48, size = 32,
-		metals = {["Fe"] = 5, ["C"] = 3},
+		minerals = {["Fe"] = 5, ["C"] = 3},
 		texture_params = { {"gradient", {192, 128, 144, 255}, {128, 108, 128, 255}, 50}, {"blotch", {64, 64, 64, 64}, 4, 0.8}, {"blotch", {0, 0, 64, 64}, 3, 0.9} } })
 
 	table.insert(Space.stations, Body.new({name = "ST001", x = 0, y = 1024, v = 18, dir = math.pi*1.5, vrot = -math.pi/48, mass = 16, size = 16, class = 1,

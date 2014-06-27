@@ -66,7 +66,7 @@ function planOrbits(orbits, rangetable, quantum, massrange, sizerange, gravthres
 		local dist = math.randomNormal(0.5, 0.1) * (range - space*2) + rangetable[intvl]
 		table.insert(rangetable, intvl+1, dist - space)
 		table.insert(rangetable, intvl+2, dist + space)
-		table.insert(orbits, {dist, mass, size})
+		table.insert(orbits, {dist, mass, size, space})
 		
 		io.stdout:flush()
 	end
@@ -148,18 +148,91 @@ function Universe:createStar(x, y)
 	end
 	colors[1][4] = 255
 	colors[2][4] = 255
-	colors[3][4] = 128
-	colors[4][4] = 96
-	--[[S = Star.new({name=string.format("STAR%02X", math.random(0xff)),x=x, y=y, mass=mass, size=size,
+	colors[3][4] = 192
+	colors[4][4] = 64
+	S = Star.new({name=string.format("STAR%02X", math.random(0xff)),x=x, y=y, mass=mass, size=size, color = color,
 	texture_params = {
 		{"gradient", colors[1], colors[2], 128},
 		{"noise", colors[3]},
 		{"blotch", colors[4], 3, math.randomNormal(0.2, 0.05)}
-	} })]]
+	} })
+	
+	-- Fill all possible orbits with planets
+	for i,Pdata in ipairs(planets) do
+		local _angle = math.random() * 2*math.pi,
+		_x = x + math.cos(angle)*Pdata[1],
+		_y = y + math.sin(angle)*Pdata[1],
+		_mass = Pdata[2],
+		_size = Pdata[3]
+		_space = Pdata[4]
+		
+		P = createPlanet(_x, _y, _mass, _size, _v, _dir, _space)
+	end
 end
 
-function Universe:createPlanet(x, y, v, vdir)
-
+function Universe:createPlanet(x, y, mass, size, v, vdir)
+	local density = mass/size
+	
+	-- Scramble common minerals
+	local base_minerals = {
+		{"Fe", {192,64,64,255}},
+		{"C",  {64,64,64,255}},
+		{"Si", {255,208,144,255}},
+		{"Cu", {64,255,64,255}},
+		{"Al", {255,192,192,255}},
+		{"Ag", {128,128,128,255}},
+		{"Au", {144,96,32,255}},
+		{"Hg", {128,64,64,255}},
+		{"S",  {192,192,32,255}}
+		{"P",  {192,192,32,255}}
+	}
+	
+	local minerals = {}
+	local base_color = nil
+	local m = #base_minerals
+	local minrock, maxrock = m, m^2
+	while #minerals < #base_minerals do
+		local i = math.random(1,#base_minerals)
+		local rock = base_minerals[i]
+		
+		if not base_color then base_color = rock[2]
+		minerals[rock[1]] = math.random(minrock, maxrock)
+		minrock = minrock - 1
+		maxrock = maxrock - m
+		table.remove(base_minerals, i)
+	end
+	
+	-- Scramble rare minerals
+	rare_minerals = {"U","Ra","Pu"}
+	for i,R in ipairs(rare_minerals)
+		minerals[R] = math.random(0, math.log(mass)/math.log(2))
+	end
+	
+	-- Atmosphere and Liquid composition parameters
+	local elements = {
+		{"O", {128,192,255,255}},
+		{"N", {255,255,255,128}},
+		{"S", {255,255,128,255}},
+		{"Cl", {128,255,128,255}}
+	}
+	local b = math.random(1,#elements)
+	local base_gas, atmosphere_color = unpack(elements[b])
+	
+	-- Scramble liquids
+	local base_liquids = {
+		O =  {"H2O"},
+		N =  {"NH4"},
+		S =  {"H2SO4"},
+		Cl = {"HCl"}
+	}
+	
+	-- Scramble atmosphere
+	local base_gases = {
+		H = {"H","He","CH4"},
+		O =  {"O"},
+		N =  {"N"},
+		Cl = {"Cl"}
+	}
 end
 
 function Universe:createSatellite(x, y, v, vdir)

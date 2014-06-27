@@ -215,13 +215,13 @@ function Probe:update(dt)
 
 		if love.keyboard.isDown("q") then -- Drill
 			local B = self.influence_body
-			if B.metals and bodiesTouching(self,B) then
-				self.drill_q = self.drill_q + 1/B.metal_depth * dt
+			if B.minerals and bodiesTouching(self,B) then
+				self.drill_q = self.drill_q + 1/B.mineral_depth * dt
 				self.energy = self.energy - self.drill_power * dt
 				while self.drill_q >= 1 do
 					if #self.storage < self.storage_capacity then
-						table.insert(self.storage, selectRandomly(B.metals))
-						B.metal_depth = B.metal_depth + 1
+						table.insert(self.storage, selectRandomly(B.minerals))
+						B.mineral_depth = B.mineral_depth + 1
 					end
 					self.drill_q = self.drill_q - 1
 				end
