@@ -18,12 +18,12 @@ Physics = {
 			B["influence_body"] = nil
 			local max_grav = 0
 			for j,C in ipairs(self.bodies) do
-				if B ~= C and B.class <= C.class then
+				if B ~= C and B.class < C.class then
 					B:applyForce(gravityBodies(B,C), bodyDirection(B,C), dt)
 					local grav = gravityBodies(B,C)/squareBodyDistance(B,C)
 					if grav > max_grav then
 						B["influence_body"] = C
-						grav = gravityBodies(B,C)
+						max_grav = grav
 					end
 					print_debug(string.format("Gravity(%s -> %s):",B,C), gravityBodies(B,C), bodyDirection(B,C), math.sqrt(squareBodyDistance(B,C)))
 				end
