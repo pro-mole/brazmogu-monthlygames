@@ -34,43 +34,9 @@ function Universe:generate(seed)
 	
 	love.event.quit()
 
-	--[[local St = self.stars[math.random(#self.stars)]
+	local St = self.stations[math.random(#self.stations)]
 	local v,dir = addVectors(getOrbitVelocity(St,St.size*2),0, St.v,St.dir)
-	Probe.new({name = "PROBE", x = St.x, y = St.y - St.size*2, v = v, dir = dir})]]
-end
-
-function planOrbits(orbits, rangetable, quantum, massrange, sizerange, gravthreshold)
-	while true do
-		local intvl, range = 0,0
-		
-		for i = 1,#rangetable,2 do
-			if range < (rangetable[i+1] - rangetable[i]) then
-				intvl = i
-				range = (rangetable[i+1] - rangetable[i])
-			end
-		end
-		
-		-- print(range)
-		-- print(unpack(rangetable))
-		
-		if range < quantum then
-			break
-		end
-		
-		local mass, size, space
-		repeat
-			mass, size = 2^math.random(unpack(massrange)), 2^math.random(unpack(sizerange))
-			space = math.sqrt(Physics.K * mass / gravthreshold)
-		until space*2 <= range
-		
-		-- print(Pspace)
-		local dist = math.randomNormal(0.5, 0.1) * (range - space*2) + rangetable[intvl]
-		table.insert(rangetable, intvl+1, dist - space)
-		table.insert(rangetable, intvl+2, dist + space)
-		table.insert(orbits, {dist, mass, size, space})
-		
-		io.stdout:flush()
-	end
+	Probe.new({name = "PROBE", x = St.x, y = St.y - St.size*2, v = v, dir = dir})
 end
 
 function planOrbit(orbitTable, buffer, quantum, massRange, sizeRange, gravThreshold)
@@ -108,7 +74,7 @@ end
 -- Also, just for starters, let's 
 function Universe:createStar(x, y)
 	local mass = 2^math.random(10,13)
-	local size = 2^math.random(8,11)
+	local size = 2^math.random(9,11)
 	local density = mass/size
 	print(mass,size)
 	
@@ -399,7 +365,7 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 		local _mass = M[2]
 		local _size = M[3]
 		local _space = M[4]
-		local _v = getOrbitVelocity(S, _r)
+		local _v = getOrbitVelocity(P, _r)
 		if math.random() < 0.5 then _v = -_v end
 
 		local _dv, _ddir = addVectors(_v, angle+0.5*math.pi, P.v, P.dir)
