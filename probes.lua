@@ -163,40 +163,37 @@ end
 function Probe:update(dt)
 	if self.fuel > 0 then
 		if love.keyboard.isDown("up") then
-			self:applyForce(self.thrust*dt, self.d)
-			self.fuel = self.fuel - self.fuel_rate * dt
-			if math.random(10) == 1 then
-				local ddir = (math.random()-0.5)*math.pi/2
-				local pv, pdir = addVectors(self.v, self.d, -self.thrust, ddir)
+			if math.random(12) < 1 then
 				Particles:add(PartSquare, layers.bot,
-					self.x - math.cos(ddir)*self.size,
-					self.y - math.sin(ddir)*self.size,
-					math.random(self.size/4,self.size/2),
-					-pv,
-					pdir,
+					self.x - math.cos(self.d)*self.size,
+					self.y - math.sin(self.d)*self.size,
+					math.random(self.size/8,self.size/2),
+					self.v,
+					self.d,
 					math.pi/(math.random(1,6)),
 					64,
 					128,
 					math.random()*2)
 			end
+			self:applyForce(self.thrust*dt, self.d)
+			self.fuel = self.fuel - self.fuel_rate * dt
 		end
 
 		if love.keyboard.isDown("down") then
-			self:applyForce(-self.thrust*dt, self.d)
-			self.fuel = self.fuel - self.fuel_rate * dt
-			if math.random(10) == 1 then
-				local ddir = (math.random()-0.5)*math.pi/2
-				local pv, pdir = addVectors(-self.v, self.d, -self.thrust, ddir)
+			if math.random(12) < 1 then
 				Particles:add(PartSquare, layers.bot,
-					self.x + math.cos(ddir)*self.size,
-					self.y + math.sin(ddir)*self.size,
-					math.random(self.size/4,self.size/2),
-					-pv,
-					pdir,
+					self.x + math.cos(self.d)*self.size,
+					self.y + math.sin(self.d)*self.size,
+					math.random(self.size/8,self.size/2),
+					self.v,
+					self.d,
 					math.pi/(math.random(1,6)),
 					64,
-					192, math.random()*2)
+					128,
+					math.random()*2)
 			end
+			self:applyForce(-self.thrust*dt, self.d)
+			self.fuel = self.fuel - self.fuel_rate * dt
 		end
 	end
 
