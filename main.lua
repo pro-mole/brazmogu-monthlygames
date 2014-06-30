@@ -118,6 +118,7 @@ layers = {
 
 function love.draw()
 	local probe
+	local screen_diag = math.sqrt(love.window.getWidth()^2 + love.window.getHeight()^2)
 	local Tx, Ty = 0, 0
 	if #Universe.probes >= 1 then
 		probe = Universe.probes[1]
@@ -167,7 +168,9 @@ function love.draw()
 	love.graphics.draw(SpaceBG, _x+S, _y+S)]]
 
 	for i,B in ipairs(Physics.bodies) do
-		B:draw()
+		if (math.sqrt(squareBodyDistance(B,probe)) - B.size) <= screen_diag/2 then
+			B:draw()
+		end
 	end
 	Particles:draw()
 	-- Physics:draw()
