@@ -1,6 +1,7 @@
 -- Randomized textures for our planets and stuff
 
 -- Global 
+simple_textures = true -- For when my video card just can't take it O_o
 
 -- Create a wrapping for the background
 function generateBackground(size, density)
@@ -74,11 +75,14 @@ function generateTexture(size, ...)
 	for i, pattern in ipairs{...} do
 		local mode = pattern[1]
 		print(mode)
+		io.stdout:flush()
 
 		pattern[1] = size
 
 		if (Pattern[mode]) then
-			Pattern[mode](unpack(pattern))
+			if (not simple_textures) or (mode == "gradient") then
+				Pattern[mode](unpack(pattern))
+			end
 		end
 	end
 	

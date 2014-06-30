@@ -68,6 +68,7 @@ function love.load()
 	-- Load all textures
 	for k,v in Space:iterator() do
 		print(string.format("Loading %s textures...", v))
+		io.stdout:flush()
 		for l,B in ipairs(Space[v]) do
 			B:loadTexture()
 		end

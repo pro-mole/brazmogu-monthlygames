@@ -163,7 +163,7 @@ end
 function Probe:update(dt)
 	if self.fuel > 0 then
 		if love.keyboard.isDown("up") then
-			if math.random(12) < 1 then
+			if math.random(12) <= 1 then
 				Particles:add(PartSquare, layers.bot,
 					self.x - math.cos(self.d)*self.size,
 					self.y - math.sin(self.d)*self.size,
@@ -180,7 +180,7 @@ function Probe:update(dt)
 		end
 
 		if love.keyboard.isDown("down") then
-			if math.random(12) < 1 then
+			if math.random(12) <= 1 then
 				Particles:add(PartSquare, layers.bot,
 					self.x + math.cos(self.d)*self.size,
 					self.y + math.sin(self.d)*self.size,
@@ -221,9 +221,9 @@ function Probe:update(dt)
 
 		if love.keyboard.isDown("q") then -- Drill
 			local B = self.influence_body
-			print(B.minerals,squareBodyDistance(self,B) - (self.size + B.size))
+			print(B.minerals, math.sqrt(squareBodyDistance(self,B)) - (self.size + B.size))
 			if B.minerals and
-			   (squareBodyDistance(self,self.B) - (self.size + B.size) <= 1) then
+			   (math.sqrt(squareBodyDistance(self,B)) - (self.size + B.size) <= 1) then
 				self.drill_q = self.drill_q + 1/B.mineral_depth * dt
 				self.energy = self.energy - self.drill_power * dt
 				while self.drill_q >= 1 do
