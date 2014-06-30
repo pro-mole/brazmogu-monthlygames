@@ -4,8 +4,8 @@
 require("physics")
 
 Planet = {
-	minerals = nil, -- Set of minerallic concentration on the planet's composition
-	mineral_depth = 1, -- Depth of mineral deposits; raises as player drills
+	minerals = nil, -- Set of metallic concentration on the planet's composition
+	mineral_depth = 1, -- Depth of metal deposits; raises as player drills
 	liquids = nil, -- Liquid composition on the planet's surface
 	liquid_depth = 1, -- Depth of liquid pools; raises as player pumps
 	atmosphere = nil, -- Atmospheric composition (nil if there's not atmosphere at all)
@@ -34,7 +34,7 @@ function Planet.new(specs)
 		P.mineral_depth = 1
 	end
 	
-	--table.insert(Universe.planets, P)
+	table.insert(Universe.planets, P)
 	return P
 end
 

@@ -9,7 +9,7 @@ Probe = {
 	-- Engine
 	fuel = 0,
 	max_fuel = 100, -- Fuel capacity (liters)
-	thrust = 1, -- Acceleration (pixels per second per second per unit of mass)
+	thrust = 10, -- Acceleration (pixels per second per second per unit of mass)
 	fuel_rate = 1, -- Fuel rate for thrust (liters per second)
 
 	-- Energy
@@ -149,6 +149,15 @@ function Probe:keypressed(key, isrepeat)
 			self.scope = self.scope / 2
 		end
 	end
+	if key == "q" then
+		print(squareBodyDistance(self,self.influence_body) - (self.size + self.influence_body.size)^2)
+		if bodiesTouching(self, self.influence_body) then
+			print("Touching")
+			print(self.influence_body.minerals)
+		else
+			print("Not touching")
+		end
+	end
 end
 
 function Probe:update(dt)
@@ -215,13 +224,15 @@ function Probe:update(dt)
 
 		if love.keyboard.isDown("q") then -- Drill
 			local B = self.influence_body
-			if B.minerals and bodiesTouching(self,B) then
+			print(B.minerals,squareBodyDistance(self,B) - (self.size + B.size))
+			if B.minerals and
+			   (squareBodyDistance(self,self.B) - (self.size + B.size) <= 1) then
 				self.drill_q = self.drill_q + 1/B.mineral_depth * dt
 				self.energy = self.energy - self.drill_power * dt
 				while self.drill_q >= 1 do
 					if #self.storage < self.storage_capacity then
 						table.insert(self.storage, selectRandomly(B.minerals))
-						B.mineral_depth = B.mineral_depth + 1
+						B.mineral_depth = B.mineral_depth + 0.25
 					end
 					self.drill_q = self.drill_q - 1
 				end

@@ -4,8 +4,8 @@
 require("physics")
 
 Satellite = {
-	minerals = nil, -- Set of minerallic concentration on the satellite's composition
-	mineral_depth = 1, -- Depth of mineral deposits; raises as player drills
+	minerals = nil, -- Set of metallic concentration on the satellite's composition
+	mineral_depth = 1, -- Depth of metal deposits; raises as player drills
 	liquids = nil, -- Liquid composition on the planet's surface
 	liquid_depth = 1 -- Depth of liquid pools; raises as player pumps
 }
