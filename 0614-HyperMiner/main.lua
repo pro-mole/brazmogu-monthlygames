@@ -167,7 +167,9 @@ function love.draw()
 	love.graphics.draw(SpaceBG, _x+S, _y+S)]]
 
 	for i,B in ipairs(Physics.bodies) do
-		B:draw()
+		if math.sqrt(squareBodyDistance(B,probe) - B.size) <= math.sqrt(love.window.getHeight()^2 + love.window.getWith()^2) then
+			B:draw()
+		end
 	end
 	Particles:draw()
 	-- Physics:draw()
