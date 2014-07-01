@@ -149,10 +149,10 @@ function drawRadar(rCanvas, centerBody, scale)
 		local r, a = math.sqrt(squareBodyDistance(centerBody, B))*scale, bodyDirection(centerBody, B)
 		if r <= (rCanvas:getWidth()/2)^2 then
 			love.graphics.setColor(unpack(radar_color[B.class+1]))
-			love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, B.size * scale, 32)
+			love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, math.max(B.size * scale, 2), 32)
 			if B == centerBody.influence_body then
 				love.graphics.setColor(255,255,255,128)
-				love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, (B.size * scale)-1, 32)
+				love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, math.max((B.size * scale)-1, 1), 32)
 			end
 		end
 	end
@@ -163,6 +163,42 @@ function drawRadar(rCanvas, centerBody, scale)
 	love.graphics.setStencil()
 	love.graphics.pop()
 	love.graphics.setCanvas(_canvas)
+end
+
+-- Overlay map for my debugging and testing
+function drawMap(centerBody, scale)
+	love.graphics.push()
+	love.graphics.origin()
+	
+	love.graphics.setColor(0,32,0,255)
+	love.graphics.rectangle("fill", 0, 0, love.window.getWidth(), love.window.getHeight())
+	
+	love.graphics.setColor(0,128,0,128)
+	love.graphics.translate(love.window.getWidth()/2, 0)
+	for i = 0, love.window.getWidth()/32 do
+		love.graphics.line(i * 16, 0, i * 16, love.window.getHeight())
+		love.graphics.line(i * -16, 0, i * -16, love.window.getHeight())
+	end
+	love.graphics.translate(-love.window.getWidth()/2, love.window.getHeight()/2)
+	for i = 0, love.window.getHeight()/32 do
+		love.graphics.line(0, i * 16, love.window.getWidth(), i * 16)
+		love.graphics.line(0, i * -16, love.window.getWidth(), i * -16)
+	end
+	
+	love.graphics.translate(love.window.getWidth()/2, 0)
+	for i,B in ipairs(Physics.bodies) do
+		local r, a = math.sqrt(squareBodyDistance(centerBody, B))*scale, bodyDirection(centerBody, B)
+		if r <= math.sqrt((love.window.getWidth()/2)^2 + (love.window.getHeight()/2)^2) then
+			love.graphics.setColor(unpack(radar_color[B.class+1]))
+			love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, math.max(B.size * scale, 2), 32)
+			if B == centerBody.influence_body then
+				love.graphics.setColor(255,255,255,128)
+				love.graphics.circle("fill", math.cos(a)*r, math.sin(a)*r, math.max((B.size * scale)-1, 1), 32)
+			end
+		end
+	end
+	
+	love.graphics.pop()
 end
 
 -- Draw the storage crates as a grid of mineral "boxes"
@@ -211,6 +247,15 @@ function drawTank(x, y, w, h, probe)
 	love.graphics.rectangle("fill", 0, 0, tank_width, tank_height)
 	love.graphics.setColor(64,64,64,255)
 	love.graphics.rectangle("fill", 0, 0, tank_width, tank_height * (Probe.max_tank_capacity - probe.tank_capacity)/Probe.max_tank_capacity)
+	
+	local level = 0
+	local part = tank_height / Probe.max_tank_capacity
+	for i,L in pairs(liquid_density) do
+		if probe.tank[L] then
+			level = level + probe.tank[L]
+			love.graphics.rectangle("fill", 0, tank_height - level*part, tank_width, probe.tank[L]*part)
+		end
+	end
 	
 	love.graphics.setColor(32,32,32,255)
 	love.graphics.line(0,0, 0,tank_height)

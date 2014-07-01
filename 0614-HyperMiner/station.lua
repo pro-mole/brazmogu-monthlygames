@@ -6,23 +6,32 @@ require("physics")
 Station = {
 }
 
--- Circular Menu for Station operations
-Station["menu"] = {
-	"Dump",
-	"Engine+",
-	"Torque+",
-	"Booster+",
-	"Fuel+",
-	"Booster+",
-	"Drill+",
-	"Pump+",
-	"Storage+",
-	"Tank+",
-	"Vacuum+",
-	"Radar+",
-	"Scanner+",
-	"Solar Panels"
+Upgrade_List = { -- A state list of how the upgrades are progressing; this doesn't really affec the Probe, it's just for easier UI generation and control
+	thrust = 1,
+	torque = 1,
+	boost = 1,
+	radar = 1,
+	scanner = 0, -- Generally, 0 means an equipment that is not present yet :)
+	autobreak = 0,
+	drill = 1,
+	storage = 1,
+	pump = 1,
+	tank = 1,
+	vacuum = 0
 }
+
+-- Stock of primitive elements, distributed among all stations
+Master_Stock = setmetatable({},
+{
+__index = function(t,i)
+	if rawget(t,i) == nil then
+		return 0
+	else
+		return t[i]
+	end
+end
+}
+)
 
 Station.__tostring = Body.__tostring
 
@@ -68,10 +77,37 @@ function Station:update(dt)
 	if not bodiesTouching(self, main_probe) then return end
 
 	if main_probe.energy < main_probe.max_energy then
-		main_probe.energy = math.min(main_probe.max_energy, main_probe.energy + 0.25)
+		main_probe.energy = math.min(main_probe.max_energy, main_probe.energy + 0.25 * dt)
 	end
+	
+	-- Fill up the stocks
+	while #main_probe.storage > 0 do
+		for E,x in chemComposition(main_probe.storage[1]) do
+			print(E,x)
+			if not x or x == "" then
+				Master_Stock[E] = Master_Stock[E] + 1
+			else
+				Master_Stock[E] = Master_Stock[E] + x
+			end
+		end
+		table.remove(main_probe.storage, 1)
+	end
+	
 end
 
 function Station:draw()	
 	Body.draw(self)
+	
+	-- Draw Station UI iff the probe is docked
+	if not bodiesTouching(self, main_probe) then return end
+	
+	love.graphics.setCanvas(layers.UI)
+	
+	love.graphics.push()
+	love.graphics.origin()
+	
+	love.graphics.setColor(0,24,0,192)
+	love.graphics.rectangle("fill",0,0,love.window.getWidth(),144)
+	
+	love.graphics.pop()
 end
