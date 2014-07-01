@@ -105,7 +105,11 @@ function love.keypressed(key, isrepest)
 		screenshot()
 	end
 	
-	Physics:keypressed(key, isrepeat)
+	main_probe:keypressed(key, isrepeat)
+end
+
+function love.keyreleased(key)
+	main_probe:keyreleased(key, isrepeat)
 end
 
 -- Drawing layers(all canvasses)
