@@ -66,6 +66,10 @@ function Station:update(dt)
 	Body.update(self, dt)
 	-- If the probe is not docked, just go on
 	if not bodiesTouching(self, main_probe) then return end
+
+	if main_probe.energy < main_probe.max_energy then
+		main_probe.energy = math.min(main_probe.max_energy, main_probe.energy + 0.25)
+	end
 end
 
 function Station:draw()	

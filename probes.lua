@@ -99,6 +99,14 @@ function Probe:delete()
 	end
 end
 
+function Probe:keyreleased(key)
+	if key == "q" then
+		if self.drill_q > 0 then
+			self.drill_q = 0
+		end
+	end
+end
+
 function Probe:keypressed(key, isrepeat)
 	print(key)
 	if key == " " then
@@ -147,15 +155,6 @@ function Probe:keypressed(key, isrepeat)
 	if key == "," then
 		if self.scope > 1 then
 			self.scope = self.scope / 2
-		end
-	end
-	if key == "q" then
-		print(squareBodyDistance(self,self.influence_body) - (self.size + self.influence_body.size)^2)
-		if bodiesTouching(self, self.influence_body) then
-			print("Touching")
-			print(self.influence_body.minerals)
-		else
-			print("Not touching")
 		end
 	end
 end
@@ -221,7 +220,6 @@ function Probe:update(dt)
 
 		if love.keyboard.isDown("q") then -- Drill
 			local B = self.influence_body
-			print(B.minerals, math.sqrt(squareBodyDistance(self,B)) - (self.size + B.size))
 			if B.minerals and
 			   (math.sqrt(squareBodyDistance(self,B)) - (self.size + B.size) <= 1) then
 				self.drill_q = self.drill_q + 1/B.mineral_depth * dt

@@ -119,10 +119,10 @@ function Universe:createStar(x, y)
 	print("Stations:",#stations)
 
 	local palette = {
-		grad1 = {0,0,0,255},
-		grad2 = {0,0,0,255},
-		flare = {0,0,0,127},
-		spots = {0,0,0,63}
+		grad1 = {0,0,0,32},
+		grad2 = {0,0,0,16},
+		flare = {0,0,0,192},
+		spots = {0,0,0,128}
 	}
 	for c = 1,3 do
 		palette.grad1[c] = color[c]
@@ -132,7 +132,7 @@ function Universe:createStar(x, y)
 	end
 
 	S = Star.new({name = string.format("STAR%02X",math.random(0xff)), x = x, y = y, mass = mass, size = size,
-		texture_params = {
+		color = color, texture_params = {
 			{"gradient", palette.grad1, palette.grad2, 1024},
 			{"noise", palette.flare},
 			{"blotch", palette.spots, 8, 0.25}
@@ -278,10 +278,10 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 		end
 	end
 
-	local orbitrange = {size*2, math.sqrt(Physics.K * mass / 2^-2)}
+	local orbitrange = {(size + atmosize)*2, math.sqrt(Physics.K * mass / 2^-2)}
 	-- Plan out satellites
 	local moons = {}
-	planOrbit(orbitrange, moons, mass, {5,8}, {4,8}, 2^3)
+	planOrbit(orbitrange, moons, mass, {5,8}, {4,7}, 2^3)
 	print("Satellites:", #moons)
 
 	-- Plan out planetary space stations
@@ -353,7 +353,7 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 	P = Planet.new({name = string.format("PL%03X",math.random(0xfff)), x = x, y = y, mass = mass, size = size, v = v, dir = dir, vrot = math.random() * math.pi/8,
 		minerals = minerals, liquids = liquids, atmosphere = atmosphere,
 		atmosphere_size = atmosize,
-		texture_params = params, atmosphere_params = atmo_params
+		color = base_color, texture_params = params, atmosphere_params = atmo_params
 	})
 
 	local angle
@@ -451,7 +451,7 @@ function Universe:createSatellite(x, y, v, vdir, mass, size, omax)
 	
 	M = Satellite.new({name = string.format("SAT%03X",math.random(0xfff)), x = x, y = y, mass = mass, size = size, v = v, dir = dir, vrot = math.random() * math.pi/16,
 		minerals = minerals,
-		texture_params = params
+		color = base_color, texture_params = params
 	})
 end
 
