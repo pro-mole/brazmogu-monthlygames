@@ -48,7 +48,10 @@ Probe = {
 	max_vacuum_capacity = 80,
 	
 	-- Radar
-	scope = 32,
+	scope = 16,
+	
+	-- Element Scanner
+	scanner = false
 }
 
 Probe.__tostring = Body.__tostring
@@ -240,6 +243,23 @@ function Probe:update(dt)
 						B.x + math.cos(pdir)*B.size,
 						B.y + math.sin(pdir)*B.size,
 						pv, pdir, 0, 64, 192, B.color or {128,128,128}, math.random()*1)
+				end
+			end
+		end
+		
+		if love.keyboard.isDown("w") then -- Pump
+			local B = self.influence_body
+			if B.liquids and
+			   (math.sqrt(squareBodyDistance(self,B)) - (self.size + B.size) <= 1) then
+				self.pump_q = self.pump_q + 1/B.liquid_depth * dt
+				self.energy = self.energy - self.pump_power * dt
+				while self.pump_q >= 1 do
+					if #self.tank < self.tank_capacity then
+						local L = selectRandomly(B.liquids)
+						self.tank[L] = self.tank[L] + 1
+						B.liquid_depth = B.liquid_depth + 0.25
+					end
+					self.pump_q = self.pump_q - 1
 				end
 			end
 		end

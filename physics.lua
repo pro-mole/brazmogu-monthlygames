@@ -2,11 +2,64 @@
 -- Oh boy!
 
 -- Some constants
-
 RIGHT = 0
 DOWN = math.pi/2
 LEFT = math.pi
 UP = 3 * math.pi/2
+
+-- A table of liquid density, organized from less to more dense
+liquid_density = {
+	"Hg",
+	"H2SO4",
+	"HCl",
+	"HF",
+	"H2O",
+	"NH4"
+}
+
+-- Element colors
+-- A color table for elements(for showing stock)
+element_color = {
+	Fe = {192,64,64,255},
+	Si = {255,192,144,255},
+	Ca = {192,192,192,255},
+	Cu = {64,144,64,255},
+	Al = {192,208,255,255},
+	Ag = {144,144,144,255},
+	Au = {144,128,64,255},
+	C =  {72,72,72,255},
+	S =  {192,192,0,255},
+	O =  {0,192,255,255},
+	C =  {128,144,32,255},
+	S =  {192,192,0,255},
+	Cl = {192,255,192,255},
+	F =  {255,208,192,255},
+	N =  {208,208,208,255},
+	Hg = {192,64,64,255},
+	H2SO4 = {192,64,64,255},
+	HCl = {192,64,64,255},
+	HF = {192,64,64,255},
+	H2O = {192,64,64,255},
+	NH4 = {192,64,64,255},
+	H2O = {192,64,64,255},
+	CH4 = {192,64,64,255},
+	CO2 = {192,64,64,255},
+	SO2 = {192,64,64,255},
+	Cl = {192,64,64,255},
+	F = {192,64,64,255},
+	N = {192,64,64,255},
+	NH3 = {192,64,64,255},
+	U = {192,64,64,255},
+	Ra = {192,64,64,255},
+	Pu = {192,64,64,255},
+	H = {192,64,64,255},
+	He = {192,64,64,255}
+}
+
+-- A substitute for a iterator that separates all elements from a chemical formula(H, O2, H2O, CaCO4, H2SO4)
+function chemComposition(molecule)
+	return string.gmatch(molecule, "([A-Z][a-z]*)([0-9]*)")
+end
 
 -- An index of Physics stuff we need globally
 Physics = {

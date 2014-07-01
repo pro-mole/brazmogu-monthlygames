@@ -38,47 +38,28 @@ function print_debug(...)
 	end
 end
  
+loading = true
+load_buffer = {}
+ 
 function love.load()
-	--[[Probe.new({name = "Probe", x = -8, y = 1024, v = 5, dir = math.rad(270), mass = 1, size = 8, active = true})
-	
-	-- Test environment
-	-- A planetary system with two moons around it
-	-- Also some asteroids and a comet
-	Star.new({name = "Sol", x = 12148, y = 1024, v = 0, dir = 0, vrot = math.pi/8, mass = 1024, size = 1024,
-		texture_params = { {"gradient", {144, 128, 0, 255}, {128, 32, 0, 255}, 100}, {"scatter", {255, 0, 0, 128}, 0.8} } })
-		
-	Planet.new({name = "Terra", x = 1024, y = 1024, v = 2, dir = math.rad(270), vrot = math.pi/8, mass = 512, size = 128, atmosphere = {H=0.1, O=0.6, H20=0.3}, atmosphere_size = 240,
-		texture_params = { {"gradient", {64, 128, 144, 255}, {12, 64, 96, 255}, 50}, {"scatter", {0, 0, 128, 128}, 0.8}, {"blotch", {0, 64, 0, 204}, 8, 0.8} } })
-		
-	Satellite.new({name = "Luna", x = 1024, y = 1024 + 640, v = 20, dir = math.atan2(-2,20), vrot = -math.pi/16, mass = 24, size = 16,
-		texture_params = { {"gradient", {128, 32, 32, 255}, {72, 0, 0, 255}, 32}, {"scatter", {0, 0, 0, 128}, 0.5} } })
-	Satellite.new({name = "Selena", x = 64, y = 1024, v = 16.5, dir = math.rad(90), vrot = math.pi/64, mass = 48, size = 32,
-		minerals = {["Fe"] = 5, ["C"] = 3},
-		texture_params = { {"gradient", {192, 128, 144, 255}, {128, 108, 128, 255}, 50}, {"blotch", {64, 64, 64, 64}, 4, 0.8}, {"blotch", {0, 0, 64, 64}, 3, 0.9} } })
-
-	table.insert(Space.stations, Body.new({name = "ST001", x = 0, y = 1024, v = 18, dir = math.pi*1.5, vrot = -math.pi/48, mass = 16, size = 16, class = 1,
-		texture_params = { {"gradient", {255, 255, 255, 255}, {64, 64, 64, 255}, 50} } }))
-	]]
-
 	Universe:generate(arg[2])
 	if #Space.probes >= 1 then
 		main_probe = Space.probes[1]
 	end
 
-	-- Load all textures
+	-- Start loading textures
+	loading = true
 	for k,v in Space:iterator() do
-		print(string.format("Loading %s textures...", v))
-		io.stdout:flush()
 		for l,B in ipairs(Space[v]) do
-			B:loadTexture()
+			table.insert(load_buffer, B)
 		end
 	end
-	-- Clear all events before actually starting the game
-	love.event.clear()
+	loaded = 0
+	total_load = #load_buffer
 end
 
 function love.update(dt)
-	debug_interval = debug_interval - dt
+	-- debug_interval = debug_interval - dt
 	debug_echo = debug_interval <= 0
 	
 	Physics:update(dt)
@@ -97,10 +78,15 @@ function love.update(dt)
 end
 
 function love.keypressed(key, isrepest)
+	print(key)
+	io.stdout:flush()
+	
 	if key == "escape" then
 		love.event.quit()
 	end
 	
+	if loading then return end
+
 	if key == "f8" then
 		screenshot()
 	end
@@ -109,6 +95,8 @@ function love.keypressed(key, isrepest)
 end
 
 function love.keyreleased(key)
+	if loading then return end
+	
 	main_probe:keyreleased(key, isrepeat)
 end
 
@@ -122,6 +110,23 @@ layers = {
 }
 
 function love.draw()
+	if loading then
+		love.graphics.setCanvas()
+		
+		love.graphics.printf("GENERATING UNIVERSE - LOADING TEXTURES", 0, love.window.getHeight()/2 - font.standard:getHeight(), love.window.getWidth(), "center")
+		love.graphics.printf(string.format("%0d%%", loaded/total_load * 100), 0, love.window.getHeight()/2, love.window.getWidth(), "center")
+		
+		if #load_buffer > 0 then
+			load_buffer[1]:loadTexture()
+			table.remove(load_buffer, 1)
+			loaded = loaded + 1
+		else
+			loading = false
+		end
+		
+		return
+	end
+
 	local probe
 	local screen_diag = math.sqrt(love.window.getWidth()^2 + love.window.getHeight()^2)
 	local Tx, Ty = 0, 0
@@ -193,6 +198,9 @@ function love.draw()
 		layers[L]:clear()
 	end
 	
+	if love.keyboard.isDown("`") then
+		drawMap(probe, 1/64)
+	end
 	--love.graphics.print(string.format("%d;%d",_x,_y), 0, 8)
 	--love.graphics.print(string.format("%d;%d",Tx,Ty), 0, 0)
 end

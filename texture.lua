@@ -1,7 +1,7 @@
 -- Randomized textures for our planets and stuff
 
 -- Global 
-simple_textures = false -- For when my video card just can't take it O_o
+simple_textures = true -- For when my video card just can't take it O_o
 
 -- Create a wrapping for the background
 function generateBackground(size, density)
