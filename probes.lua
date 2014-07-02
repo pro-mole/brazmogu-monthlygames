@@ -44,7 +44,7 @@ Probe = {
 	-- Liquid Storage
 	tank = {},
 	tank_capacity = 10,
-	max_tank_capacity = 50,
+	max_tank_capacity = 40,
 
 	-- Gas Storage
 	vacuum = {},
@@ -317,7 +317,7 @@ function Probe:drawUI()
 	love.graphics.origin()
 	love.graphics.translate(0,love.window.getHeight()-144)
 	
-	love.graphics.setColor(0,24,0,192)
+	love.graphics.setColor(0,24,0,240)
 	love.graphics.rectangle("fill",0,0,love.window.getWidth(),144)
 	
 		love.graphics.translate(0,12)
@@ -356,7 +356,7 @@ function Probe:drawUI()
 
 		love.graphics.translate(162,12) -- (318,24)
 		-- Mineral Storage (Crates)
-		local Sw,Sh = drawStorage(0, 0, self)
+		local Sw,Sh = drawStorage(0, 0, self, 318, love.window.getHeight()-120)
 		love.graphics.setBlendMode("replace")
 		love.graphics.setColor(192,255,192,192)
 		love.graphics.rectangle("line", -4, -4, Sw+8, Sh+8)
@@ -368,7 +368,7 @@ function Probe:drawUI()
 
 		love.graphics.translate(142,0) -- (460,24)
 		-- Liquid Storage (Tank)
-		local Tw,Th = drawTank(0, 1, Sw/2, Sh, self)
+		local Tw,Th = drawTank(0, 1, Sw/2, Sh, self, 460, love.window.getHeight()-120)
 		love.graphics.setBlendMode("replace")
 		love.graphics.setColor(192,255,192,192)
 		love.graphics.rectangle("line", -4, -4, Tw+8, Th+8)

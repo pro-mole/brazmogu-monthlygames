@@ -7,17 +7,18 @@ Station = {
 }
 
 Upgrade_List = { -- A state list of how the upgrades are progressing; this doesn't really affec the Probe, it's just for easier UI generation and control
-	thrust = 1,
-	torque = 1,
-	boost = 1,
-	radar = 1,
-	scanner = 0, -- Generally, 0 means an equipment that is not present yet :)
-	autobreak = 0,
-	drill = 1,
-	storage = 1,
-	pump = 1,
-	tank = 1,
-	vacuum = 0
+	-- {Name, Current Level, Max Level}
+	thrust = {"Engine Thrust",1,4},
+	torque = {"Reaction Wheel",1,4},
+	boost = {"Booster Potency",1,4},
+	radar = {"Radar Range",1,8},
+	scanner = {"Planet Scanner",0,1}, -- Generally, 0 means an equipment that is not present yet :)
+	autobreak = {"AutoBrerak",0,1},
+	drill = {"Drill Efficiency",1,4},
+	storage = {"Storage Capacity",1,4},
+	pump = {"Pump Efficiency",1,4},
+	tank = {"Tank Capacity",1,4},
+	vacuum = {"Vaccum Chamber",0,4}
 }
 
 -- Stock of primitive elements, distributed among all stations
@@ -118,8 +119,30 @@ function Station:draw()
 	love.graphics.push()
 	love.graphics.origin()
 	
-	love.graphics.setColor(0,24,0,192)
+	love.graphics.setColor(0,24,0,240)
 	love.graphics.rectangle("fill",0,0,love.window.getWidth(),144)
+	
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.setFont(font.standard)
+	
+	-- Element Stock
+	love.graphics.print("Master Stock:", 4, 4)
+	local total_lines = ((144 - 8)/ font.standard:getHeight())/2 - 1
+	local offset = font.standard:getWidth("X")
+	local line_width = offset * 10
+	local row,col = 0,0
+	for i,E in ipairs(elements) do
+		love.graphics.setColor(element_color[E])
+		love.graphics.print(string.format("%s:", E), 4 + col*line_width, 4 + (row+1) * font.standard:getHeight()*2)
+		love.graphics.print(string.format("%04d", Master_Stock[E]), 4 + col*line_width + offset*3, 4 + (row+1) * font.standard:getHeight()*2)
+		row = row + 1
+		if row >= total_lines then
+			row = 0
+			col = col + 1
+		end
+	end
+	
+	-- Upgrades
 	
 	love.graphics.pop()
 end
