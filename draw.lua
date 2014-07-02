@@ -253,8 +253,13 @@ function drawTank(x, y, w, h, probe)
 	for i,L in pairs(liquid_density) do
 		if probe.tank[L] then
 			level = level + probe.tank[L]
+			love.graphics.setColor(unpack(element_color[L]))
 			love.graphics.rectangle("fill", 0, tank_height - level*part, tank_width, probe.tank[L]*part)
 		end
+	end
+	if probe.pump_q > 0 then
+		love.graphics.setColor(32,128,32,255)
+		love.graphics.rectangle("fill", 0, tank_height - (level + probe.pump_q)*part, tank_width, probe.pump_q*part)
 	end
 	
 	love.graphics.setColor(32,32,32,255)

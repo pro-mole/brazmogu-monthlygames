@@ -62,6 +62,8 @@ function love.update(dt)
 	-- debug_interval = debug_interval - dt
 	debug_echo = debug_interval <= 0
 	
+	if loading then return end
+
 	Physics:update(dt)
 	
 	if debug_echo then 
@@ -113,6 +115,8 @@ function love.draw()
 	if loading then
 		love.graphics.setCanvas()
 		
+		love.graphics.setFont(font.standard)
+		love.graphics.setColor(255,255,255,255)
 		love.graphics.printf("GENERATING UNIVERSE - LOADING TEXTURES", 0, love.window.getHeight()/2 - font.standard:getHeight(), love.window.getWidth(), "center")
 		love.graphics.printf(string.format("%0d%%", loaded/total_load * 100), 0, love.window.getHeight()/2, love.window.getWidth(), "center")
 		

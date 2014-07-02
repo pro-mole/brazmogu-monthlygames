@@ -32,7 +32,7 @@ function Universe:generate(seed)
 
 	local S = self:createStar(x,y)
 
-	local St = self.stations[math.random(#self.stations)]
+	local St = self.planets[math.random(#self.planets)]
 	local v,dir = addVectors(getOrbitVelocity(St,St.size*2),0, St.v,St.dir)
 	Probe.new({name = "PROBE", x = St.x, y = St.y - St.size*2, v = v, dir = dir})
 end
@@ -93,7 +93,7 @@ function Universe:createStar(x, y)
 	end
 	
 	-- Define orbit range
-	local orbitrange = {size*2, math.sqrt(Physics.K * mass / 2^-12)}
+	local orbitrange = {size*2, math.sqrt(Physics.K * mass / 2^-10)}
 	print(mass, size, orbitrange[2])
 
 	-- Plan out the planetary orbits
@@ -269,7 +269,7 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 		N = {"NH4"}
 	}
 	local liquids = nil
-	if density > 1 then
+	if density > 2 then
 		liquids = {}
 		for i,L in ipairs(base_liquids[base_element]) do
 			liquids[L] = math.random(1,math.ceil(density))
@@ -277,14 +277,14 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 		
 		-- Randomize non-atmospheric liquids(Hg)
 		for i,liq in ipairs({"Hg"}) do
-			liquids[liq] = math.random(0,5)
+			liquids[liq] = math.random(0,1)
 		end
 	end
 
 	local orbitrange = {(size + atmosize)*2, math.sqrt(Physics.K * mass / 2^-2)}
 	-- Plan out satellites
 	local moons = {}
-	planOrbit(orbitrange, moons, mass, {5,7}, {4,7}, 2^3)
+	planOrbit(orbitrange, moons, mass, {5,7}, {4,6}, 2^3)
 	print("Satellites:", #moons)
 
 	-- Plan out planetary space stations

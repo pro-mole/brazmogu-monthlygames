@@ -33,6 +33,9 @@ function Planet.new(specs)
 	if P.minerals then
 		P.mineral_depth = 1
 	end
+	if P.liquids then
+		P.liquid_depth = 1
+	end
 	
 	table.insert(Universe.planets, P)
 	return P

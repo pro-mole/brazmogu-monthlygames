@@ -31,6 +31,10 @@ Probe = {
 	-- Drill
 	drill_power = 1, -- Energy usage for drill (percentage per second)
 	drill_rate = 1, -- Tons of material per second
+
+	-- Pump
+	pump_power = 1, -- Energy usage for pump (percentage per second)
+	pump_rate = 1, -- Cubic meters of material per second
 	
 	-- Mineral Storage
 	storage = {},
@@ -39,8 +43,8 @@ Probe = {
 
 	-- Liquid Storage
 	tank = {},
-	tank_capacity = 100,
-	max_tank_capacity = 500,
+	tank_capacity = 10,
+	max_tank_capacity = 50,
 
 	-- Gas Storage
 	vacuum = {},
@@ -106,6 +110,12 @@ function Probe:keyreleased(key)
 	if key == "q" then
 		if self.drill_q > 0 then
 			self.drill_q = 0
+		end
+	end
+
+	if key == "w" then
+		if self.pump_q > 0 then
+			self.pump_q = 0
 		end
 	end
 end
@@ -224,14 +234,13 @@ function Probe:update(dt)
 		if love.keyboard.isDown("q") then -- Drill
 			local B = self.influence_body
 			if B.minerals and
-			   (math.sqrt(squareBodyDistance(self,B)) - (self.size + B.size) <= 1) then
+			   (math.sqrt(squareBodyDistance(self,B)) - (self.size + B.size) <= 1) and 
+			   #self.storage < self.storage_capacity then
 				self.drill_q = self.drill_q + 1/B.mineral_depth * dt
 				self.energy = self.energy - self.drill_power * dt
 				while self.drill_q >= 1 do
-					if #self.storage < self.storage_capacity then
-						table.insert(self.storage, selectRandomly(B.minerals))
-						B.mineral_depth = B.mineral_depth + 0.25
-					end
+					table.insert(self.storage, selectRandomly(B.minerals))
+					B.mineral_depth = B.mineral_depth + 0.25
 					self.drill_q = self.drill_q - 1
 				end
 				if math.random(4) == 1 then
@@ -249,16 +258,24 @@ function Probe:update(dt)
 		
 		if love.keyboard.isDown("w") then -- Pump
 			local B = self.influence_body
+			local total = 0
+			for l,v in pairs(self.tank) do
+				total = total + v
+			end
 			if B.liquids and
-			   (math.sqrt(squareBodyDistance(self,B)) - (self.size + B.size) <= 1) then
+			   (math.sqrt(squareBodyDistance(self,B)) - (self.size + B.size) <= 1) and
+			   total < self.tank_capacity then
 				self.pump_q = self.pump_q + 1/B.liquid_depth * dt
 				self.energy = self.energy - self.pump_power * dt
 				while self.pump_q >= 1 do
-					if #self.tank < self.tank_capacity then
-						local L = selectRandomly(B.liquids)
+					local L = selectRandomly(B.liquids)
+					print(L)
+					if self.tank[L] then
 						self.tank[L] = self.tank[L] + 1
-						B.liquid_depth = B.liquid_depth + 0.25
-					end
+					else
+						self.tank[L] = 1
+					end	
+					B.liquid_depth = B.liquid_depth + 0.25
 					self.pump_q = self.pump_q - 1
 				end
 			end

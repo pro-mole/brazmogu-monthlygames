@@ -77,7 +77,7 @@ function Station:update(dt)
 	if not bodiesTouching(self, main_probe) then return end
 
 	if main_probe.energy < main_probe.max_energy then
-		main_probe.energy = math.min(main_probe.max_energy, main_probe.energy + 0.25 * dt)
+		main_probe.energy = math.min(main_probe.max_energy, main_probe.energy + dt)
 	end
 	
 	-- Fill up the stocks
@@ -93,6 +93,18 @@ function Station:update(dt)
 		table.remove(main_probe.storage, 1)
 	end
 	
+	for E,x in pairs(main_probe.tank) do
+		print(E,x)
+		for e,n in chemComposition(E) do
+			print(e,n)
+			if not n or n == "" then
+				Master_Stock[e] = Master_Stock[e] + x
+			else
+				Master_Stock[e] = Master_Stock[e] + n*x
+			end
+		end
+		main_probe.tank[E] = nil
+	end
 end
 
 function Station:draw()	
