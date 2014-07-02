@@ -48,7 +48,7 @@ Probe = {
 
 	-- Gas Storage
 	vacuum = {},
-	vacuum_capacity = 10,
+	vacuum_capacity = 0,
 	max_vacuum_capacity = 80,
 	
 	-- Radar

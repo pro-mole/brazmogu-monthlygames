@@ -7,18 +7,18 @@ Station = {
 }
 
 Upgrade_List = { -- A state list of how the upgrades are progressing; this doesn't really affec the Probe, it's just for easier UI generation and control
-	-- {Name, Current Level, Max Level}
-	thrust = {"Engine Thrust",1,4},
-	torque = {"Reaction Wheel",1,4},
-	boost = {"Booster Potency",1,4},
-	radar = {"Radar Range",1,8},
-	scanner = {"Planet Scanner",0,1}, -- Generally, 0 means an equipment that is not present yet :)
-	autobreak = {"AutoBrerak",0,1},
-	drill = {"Drill Efficiency",1,4},
-	storage = {"Storage Capacity",1,4},
-	pump = {"Pump Efficiency",1,4},
-	tank = {"Tank Capacity",1,4},
-	vacuum = {"Vaccum Chamber",0,4}
+	-- {Name, Current Level, Max Level, Requirements}
+	thrust = {"Engine Thrust",1,4,{}},
+	torque = {"Reaction Wheel",1,4,{}},
+	boost = {"Booster Potency",1,4,{}},
+	radar = {"Radar Range",1,8,{}},
+	scanner = {"Planet Scanner",0,1,{}}, -- Generally, 0 means an equipment that is not present yet :)
+	autobreak = {"AutoBrerak",0,1,{}},
+	drill = {"Drill Efficiency",1,4,{}},
+	storage = {"Storage Capacity",1,4,{}},
+	pump = {"Pump Efficiency",1,4,{}},
+	tank = {"Tank Capacity",1,4,{}},
+	vacuum = {"Vaccum Chamber",0,4,{}}
 }
 
 -- Stock of primitive elements, distributed among all stations
@@ -56,6 +56,7 @@ function Station.new(specs)
 	S.texture_params = {
 		{"gradient",{192,192,192,255},{128,128,128,255},32}
 	}
+	S.fill_p = 0
 	
 	table.insert(Space.stations, S)
 	return S
@@ -81,30 +82,36 @@ function Station:update(dt)
 		main_probe.energy = math.min(main_probe.max_energy, main_probe.energy + dt)
 	end
 	
-	-- Fill up the stocks
-	while #main_probe.storage > 0 do
-		for E,x in chemComposition(main_probe.storage[1]) do
+	-- Fill up the stocks(with a little delay, for charm)
+	if self.fill_p < 1 then
+		self.fill_p = self.fill_p + 2*dt
+	else
+		self.fill_p = 0
+		if #main_probe.storage > 0 then
+			for E,x in chemComposition(main_probe.storage[1]) do
+				print(E,x)
+				if not x or x == "" then
+					Master_Stock[E] = Master_Stock[E] + 1
+				else
+					Master_Stock[E] = Master_Stock[E] + x
+				end
+			end
+			table.remove(main_probe.storage, 1)
+		end
+		
+		for E,x in pairs(main_probe.tank) do
 			print(E,x)
-			if not x or x == "" then
-				Master_Stock[E] = Master_Stock[E] + 1
-			else
-				Master_Stock[E] = Master_Stock[E] + x
+			for e,n in chemComposition(E) do
+				print(e,n)
+				if not n or n == "" then
+					Master_Stock[e] = Master_Stock[e] + x
+				else
+					Master_Stock[e] = Master_Stock[e] + n*x
+				end
 			end
+			main_probe.tank[E] = nil
+			break
 		end
-		table.remove(main_probe.storage, 1)
-	end
-	
-	for E,x in pairs(main_probe.tank) do
-		print(E,x)
-		for e,n in chemComposition(E) do
-			print(e,n)
-			if not n or n == "" then
-				Master_Stock[e] = Master_Stock[e] + x
-			else
-				Master_Stock[e] = Master_Stock[e] + n*x
-			end
-		end
-		main_probe.tank[E] = nil
 	end
 end
 
