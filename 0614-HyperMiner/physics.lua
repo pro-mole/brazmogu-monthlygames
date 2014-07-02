@@ -14,11 +14,12 @@ liquid_density = {
 	"HCl",
 	"HF",
 	"H2O",
+	"C2H6O",
 	"NH4"
 }
 
 -- Element colors
--- A color table for elements(for showing stock)
+-- A color table for elements and molecules(for UI)
 element_color = {
 	Fe = {192,64,64,255},
 	Si = {255,192,144,255},
@@ -30,35 +31,64 @@ element_color = {
 	C =  {72,72,72,255},
 	S =  {192,192,0,255},
 	O =  {0,192,255,255},
-	C =  {128,144,32,255},
-	S =  {192,192,0,255},
 	Cl = {192,255,192,255},
 	F =  {255,208,192,255},
 	N =  {208,208,208,255},
 	Hg = {192,192,192,255},
+	U = {0,192,0,255},
+	Ra = {128,192,128,255},
+	Pu = {128,240,192,255},
+	H = {255,255,255,255},
+	He = {255,224,128,255},
+	-- Molecules
+	Fe2O3 = {32,32,32,255},
+	Fe3O4 = {48,48,48,255},
+	FeS2 = {192,192,32,255},
+	SiO2 = {240,224,192,255},
+	CaCO3 = {192,192,192,255},
+	CaSO4 = {192,192,144,255},
+	Cu2O = {64,192,64,255},
+	Al2O3 = {192,64,64,255},
+	C10H16O = {192,64,64,255},
+	HgS = {192,64,64,255},
 	H2SO4 = {192,64,64,255},
 	HCl = {192,64,64,255},
 	HF = {192,64,64,255},
 	H2O = {192,64,64,255},
 	NH4 = {192,208,255,255},
 	H2O = {192,64,64,255},
+	H2 = {255,255,255,255},
+	O2 =  {0,192,255,255},
+	O3 =  {0,64,255,255},
 	CH4 = {192,64,64,255},
 	CO2 = {192,64,64,255},
 	SO2 = {192,64,64,255},
-	Cl = {192,64,64,255},
-	F = {192,64,64,255},
-	N = {192,64,64,255},
+	Cl2 = {192,255,192,255},
+	F2 =  {255,208,192,255},
+	N2 =  {208,208,208,255},
 	NH3 = {192,64,64,255},
-	U = {192,64,64,255},
-	Ra = {192,64,64,255},
-	Pu = {192,64,64,255},
-	H = {192,64,64,255},
-	He = {192,64,64,255}
+	C2H6O = {220,240,255,255}
 }
 
 -- A substitute for a iterator that separates all elements from a chemical formula(H, O2, H2O, CaCO4, H2SO4)
 function chemComposition(molecule)
 	return string.gmatch(molecule, "([A-Z][a-z]*)([0-9]*)")
+end
+
+-- A table set of individual elements
+-- Created dinamically because it'll be a lot easier and avoid stupid errors
+elements = {}
+e_set = {}
+for M,c in pairs(element_color) do
+	for e in chemComposition(M) do
+		if not e_set[e] then
+			e_set[e] = true
+		end
+	end
+end
+for e in pairs(e_set) do
+	table.insert(elements,e)
+	e_set[e] = nil
 end
 
 -- An index of Physics stuff we need globally

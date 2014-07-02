@@ -108,7 +108,8 @@ layers = {
 	bot = love.graphics.newCanvas(),
 	mid = love.graphics.newCanvas(),
 	top = love.graphics.newCanvas(),
-	UI = love.graphics.newCanvas()
+	UI = love.graphics.newCanvas(),
+	over = love.graphics.newCanvas() -- Tooltips/Overlay
 }
 
 function love.draw()
@@ -197,7 +198,8 @@ function love.draw()
 	
 	love.graphics.origin()
 	love.graphics.setCanvas()
-	for i,L in ipairs({"BG","bot","mid","top","UI"}) do
+	love.graphics.setColor(255,255,255,255)
+	for i,L in ipairs({"BG","bot","mid","top","UI","over"}) do
 		love.graphics.draw(layers[L],0,0)
 		layers[L]:clear()
 	end
@@ -205,6 +207,4 @@ function love.draw()
 	if love.keyboard.isDown("`") then
 		drawMap(probe, 1/64)
 	end
-	--love.graphics.print(string.format("%d;%d",_x,_y), 0, 8)
-	--love.graphics.print(string.format("%d;%d",Tx,Ty), 0, 0)
 end

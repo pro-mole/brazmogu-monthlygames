@@ -202,16 +202,18 @@ function drawMap(centerBody, scale)
 end
 
 -- Draw the storage crates as a grid of mineral "boxes"
-function drawStorage(x, y, probe)
+function drawStorage(x, y, probe, offx, offy)
 	love.graphics.push()
 	love.graphics.translate(x, y)
 
 	local crate_size = 10
-
+	local mx, my = love.mouse.getX() - offx, love.mouse.getY() - offy
+	
 	for x = 0,7 do
 		for y = 0,(Probe.max_storage_capacity/8)-1 do
 			love.graphics.push()
 			love.graphics.translate(x * (crate_size+4) , y * (crate_size+4))
+			local _mx, _my = mx - x * (crate_size+4), my - y * (crate_size+4) 
 			if (x*8 + y) < Probe.storage_capacity then
 				love.graphics.setColor(32,64,32,255)
 			else
@@ -223,8 +225,14 @@ function drawStorage(x, y, probe)
 				love.graphics.rectangle("fill", 1, 1, crate_size+2, (crate_size+2) * probe.drill_q)
 			end
 			if probe.storage[x*8 + y + 1] then
-				love.graphics.setColor(255,255,255,255)
-				love.graphics.printf(probe.storage[x*8 + y + 1], 2, 2, crate_size, "center")
+				local E = probe.storage[x*8 + y + 1]
+				love.graphics.setColor(unpack(element_color[E]))
+				love.graphics.rectangle("fill", 1, 1, crate_size+2, crate_size+2)
+				if _mx > 1 and _mx < crate_size+2 and _my > 1 and _my < crate_size+2 then
+					drawMouseTooltip(E)
+				end				
+				--love.graphics.setColor(255,255,255,255)
+				--love.graphics.printf(E, 2, 2, crate_size, "center")
 			end
 			love.graphics.pop()
 		end
@@ -237,11 +245,12 @@ function drawStorage(x, y, probe)
 end
 
 -- Draw the storage tank as a vertical bar of liquids
-function drawTank(x, y, w, h, probe)
+function drawTank(x, y, w, h, probe, offx, offy)
 	love.graphics.push()
 	love.graphics.translate(x, y)
 
 	local tank_height, tank_width = h, w
+	local mx, my = love.mouse.getX() - offx, love.mouse.getY() - offy
 
 	love.graphics.setColor(128,128,128,255)
 	love.graphics.rectangle("fill", 0, 0, tank_width, tank_height)
@@ -255,6 +264,9 @@ function drawTank(x, y, w, h, probe)
 			level = level + probe.tank[L]
 			love.graphics.setColor(unpack(element_color[L]))
 			love.graphics.rectangle("fill", 0, tank_height - level*part, tank_width, probe.tank[L]*part)
+			if mx > 0 and mx < tank_width and my > (tank_height - level*part) and my < (tank_height - level*part + probe.tank[L]*part) then
+				drawMouseTooltip(L)
+			end				
 		end
 	end
 	if probe.pump_q > 0 then
@@ -279,5 +291,25 @@ function drawVacuum(x, y, probe)
 	love.graphics.translate(x, y)
 
 	love.graphics.setColor(255,255,255,255)
+	love.graphics.pop()
+end
+
+-- Mouse-based Tooltips
+function drawMouseTooltip(text, width)
+	love.graphics.push()
+	love.graphics.origin()
+	love.graphics.translate(love.mouse.getX(), love.mouse.getY())
+	
+	local _canvas = love.graphics.getCanvas()
+	love.graphics.setCanvas(layers.over)
+	
+	local width,lines = font.standard:getWrap(text, width or font.standard:getWidth(text))
+	
+	love.graphics.setColor(0,0,0,255)
+	love.graphics.rectangle("fill", -(width/2 + 1), -(lines * font.standard:getHeight() + 1), width + 2, lines * font.standard:getHeight() + 3)
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.printf(text, -width/2, -lines * font.standard:getHeight(), width, "center")
+	
+	love.graphics.setCanvas(_canvas)
 	love.graphics.pop()
 end

@@ -32,7 +32,7 @@ function Universe:generate(seed)
 
 	local S = self:createStar(x,y)
 
-	local St = self.planets[math.random(#self.planets)]
+	local St = self.stations[math.random(#self.stations)]
 	local v,dir = addVectors(getOrbitVelocity(St,St.size*2),0, St.v,St.dir)
 	Probe.new({name = "PROBE", x = St.x, y = St.y - St.size*2, v = v, dir = dir})
 end
@@ -183,27 +183,29 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 
 	-- Randomize common minerals and determine main color
 	local base_minerals = {
-	{"Fe", {192,64,64,255}},
-	{"Si", {255,192,144,255}},
-	{"Ca", {192,192,192,255}},
-	{"Cu", {64,144,64,255}},
-	{"Al", {192,208,255,255}},
-	{"Ag", {144,144,144,255}},
-	{"Au", {144,128,64,255}},
-	{"C",  {72,72,72,255}},
-	{"S",  {192,192,0,255}}
+	{"Fe", {"Fe2O3","Fe3O4", "FeS2"}},
+	{"Si", {"SiO2"}},
+	{"Ca", {"CaCO3", "CaSO4"}},
+	{"Cu", {"Cu2O"}},
+	{"Al", {"Al2O3"}},
+	{"Ag", {"Ag"}},
+	{"Au", {"Au"}},
+	{"C",  {"C","C10H16O"}},
+	{"S",  {"S", "HgS"}}
 	}
 	local minerals = {}
 	local base_color = nil
-	local min_concentration, max_concentration = #base_minerals, (#base_minerals)^2
+	local min_concentration, max_concentration = #base_minerals/2, (#base_minerals)*2
 	while #base_minerals > 0 do
 		local i = math.random(1,#base_minerals)
 		local rock = base_minerals[i]
 		if not base_color then
-			base_color = rock[2]
+			base_color = element_color[rock[1]]
 		end
-		minerals[rock[1]] = math.random(min_concentration, max_concentration)
-		max_concentration = max_concentration - min_concentration
+		for p,M in ipairs(rock[2]) do
+			minerals[M] = math.max(0, math.random(min_concentration, max_concentration))
+		end
+		max_concentration = max_concentration - 1
 		min_concentration = min_concentration - 1 
 		table.remove(base_minerals, i)
 	end
@@ -214,47 +216,41 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 	end
 
 	-- Parameter for atmosphere and liquid composition
-	local base_elements = {
-		{"O",  {0,192,255,255}},
-		{"C",  {128,144,32,255}},
-		{"S",  {192,192,0,255}},
-		{"Cl", {192,255,192,255}},
-		{"F",  {255,208,192,255}},
-		{"N",  {208,208,208,255}}
-	}
+	local base_elements = {"O", "C", "S", "Cl", "F", "N"}
+	local total_elements = #base_elements
 	local base_element = nil
 
 	-- Randomize atmosphere (if any)
 	local base_gases = {
-		O = {"H2O"},
+		O = {"H2O", "O2", "O3"},
 		C = {"CH4", "CO2"},
 		S = {"SO2"},
-		Cl = {"Cl"},
-		F = {"F"},
-		N = {"N", "NH3"}
+		Cl = {"Cl2"},
+		F = {"F2"},
+		N = {"N2", "NH3"}
 	}
 	local atmosphere = nil
 	local amosphere_color = nil
-	if density >= 1 then
+	if density >= 0 then
 		atmosphere = {}
 		while #base_elements > 0 do
 			local i = math.random(1,#base_elements)
 			local gas = base_elements[i]
 			if not atmosphere_color then
-				atmosphere_color = gas[2]
+				atmosphere_color = element_color[gas]
 			end
 			if not base_element then
-				base_element = gas[1]
+				base_element = gas
 			end
 
-			for i,G in ipairs(base_gases[gas[1]]) do
-				atmosphere[G] = math.random(1,#base_elements)
+			for i,G in ipairs(base_gases[gas]) do
+				atmosphere[G] = math.random(#base_elements-1, total_elements)
 			end
 			table.remove(base_elements, i)
 		end
 
 		-- Randomize omnipresent gases(H, He)
-		for i,gas in ipairs({"He","H"}) do
+		for i,gas in ipairs({"He","H2"}) do
 			atmosphere[gas] = math.random(i,5*i)
 		end
 	end
@@ -262,14 +258,14 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 	-- Randomize liquid composition (if any)
 	local base_liquids = {
 		O = {"H2O"},
-		C = {},
+		C = {"C2H6O"},
 		S = {"H2SO4"},
 		Cl = {"HCl"},
 		F = {"HF"},
 		N = {"NH4"}
 	}
 	local liquids = nil
-	if density > 2 then
+	if density > 0 then
 		liquids = {}
 		for i,L in ipairs(base_liquids[base_element]) do
 			liquids[L] = math.random(1,math.ceil(density))
