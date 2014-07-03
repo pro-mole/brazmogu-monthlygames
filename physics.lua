@@ -102,7 +102,27 @@ Physics = {
 			end
 		end]]
 		
-		for i,B in ipairs(self.bodies) do
+		for i =1,#self.bodies-1 do
+			local B = self.bodies[i]
+			for j = i+1,#self.bodies do
+				local C = self.bodies[j]
+				local grav = gravityBodies(B,C)/squareBodyDistance(B,C)
+				
+				if B.class < C.class then
+					B:applyForce(gravityBodies(B,C), bodyDirection(B,C), dt)
+					if B.influence_body == nil or gravityBodies(B,B.influence_body) < gravityBodies(B,C) then
+						B.influence_body = C
+					end
+				elseif C.class < B.class then
+					C:applyForce(gravityBodies(B,C), bodyDirection(C,B), dt)
+					if C.influence_body == nil or gravityBodies(C,C.influence_body) < gravityBodies(B,C) then
+						C.influence_body = B
+					end
+				end
+			end
+		end
+		
+		--[[for i,B in ipairs(self.bodies) do
 			print_debug("Body:", B)
 			B["influence_body"] = nil
 			local max_grav = 0
@@ -123,7 +143,7 @@ Physics = {
 			end
 			print_debug(squareBodyDistance(B,B.influence_body))
 			io.stdout:flush()
-		end		
+		end]]	
 		
 		for i,B in ipairs(self.bodies) do
 			if B.class > 0 then

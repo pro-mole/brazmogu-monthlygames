@@ -190,7 +190,7 @@ function love.draw()
 		end
 	end
 	Particles:draw()
-	Physics:draw()
+	--Physics:draw()
 	
 	if #Universe.probes >= 1 then
 		love.graphics.pop()

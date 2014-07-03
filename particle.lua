@@ -81,7 +81,7 @@ end
 
 PartSquare = {update = _Particle.update}
 
-function PartSquare.new(x, y, size, v, vdir, vrot, fade, alpha, timer)
+function PartSquare.new(x, y, size, v, vdir, vrot, fade, alpha, timer, color)
 	local P = {
 		x = x,
 		y = y,
@@ -93,18 +93,23 @@ function PartSquare.new(x, y, size, v, vdir, vrot, fade, alpha, timer)
 		fade = fade or 64,
 		alpha = alpha or 255,
 		timer = timer or 2,
+		color = color or {255,255,255}
 	}
 
 	return setmetatable(P, {__index = PartSquare})
 end
 
 function PartSquare:draw()
-	love.graphics.setColor(255,255,255,self.alpha)
+	local _color = {unpack(self.color)}
+	table.insert(_color, self.alpha)
+	love.graphics.setColor(unpack(_color))
 	love.graphics.push()
 	love.graphics.translate(self.x, self.y)
 	love.graphics.rotate(self.angle)
 
+	love.graphics.setLineWidth(self.size/3)
 	love.graphics.rectangle("line", -self.size/2, -self.size/2, self.size, self.size)
+	love.graphics.setLineWidth(1)
 
 	love.graphics.pop()
 end
