@@ -282,7 +282,7 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 		end
 	end
 
-	local orbitrange = {(size + atmosize)*2, math.sqrt(Physics.K * mass / 2^-3)}
+	local orbitrange = {(size + atmosize)*2, omax or math.sqrt(Physics.K * mass / 2^-3)}
 	-- Plan out satellites
 	local moons = {}
 	planOrbit(orbitrange, moons, mass*4, {5,7}, {4,6}, 2^3)
@@ -405,35 +405,29 @@ function Universe:createSatellite(x, y, v, vdir, mass, size, omax)
 
 	-- Randomize common minerals and determine main color
 	local base_minerals = {
-	{"Fe", {192,64,64,255}},
-	{"Si", {255,192,144,255}},
-	{"Ca", {192,192,192,255}},
-	{"Cu", {64,144,64,255}},
-	{"Al", {192,208,255,255}},
-	{"Ag", {144,144,144,255}},
-	{"Au", {144,128,64,255}},
-	{"C",  {72,72,72,255}},
-	{"S",  {192,192,0,255}}
+	{"Si", {"SiO2"}},
+	{"Ca", {"CaCO3", "CaSO4"}},
+	{"C",  {"C","C10H16O"}},
+	{"S",  {"S", "HgS"}}
 	}
 	local minerals = {}
 	local base_color = nil
-	local min_concentration, max_concentration = #base_minerals, (#base_minerals)^2
+	local min_concentration, max_concentration = #base_minerals/2, (#base_minerals)*2
 	while #base_minerals > 0 do
 		local i = math.random(1,#base_minerals)
 		local rock = base_minerals[i]
 		if not base_color then
-			base_color = rock[2]
+			base_color = element_color[rock[1]]
 		end
-		minerals[rock[1]] = math.random(min_concentration, max_concentration)
-		max_concentration = max_concentration - min_concentration
+		for p,M in ipairs(rock[2]) do
+			minerals[M] = math.max(0, math.random(min_concentration, max_concentration))
+		end
+		max_concentration = max_concentration - 1
 		min_concentration = min_concentration - 1 
 		table.remove(base_minerals, i)
 	end
 
 	-- Randomize rare minerals
-	for i,rock in ipairs({"U","Ra","Pu"}) do
-		minerals[rock] = math.random(0,1)
-	end
 
 	local params = {}
 	local palette = {

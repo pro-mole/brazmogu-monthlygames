@@ -74,13 +74,12 @@ function generateTexture(size, ...)
 	
 	for i, pattern in ipairs{...} do
 		local mode = pattern[1]
-		print(mode)
-		io.stdout:flush()
-
 		pattern[1] = size
 
 		if (Pattern[mode]) then
 			if (not simple_textures) or (mode == "gradient") then
+				print(mode)
+				io.stdout:flush()
 				Pattern[mode](unpack(pattern))
 			end
 		end
