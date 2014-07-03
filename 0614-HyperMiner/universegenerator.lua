@@ -231,7 +231,7 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 	}
 	local atmosphere = nil
 	local amosphere_color = nil
-	if density >= 0 then
+	if density >= 1 then
 		atmosphere = {}
 		while #base_elements > 0 do
 			local i = math.random(1,#base_elements)
@@ -265,7 +265,7 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 		N = {"NH4"}
 	}
 	local liquids = nil
-	if density > 0 then
+	if density > 2 then
 		liquids = {}
 		for i,L in ipairs(base_liquids[base_element]) do
 			liquids[L] = math.random(1,math.ceil(density))
@@ -277,15 +277,15 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 		end
 	end
 
-	local orbitrange = {(size + atmosize)*2, math.sqrt(Physics.K * mass / 2^-2)}
+	local orbitrange = {(size + atmosize)*2, math.sqrt(Physics.K * mass / 2^-3)}
 	-- Plan out satellites
 	local moons = {}
-	planOrbit(orbitrange, moons, mass, {5,7}, {4,6}, 2^3)
+	planOrbit(orbitrange, moons, mass*4, {5,7}, {4,6}, 2^3)
 	print("Satellites:", #moons)
 
 	-- Plan out planetary space stations
 	local stations = {}
-	planOrbit(orbitrange, stations, mass/4, {3,3}, {4,4}, 2^6)
+	planOrbit(orbitrange, stations, mass*2, {3,3}, {4,4}, 2^2)
 	print("Stations:",#stations)
 
 	io.stdout:flush()
@@ -370,6 +370,7 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 		local _dv, _ddir = addVectors(_v, angle+0.5*math.pi, P.v, P.dir)
 
 		self:createSatellite(_x, _y, _dv, _ddir, _mass, _size, _space)
+		print(_dv,_ddir)
 	end
 
 	-- Space Station

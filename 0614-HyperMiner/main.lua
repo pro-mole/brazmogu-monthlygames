@@ -59,10 +59,10 @@ function love.load()
 end
 
 function love.update(dt)
-	-- debug_interval = debug_interval - dt
-	debug_echo = debug_interval <= 0
-	
 	if loading then return end
+	
+	debug_interval = debug_interval - dt
+	debug_echo = debug_interval <= 0
 
 	Physics:update(dt)
 	
