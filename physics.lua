@@ -21,7 +21,7 @@ liquid_density = {
 -- Element colors
 -- A color table for elements and molecules(for UI)
 element_color = {
-	Fe = {192,64,64,255},
+	Fe = {96,96,96,255},
 	Si = {255,192,144,255},
 	Ca = {192,192,192,255},
 	Cu = {64,144,64,255},
