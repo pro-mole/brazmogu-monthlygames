@@ -108,10 +108,11 @@ Physics = {
 						B["influence_body"] = C
 						max_grav = grav
 					end
-					print_debug(string.format("Gravity(%s -> %s):",B,C), gravityBodies(B,C), bodyDirection(B,C), math.sqrt(squareBodyDistance(B,C)))
+					-- print_debug(string.format("Gravity(%s -> %s):",B,C), gravityBodies(B,C), bodyDirection(B,C), math.sqrt(squareBodyDistance(B,C)))
 				end
 			end
 			print_debug(string.format("Ifluence on %s: %s",B,B.influence_body))
+			print_debug(squareBodyDistance(B,B.influence_body))
 		end		
 		
 		for i,B in ipairs(self.bodies) do
@@ -375,9 +376,9 @@ function Body:draw()
 		love.graphics.pop()
 		
 		-- Draw speed and orientatino vectors
-		--[[love.graphics.setColor(0, 255, 255, 128)
+		love.graphics.setColor(0, 255, 255, 128)
 		drawVector(self.x, self.y, self.size, self.d)
 		love.graphics.setColor(0, 255, 0, 128)
-		drawVector(self.x, self.y, self.v, self.dir)]]
+		drawVector(self.x, self.y, self.v, self.dir)
 	end
 end
