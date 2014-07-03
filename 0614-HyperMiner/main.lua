@@ -24,6 +24,8 @@ radar_color = {
 }
 
 require("probes")
+require("asteroid")
+require("comet")
 require("satellite")
 require("station")
 require("planets")
@@ -61,7 +63,7 @@ end
 function love.update(dt)
 	if loading then return end
 	
-	debug_interval = debug_interval - dt
+	--debug_interval = debug_interval - dt
 	debug_echo = debug_interval <= 0
 
 	Physics:update(dt)

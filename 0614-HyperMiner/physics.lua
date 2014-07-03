@@ -96,11 +96,11 @@ Physics = {
 	K = 2^9, -- Universal gravitation constant
 	bodies = {},
 	update = function (self,dt)
-		for i,B in ipairs(self.bodies) do
+		--[[for i,B in ipairs(self.bodies) do
 			if B.class > 0 then
 				B:update(dt*0.5)
 			end
-		end
+		end]]
 		
 		for i,B in ipairs(self.bodies) do
 			print_debug("Body:", B)
@@ -108,24 +108,26 @@ Physics = {
 			local max_grav = 0
 			for j,C in ipairs(self.bodies) do
 				if B ~= C and B.class < C.class then
-					B:applyForce(gravityBodies(B,C), bodyDirection(B,C), dt)
+					--B:applyForce(gravityBodies(B,C), bodyDirection(B,C), dt)
 					local grav = gravityBodies(B,C)/squareBodyDistance(B,C)
 					if grav > max_grav then
 						B["influence_body"] = C
 						max_grav = grav
 					end
-					-- print_debug(string.format("Gravity(%s -> %s):",B,C), gravityBodies(B,C), bodyDirection(B,C), math.sqrt(squareBodyDistance(B,C)))
+					print_debug(string.format("Gravity(%s -> %s):",B,C), gravityBodies(B,C), bodyDirection(B,C), math.sqrt(squareBodyDistance(B,C)))
 				end
 			end
 			if B.influence_body then
+				B:applyForce(gravityBodies(B,B.influence_body), bodyDirection(B,B.influence_body), dt)
 				print_debug(string.format("Touching: %s",bodiesTouching(B,B.influence_body)))
 			end
 			print_debug(squareBodyDistance(B,B.influence_body))
+			io.stdout:flush()
 		end		
 		
 		for i,B in ipairs(self.bodies) do
 			if B.class > 0 then
-				B:update(dt*0.5)
+				B:update(dt)
 			end
 		end
 	end,
@@ -337,7 +339,7 @@ function Body:update(dt)
 
 	for i,B in ipairs(Physics.bodies) do
 		if math.sqrt(squareBodyDistance(self, B)) < (self.size + B.size) then
-			if self.size < B.size then
+			if self.class < B.class then
 				local delta = math.sqrt(squareBodyDistance(self, B)) - (self.size + B.size)
 				local dirdelta = bodyDirection(self, B)
 				local dx,dy = compositeVectors(delta, dirdelta)

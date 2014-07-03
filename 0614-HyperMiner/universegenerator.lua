@@ -33,8 +33,8 @@ function Universe:generate(seed)
 	local S = self:createStar(x,y)
 
 	local St
-	if #self.satellites > 0 then
-		St = self.satellites[math.random(#self.satellites)]
+	if #self.comets > 0 then
+		St = self.meteors[math.random(#self.meteors)]
 	else
 		St = self.stations[math.random(#self.stations)]
 	end
@@ -61,7 +61,7 @@ function planOrbit(orbitTable, buffer, quantum, massRange, sizeRange, gravThresh
 		repeat
 			mass, size = 2^math.random(unpack(massRange)), 2^math.random(unpack(sizeRange))
 			space = math.sqrt(Physics.K * mass / gravThreshold)
-		until space*2 <= range
+		until space*4 <= range
 		
 		local dist = math.randomNormal(0.5, 0.1) * (range - space*2) + orbitTable[intvl]
 		table.insert(orbitTable, intvl+1, dist - space)
@@ -103,22 +103,22 @@ function Universe:createStar(x, y)
 
 	-- Plan out the planetary orbits
 	local planets = {}
-	planOrbit(orbitrange, planets, mass, {5,11}, {7,9}, 2^-3)
+	planOrbit(orbitrange, planets, mass*2, {5,11}, {7,9}, 2^-3)
 	print("Planets:", #planets)
 
 	-- Plan out the asteroid belt orbits
 	local belts = {}
-	planOrbit(orbitrange, belts, mass/2, {2,4}, {3,5}, 2^1)
+	planOrbit(orbitrange, belts, mass, {2,4}, {3,5}, 2^1)
 	print("Belts:",#belts)
 
 	-- Plan out the comet/roamer orbits
 	local comets = {}
-	planOrbit(orbitrange, comets, mass/4, {2,5}, {4,6}, 2^2)
+	planOrbit(orbitrange, comets, mass/2, {4,5}, {3,4}, 2^2)
 	print("Comets:",#comets)
 
 	-- Plan out stellar space stations
 	local stations = {}
-	planOrbit(orbitrange, stations, mass/8, {3,3}, {4,4}, 2^2)
+	planOrbit(orbitrange, stations, mass/4, {3,3}, {4,4}, 2^2)
 	print("Stations:",#stations)
 
 	local palette = {
@@ -157,6 +157,41 @@ function Universe:createStar(x, y)
 		local _dv, _ddir = addVectors(_v, angle+0.5*math.pi, S.v, S.dir)
 
 		self:createPlanet(_x, _y, _dv, _ddir, _mass, _size, _space)
+	end
+	
+	for i,C in ipairs(comets) do
+		angle = math.random() * 2*math.pi
+		local _r = C[1]
+		local _x = x + math.cos(angle) * _r
+		local _y = y + math.sin(angle) * _r
+		local _mass = C[2]
+		local _size = C[3]
+		local _space = C[4]
+		local _v = getOrbitVelocity(S, _r)
+		if math.random() < 0.5 then _v = -_v end
+
+		local _dv, _ddir = addVectors(_v, angle+0.5*math.pi, S.v, S.dir)
+
+		self:createComet(_x, _y, _dv, _ddir, _mass, _size, _space)
+	end
+	
+	for i,B in ipairs(belts) do
+		local N = 10 + math.random(10)
+		for i = 1,N do
+			angle = i/N * (2*math.pi) * math.randomNormal(1.0,0.05)
+			local _r = B[1] * math.randomNormal(1.0, 0.01)
+			local _x = x + math.cos(angle) * _r
+			local _y = y + math.sin(angle) * _r
+			local _mass = B[2]
+			local _size = B[3]
+			local _space = B[4]
+			local _v = getOrbitVelocity(S, _r)
+			if math.random() < 0.5 then _v = -_v end
+
+			local _dv, _ddir = addVectors(_v, angle+0.5*math.pi, S.v, S.dir)
+
+			self:createAsteroid(_x, _y, _dv, _ddir, _mass, _size, _space)
+		end
 	end
 
 	for i,P in ipairs(stations) do
@@ -285,12 +320,12 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 	local orbitrange = {(size + atmosize)*2, omax or math.sqrt(Physics.K * mass / 2^-3)}
 	-- Plan out satellites
 	local moons = {}
-	planOrbit(orbitrange, moons, mass*4, {5,7}, {4,6}, 2^3)
+	planOrbit(orbitrange, moons, mass*8, {5,7}, {4,6}, 2^3)
 	print("Satellites:", #moons)
 
 	-- Plan out planetary space stations
 	local stations = {}
-	planOrbit(orbitrange, stations, mass*2, {3,3}, {4,4}, 2^2)
+	planOrbit(orbitrange, stations, mass*4, {3,3}, {4,4}, 2^2)
 	print("Stations:",#stations)
 
 	io.stdout:flush()
@@ -449,6 +484,124 @@ function Universe:createSatellite(x, y, v, vdir, mass, size, omax)
 	}
 	
 	M = Satellite.new({name = string.format("SAT%03X",math.random(0xfff)), x = x, y = y, mass = mass, size = size, v = v, dir = dir, vrot = math.random() * math.pi/16,
+		minerals = minerals,
+		color = base_color, texture_params = params
+	})
+end
+
+function Universe:createAsteroid(x, y, v, vdir, mass, size, omax)
+	local density = mass/size
+	local atmosize = density * size/2
+
+	-- Randomize common minerals and determine main color
+	local base_minerals = {
+	{"Si", {"SiO2"}},
+	{"Ca", {"CaCO3", "CaSO4"}},
+	{"C",  {"C","C10H16O"}},
+	{"S",  {"S", "HgS"}}
+	}
+	local minerals = {}
+	local base_color = nil
+	local min_concentration, max_concentration = #base_minerals/2, (#base_minerals)*2
+	while #base_minerals > 0 do
+		local i = math.random(1,#base_minerals)
+		local rock = base_minerals[i]
+		if not base_color then
+			base_color = element_color[rock[1]]
+		end
+		for p,M in ipairs(rock[2]) do
+			minerals[M] = math.max(0, math.random(min_concentration, max_concentration))
+		end
+		max_concentration = max_concentration - 1
+		min_concentration = min_concentration - 1 
+		table.remove(base_minerals, i)
+	end
+
+	-- Randomize rare minerals
+
+	local params = {}
+	local palette = {
+		grad1 = {0,0,0,255},
+		grad2 = {0,0,0,255},
+		grain = {0,0,0,128},
+		craters = {0,0,0,64}
+	}
+	for c = 1,3 do
+		palette.grad1[c] = base_color[c]
+		palette.grad2[c] = base_color[c] * math.randomNormal(0.5, 0.1)
+		palette.grain[c] = base_color[c] * math.randomNormal(0.5, 0.05)
+		palette.craters[c] = base_color[c] * math.randomNormal(0.3, 0.02)
+	end
+	params = {
+		{"gradient", palette.grad1, palette.grad2, 128},
+		{"noise", palette.grain},
+		{"blotch", palette.craters, 8, math.random()*0.6},
+		{"blotch", palette.craters, 8, math.random()*0.6},
+		{"blotch", palette.craters, 8, math.random()*0.6}
+	}
+	
+	A = Asteroid.new({name = string.format("AST%03X",math.random(0xfff)), x = x, y = y, mass = mass, size = size, v = v, dir = dir, vrot = math.random() * math.pi/16,
+		minerals = minerals,
+		color = base_color, texture_params = params
+	})
+end
+
+function Universe:createComet(x, y, v, vdir, mass, size, omax)
+	local density = mass/size
+	local atmosize = density * size/2
+
+	-- Randomize common minerals and determine main color
+	local base_minerals = {
+	{"Si", {"SiO2"}},
+	{"Ca", {"CaCO3", "CaSO4"}},
+	{"C",  {"C","C10H16O"}},
+	{"S",  {"S", "HgS"}}
+	}
+	local minerals = {}
+	local base_color = nil
+	local min_concentration, max_concentration = #base_minerals/2, (#base_minerals)*2
+	while #base_minerals > 0 do
+		local i = math.random(1,#base_minerals)
+		local rock = base_minerals[i]
+		if not base_color then
+			base_color = element_color[rock[1]]
+		end
+		for p,M in ipairs(rock[2]) do
+			minerals[M] = math.max(0, math.random(min_concentration, max_concentration))
+		end
+		max_concentration = max_concentration - 1
+		min_concentration = min_concentration - 1 
+		table.remove(base_minerals, i)
+	end
+
+	-- Randomize ice
+	minerals["H2O"] = math.random(2,20)
+
+	-- Add an "icy" tint to this thing
+	base_color = {
+		math.max(0, base_color[1] * math.random()),
+		math.min(255, base_color[2] * math.random()*2),
+		math.min(255, base_color[3] * math.random()*5),
+		base_color[4]
+	}
+	
+	local params = {}
+	local palette = {
+		grad1 = {0,0,0,255},
+		grad2 = {0,0,0,255},
+		grain = {0,0,0,128},
+	}
+	for c = 1,3 do
+		palette.grad1[c] = base_color[c]
+		palette.grad2[c] = base_color[c] * math.randomNormal(0.5, 0.1)
+		palette.grain[c] = base_color[c] * math.randomNormal(0.5, 0.05)
+	end
+	params = {
+		{"gradient", palette.grad1, palette.grad2, 32},
+		{"noise", palette.grain}
+	}
+	
+	C = Comet.new({name = string.format("COM%03X",math.random(0xfff)), x = x, y = y, mass = mass, size = size, v = v, dir = dir, vrot = math.random() * math.pi/16,
 		minerals = minerals,
 		color = base_color, texture_params = params
 	})
