@@ -85,6 +85,7 @@ function Probe.new(specs)
 	P.energy = P.max_energy
 	P.booster = P.max_booster
 
+	P.closest = nil
 	P.storage = {}
 	P.drill_q = 0
 	P.tank = {}
@@ -147,6 +148,10 @@ function Probe:keypressed(key, isrepeat)
 		self.autobreak = not self.autobreak
 	end
 	
+	if key == "s" then
+		self.scanner = not self.scanner
+	end
+	
 	if key == "=" then
 		if self.boost_power < 10 then
 			self.boost_power = self.boost_power + 1
@@ -173,6 +178,18 @@ function Probe:keypressed(key, isrepeat)
 end
 
 function Probe:update(dt)
+	local max_d = 0
+	self.closest = nil
+	for i,B in ipairs(Physics.bodies) do
+		if B ~= self then
+			local d = math.sqrt(squareBodyDistance(self,B)) - self.size - B.size
+			if d < max_d or self.closest == nil then
+				self.closest = B
+				max_d = d
+			end
+		end
+	end
+	
 	if self.fuel > 0 then
 		if love.keyboard.isDown("up") then
 			if math.random(12) <= 1 then
@@ -232,7 +249,7 @@ function Probe:update(dt)
 		end
 
 		if love.keyboard.isDown("q") then -- Drill
-			local B = self.influence_body
+			local B = self.closest
 			if B.minerals and
 			   (math.sqrt(squareBodyDistance(self,B)) - (self.size + B.size) <= 1) and 
 			   #self.storage < self.storage_capacity then
@@ -244,7 +261,7 @@ function Probe:update(dt)
 					self.drill_q = self.drill_q - 1
 				end
 				if math.random(4) == 1 then
-					local B = self.influence_body
+					local B = self.closest
 					local ddir = (math.random()-0.5)*(self.size/B.size)*math.pi
 					local pv,pdir = addVectors(B.v, B.dir, math.random(1,4), bodyDirection(B, self) + ddir)
 					pdir = bodyDirection(B, self) + ddir
@@ -257,7 +274,7 @@ function Probe:update(dt)
 		end
 		
 		if love.keyboard.isDown("w") then -- Pump
-			local B = self.influence_body
+			local B = self.closest
 			local total = 0
 			for l,v in pairs(self.tank) do
 				total = total + v
@@ -379,6 +396,54 @@ function Probe:drawUI()
 		love.graphics.print("TANK:", 1, -8)
 		
 		-- Gas Storage (Vacuum Chamber)
+	
+		-- Element Scanner
+		if self.scanner then
+			love.graphics.push()
+			love.graphics.origin()
+			
+			love.graphics.translate(love.window.getWidth()/2 - 144,0)
+			love.graphics.setColor(0,24,0,240)
+			love.graphics.rectangle("fill",0,0,288,144)
+			
+			love.graphics.setColor(255,255,255,255)
+			love.graphics.printf(string.format("ELEMENT ANALYSIS (%s)", self.closest), 0, 4, 288, "center")
+			
+			local pos = {"left", "center", "right"}
+			
+			-- Mineral Composition
+			if self.closest.minerals then
+				local _MC = normalize(self.closest.minerals,100)
+				local MC = sortProb(_MC, false)
+				
+				for i = 1,math.min(3, #MC) do
+					love.graphics.setColor(unpack(element_color[MC[i][1]]))
+					love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 2 * font.standard:getHeight(), 280, pos[i])
+				end
+			end
+			-- Liquid Composition
+			if self.closest.liquids then
+				local _MC = normalize(self.closest.liquids,100)
+				local MC = sortProb(_MC, false)
+				
+				for i = 1,math.min(3, #MC) do
+					love.graphics.setColor(unpack(element_color[MC[i][1]]))
+					love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 4 * font.standard:getHeight(), 280, pos[i])
+				end
+			end
+			-- Atmosphere Composition
+			if self.closest.atmosphere then
+				local _MC = normalize(self.closest.atmosphere,100)
+				local MC = sortProb(_MC, false)
+				
+				for i = 1,math.min(3, #MC) do
+					love.graphics.setColor(unpack(element_color[MC[i][1]]))
+					love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 6 * font.standard:getHeight(), 280, pos[i])
+				end
+			end
+			
+			love.graphics.pop()
+		end
 	
 	love.graphics.pop()
 	

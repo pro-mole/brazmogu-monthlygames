@@ -31,12 +31,32 @@ function normalize(T, n)
 	end
 	local r = n/total
 	
-	N = {}
+	Norm = {}
 	for v,c in pairs(T) do
-		N[v] = c * r
+		Norm[v] = c * r
 	end
 	
-	return N
+	return Norm
+end
+
+-- Return a sorted probability array
+-- Useful for printing info
+function sortProb(T, asc)
+	local ascending = asc or false
+	
+	local S = {}
+	
+	for v,c in pairs(T) do
+		local i = 1
+		while i <= #S do
+			if ascending and c <= S[i][2] then break end
+			if not ascending and c >= S[i][2] then break end
+			i = i + 1
+		end
+		table.insert(S, i, {v,c})
+	end
+	
+	return S
 end
 
 -- Normal Distribution with mean phi and variance sigma
