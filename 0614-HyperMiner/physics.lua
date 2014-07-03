@@ -97,6 +97,12 @@ Physics = {
 	bodies = {},
 	update = function (self,dt)
 		for i,B in ipairs(self.bodies) do
+			if B.class > 0 then
+				B:update(dt*0.5)
+			end
+		end
+		
+		for i,B in ipairs(self.bodies) do
 			print_debug("Body:", B)
 			B["influence_body"] = nil
 			local max_grav = 0
@@ -111,13 +117,15 @@ Physics = {
 					-- print_debug(string.format("Gravity(%s -> %s):",B,C), gravityBodies(B,C), bodyDirection(B,C), math.sqrt(squareBodyDistance(B,C)))
 				end
 			end
-			print_debug(string.format("Ifluence on %s: %s",B,B.influence_body))
+			if B.influence_body then
+				print_debug(string.format("Touching: %s",bodiesTouching(B,B.influence_body)))
+			end
 			print_debug(squareBodyDistance(B,B.influence_body))
 		end		
 		
 		for i,B in ipairs(self.bodies) do
 			if B.class > 0 then
-				B:update(dt)
+				B:update(dt*0.5)
 			end
 		end
 	end,
@@ -130,7 +138,11 @@ Physics = {
 		for i,B in ipairs(self.bodies) do
 			for j,C in ipairs(self.bodies) do
 				if B ~= C then
-					love.graphics.setColor(255, 0, 0, 128)
+					if C == B.influence_body then
+						love.graphics.setColor(0, 0, 255, 128)
+					else
+						love.graphics.setColor(255, 0, 0, 128)
+					end
 					drawVector(B.x, B.y, gravityBodies(B,C), bodyDirection(B,C))
 				end
 			end
