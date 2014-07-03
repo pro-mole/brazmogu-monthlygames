@@ -37,23 +37,24 @@ function Comet.new(specs)
 end
 
 function Comet:update(dt)
-	if math.random() < 1/60 then
+	if math.random() < 4/60 then
 		local angle = math.random() * 2*math.pi
 		local dist = math.random()
 		
 		Particles:add(PartSquare, layers.bot,
 			self.x + math.cos(angle)*self.size*dist,
 			self.y + math.sin(angle)*self.size*dist,
-			math.random(self.size/8,self.size/2),
-			self.v/2,
+			math.random(2,self.size/8),
+			-self.v,
 			self.d,
 			math.pi/(math.random(1,6)),
-			8,
-			192,
-			math.random()*10 + 20)
+			16,
+			128,
+			math.random()*10 + 20,
+			self.color)
 	end
 
-	Body:update(dt)
+	Body.update(self,dt)
 end
 
 function Comet:delete()

@@ -33,11 +33,7 @@ function Universe:generate(seed)
 	local S = self:createStar(x,y)
 
 	local St
-	if #self.comets > 0 then
-		St = self.meteors[math.random(#self.meteors)]
-	else
-		St = self.stations[math.random(#self.stations)]
-	end
+	St = self.stations[math.random(#self.stations)]
 	local v,dir = addVectors(getOrbitVelocity(St,St.size*2),0, St.v,St.dir)
 	Probe.new({name = "PROBE", x = St.x, y = St.y - St.size*2, v = v, dir = dir})
 end
@@ -108,12 +104,12 @@ function Universe:createStar(x, y)
 
 	-- Plan out the asteroid belt orbits
 	local belts = {}
-	planOrbit(orbitrange, belts, mass, {2,4}, {3,5}, 2^1)
+	planOrbit(orbitrange, belts, mass, {2,5}, {4,5}, 2^1)
 	print("Belts:",#belts)
 
 	-- Plan out the comet/roamer orbits
 	local comets = {}
-	planOrbit(orbitrange, comets, mass/2, {4,5}, {3,4}, 2^2)
+	planOrbit(orbitrange, comets, mass/2, {4,5}, {5,6}, 2^2)
 	print("Comets:",#comets)
 
 	-- Plan out stellar space stations
