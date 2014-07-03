@@ -407,38 +407,43 @@ function Probe:drawUI()
 			love.graphics.rectangle("fill",0,0,288,144)
 			
 			love.graphics.setColor(255,255,255,255)
-			love.graphics.printf(string.format("ELEMENT ANALYSIS (%s)", self.closest), 0, 4, 288, "center")
+			love.graphics.printf(string.format("ELEMENT ANALYSIS", self.closest), 0, 4, 288, "center")
 			
 			local pos = {"left", "center", "right"}
 			
-			-- Mineral Composition
-			if self.closest.minerals then
-				local _MC = normalize(self.closest.minerals,100)
-				local MC = sortProb(_MC, false)
-				
-				for i = 1,math.min(3, #MC) do
-					love.graphics.setColor(unpack(element_color[MC[i][1]]))
-					love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 2 * font.standard:getHeight(), 280, pos[i])
+			if math.sqrt(squareBodyDistance(self, self.closest)) - self.size - self.closest.size > self.scope then
+				love.graphics.printf("**No Body in Range**", 4, 4 + 2 * font.standard:getHeight(), 280, "center")
+			else
+				love.graphics.printf(string.format("(%s)",self.closest), 4, 4 + 2 * font.standard:getHeight(), 280, "center")
+				-- Mineral Composition
+				if self.closest.minerals then
+					local _MC = normalize(self.closest.minerals,100)
+					local MC = sortProb(_MC, false)
+					
+					for i = 1,math.min(3, #MC) do
+						love.graphics.setColor(unpack(element_color[MC[i][1]]))
+						love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 4 * font.standard:getHeight(), 280, pos[i])
+					end
 				end
-			end
-			-- Liquid Composition
-			if self.closest.liquids then
-				local _MC = normalize(self.closest.liquids,100)
-				local MC = sortProb(_MC, false)
-				
-				for i = 1,math.min(3, #MC) do
-					love.graphics.setColor(unpack(element_color[MC[i][1]]))
-					love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 4 * font.standard:getHeight(), 280, pos[i])
+				-- Liquid Composition
+				if self.closest.liquids then
+					local _MC = normalize(self.closest.liquids,100)
+					local MC = sortProb(_MC, false)
+					
+					for i = 1,math.min(3, #MC) do
+						love.graphics.setColor(unpack(element_color[MC[i][1]]))
+						love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 6 * font.standard:getHeight(), 280, pos[i])
+					end
 				end
-			end
-			-- Atmosphere Composition
-			if self.closest.atmosphere then
-				local _MC = normalize(self.closest.atmosphere,100)
-				local MC = sortProb(_MC, false)
-				
-				for i = 1,math.min(3, #MC) do
-					love.graphics.setColor(unpack(element_color[MC[i][1]]))
-					love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 6 * font.standard:getHeight(), 280, pos[i])
+				-- Atmosphere Composition
+				if self.closest.atmosphere then
+					local _MC = normalize(self.closest.atmosphere,100)
+					local MC = sortProb(_MC, false)
+					
+					for i = 1,math.min(3, #MC) do
+						love.graphics.setColor(unpack(element_color[MC[i][1]]))
+						love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 8 * font.standard:getHeight(), 280, pos[i])
+					end
 				end
 			end
 			
