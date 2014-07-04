@@ -46,7 +46,7 @@ function Comet:update(dt)
 			self.y + math.sin(angle)*self.size*dist,
 			math.random(2,self.size/8),
 			-self.v,
-			self.d,
+			self.dir,
 			math.pi/(math.random(1,6)),
 			16,
 			128,

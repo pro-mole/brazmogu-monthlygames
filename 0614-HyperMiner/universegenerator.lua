@@ -94,27 +94,27 @@ function Universe:createStar(x, y)
 	end
 	
 	-- Define orbit range
-	local orbitrange = {size*4, math.sqrt(Physics.K * mass / 2^-10)}
+	local orbitrange = {size*4, math.sqrt(Physics.K * mass / 2^-12)}
 	print(mass, size, orbitrange[2])
 
 	-- Plan out the planetary orbits
 	local planets = {}
-	planOrbit(orbitrange, planets, mass*2, {5,11}, {7,9}, 2^-4)
+	planOrbit(orbitrange, planets, mass*2, {5,11}, {7,9}, 2^-6)
 	print("Planets:", #planets)
 
 	-- Plan out the asteroid belt orbits
 	local belts = {}
-	planOrbit(orbitrange, belts, mass, {2,5}, {4,5}, 2^1)
+	planOrbit(orbitrange, belts, mass, {2,3}, {4,5}, 2^1)
 	print("Belts:",#belts)
 
 	-- Plan out the comet/roamer orbits
 	local comets = {}
-	planOrbit(orbitrange, comets, mass/2, {4,5}, {5,6}, 2^2)
+	planOrbit(orbitrange, comets, mass/2, {3,5}, {4,6}, 2^2)
 	print("Comets:",#comets)
 
 	-- Plan out stellar space stations
 	local stations = {}
-	planOrbit(orbitrange, stations, mass/4, {3,3}, {4,4}, 2^2)
+	planOrbit(orbitrange, stations, mass/4, {3,3}, {4,4}, 2^4)
 	print("Stations:",#stations)
 
 	local palette = {
@@ -313,7 +313,7 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 		end
 	end
 
-	local orbitrange = {(size + atmosize)*2, omax or math.sqrt(Physics.K * mass / 2^-4)}
+	local orbitrange = {(size + atmosize)*3, omax or math.sqrt(Physics.K * mass / 2^-6)}
 	-- Plan out satellites
 	local moons = {}
 	planOrbit(orbitrange, moons, mass*8, {5,7}, {4,6}, 2^3)
@@ -321,7 +321,7 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 
 	-- Plan out planetary space stations
 	local stations = {}
-	planOrbit(orbitrange, stations, mass*4, {3,3}, {4,4}, 2^2)
+	planOrbit(orbitrange, stations, mass*4, {3,3}, {4,4}, 2^5)
 	print("Stations:",#stations)
 
 	io.stdout:flush()
@@ -443,7 +443,7 @@ function Universe:createSatellite(x, y, v, vdir, mass, size, omax)
 	}
 	local minerals = {}
 	local base_color = nil
-	local min_concentration, max_concentration = #base_minerals/2, (#base_minerals)*2
+	local min_concentration, max_concentration = 2^(#base_minerals-1), 2^#base_minerals
 	while #base_minerals > 0 do
 		local i = math.random(1,#base_minerals)
 		local rock = base_minerals[i]
@@ -453,8 +453,8 @@ function Universe:createSatellite(x, y, v, vdir, mass, size, omax)
 		for p,M in ipairs(rock[2]) do
 			minerals[M] = math.max(0, math.random(min_concentration, max_concentration))
 		end
-		max_concentration = max_concentration - 1
-		min_concentration = min_concentration - 1 
+		max_concentration = max_concentration/2
+		min_concentration = min_concentration/2
 		table.remove(base_minerals, i)
 	end
 
@@ -498,7 +498,7 @@ function Universe:createAsteroid(x, y, v, vdir, mass, size, omax)
 	}
 	local minerals = {}
 	local base_color = nil
-	local min_concentration, max_concentration = #base_minerals/2, (#base_minerals)*2
+	local min_concentration, max_concentration = 2^(#base_minerals-1), 2^#base_minerals
 	while #base_minerals > 0 do
 		local i = math.random(1,#base_minerals)
 		local rock = base_minerals[i]
@@ -508,8 +508,8 @@ function Universe:createAsteroid(x, y, v, vdir, mass, size, omax)
 		for p,M in ipairs(rock[2]) do
 			minerals[M] = math.max(0, math.random(min_concentration, max_concentration))
 		end
-		max_concentration = max_concentration - 1
-		min_concentration = min_concentration - 1 
+		max_concentration = max_concentration/2
+		min_concentration = min_concentration/2 
 		table.remove(base_minerals, i)
 	end
 
@@ -557,7 +557,7 @@ function Universe:createComet(x, y, v, vdir, mass, size, omax)
 	}
 	local minerals = {}
 	local base_color = nil
-	local min_concentration, max_concentration = #base_minerals/2, (#base_minerals)*2
+	local min_concentration, max_concentration = 2^(#base_minerals-1), 2^#base_minerals
 	while #base_minerals > 0 do
 		local i = math.random(1,#base_minerals)
 		local rock = base_minerals[i]
@@ -567,8 +567,8 @@ function Universe:createComet(x, y, v, vdir, mass, size, omax)
 		for p,M in ipairs(rock[2]) do
 			minerals[M] = math.max(0, math.random(min_concentration, max_concentration))
 		end
-		max_concentration = max_concentration - 1
-		min_concentration = min_concentration - 1 
+		max_concentration = max_concentration/2
+		min_concentration = min_concentration/2
 		table.remove(base_minerals, i)
 	end
 

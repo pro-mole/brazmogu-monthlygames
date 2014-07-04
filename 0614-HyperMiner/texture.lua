@@ -1,7 +1,7 @@
 -- Randomized textures for our planets and stuff
 
 -- Global 
-simple_textures = false -- For when my video card just can't take it O_o
+simple_textures = true -- For when my video card just can't take it O_o
 
 -- Create a wrapping for the background
 function generateBackground(size, density)
@@ -104,7 +104,7 @@ end
 -- Gradient Fill
 -- Params: Color1 -> Color2, smoothness(1 to 100)
 Pattern["gradient"] = function (size, color1, color2, smooth)
-	if not smooth then smooth = 10 end
+	if not smooth or simple_textures then smooth = 10 end
 	for i = 0,1,1/smooth do
 		local C = {}
 		for k = 1,4 do
