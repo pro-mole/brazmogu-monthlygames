@@ -94,12 +94,12 @@ function Universe:createStar(x, y)
 	end
 	
 	-- Define orbit range
-	local orbitrange = {size*2, math.sqrt(Physics.K * mass / 2^-10)}
+	local orbitrange = {size*4, math.sqrt(Physics.K * mass / 2^-10)}
 	print(mass, size, orbitrange[2])
 
 	-- Plan out the planetary orbits
 	local planets = {}
-	planOrbit(orbitrange, planets, mass*2, {5,11}, {7,9}, 2^-3)
+	planOrbit(orbitrange, planets, mass*2, {5,11}, {7,9}, 2^-4)
 	print("Planets:", #planets)
 
 	-- Plan out the asteroid belt orbits
@@ -231,7 +231,7 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 	}
 	local minerals = {}
 	local base_color = nil
-	local min_concentration, max_concentration = #base_minerals/2, (#base_minerals)*2
+	local min_concentration, max_concentration = 2^(#base_minerals-1), 2^#base_minerals
 	while #base_minerals > 0 do
 		local i = math.random(1,#base_minerals)
 		local rock = base_minerals[i]
@@ -241,8 +241,8 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 		for p,M in ipairs(rock[2]) do
 			minerals[M] = math.max(0, math.random(min_concentration, max_concentration))
 		end
-		max_concentration = max_concentration - 1
-		min_concentration = min_concentration - 1 
+		max_concentration = max_concentration/2
+		min_concentration = min_concentration/2 
 		table.remove(base_minerals, i)
 	end
 
@@ -313,7 +313,7 @@ function Universe:createPlanet(x, y, v, vdir, mass, size, omax)
 		end
 	end
 
-	local orbitrange = {(size + atmosize)*2, omax or math.sqrt(Physics.K * mass / 2^-3)}
+	local orbitrange = {(size + atmosize)*2, omax or math.sqrt(Physics.K * mass / 2^-4)}
 	-- Plan out satellites
 	local moons = {}
 	planOrbit(orbitrange, moons, mass*8, {5,7}, {4,6}, 2^3)
@@ -493,7 +493,7 @@ function Universe:createAsteroid(x, y, v, vdir, mass, size, omax)
 	local base_minerals = {
 	{"Si", {"SiO2"}},
 	{"Ca", {"CaCO3", "CaSO4"}},
-	{"C",  {"C","C10H16O"}},
+	{"C",  {"C"}},
 	{"S",  {"S", "HgS"}}
 	}
 	local minerals = {}
@@ -548,10 +548,12 @@ function Universe:createComet(x, y, v, vdir, mass, size, omax)
 
 	-- Randomize common minerals and determine main color
 	local base_minerals = {
-	{"Si", {"SiO2"}},
-	{"Ca", {"CaCO3", "CaSO4"}},
-	{"C",  {"C","C10H16O"}},
-	{"S",  {"S", "HgS"}}
+		{"O", {"H2O"}},
+		{"C", {"C2H6O"}},
+		{"S", {"H2SO4"}},
+		{"Cl", {"HCl"}},
+		{"F", {"HF"}},
+		{"N", {"NH4"}}
 	}
 	local minerals = {}
 	local base_color = nil
@@ -570,14 +572,11 @@ function Universe:createComet(x, y, v, vdir, mass, size, omax)
 		table.remove(base_minerals, i)
 	end
 
-	-- Randomize ice
-	minerals["H2O"] = math.random(2,20)
-
 	-- Add an "icy" tint to this thing
 	base_color = {
-		math.max(0, base_color[1] * math.random()),
+		math.min(255, base_color[1] * math.random()*2),
 		math.min(255, base_color[2] * math.random()*2),
-		math.min(255, base_color[3] * math.random()*5),
+		math.min(255, base_color[3] * math.random()*2),
 		base_color[4]
 	}
 	
