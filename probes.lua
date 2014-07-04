@@ -354,6 +354,18 @@ function Probe:drawUI()
 		-- Energy Meter
 		drawMeter(64, 108, 128, 16, {0, 64, 96, 255}, {0, 192, 255, 255}, self.max_energy, self.energy, "right")
 		love.graphics.printf("ENERGY:", 2, 88, 128, "left")
+		if self.autobreak then
+			love.graphics.setColor(64,255,64,240)
+			love.graphics.rectangle("fill", 131, 103, 18, 10)
+			love.graphics.setColor(0,24,0,240)
+			love.graphics.printf("AB", 131, 105, 18, "center")
+		else
+			love.graphics.setColor(64,255,64,240)
+			love.graphics.rectangle("line", 131, 103, 18, 10)
+			love.graphics.setColor(0,96,0,240)
+			love.graphics.printf("AB", 131, 105, 18, "center")
+		end
+		
 		-- Engine Fuel Meter
 		drawMeter(64, 74, 128, 16, {128, 64, 0, 255}, {255, 192, 0, 255}, self.max_fuel, self.fuel, "right")
 		love.graphics.printf("FUEL:", 2, 56, 128, "left")
@@ -416,35 +428,38 @@ function Probe:drawUI()
 			else
 				love.graphics.printf(string.format("(%s)",self.closest), 4, 4 + 2 * font.standard:getHeight(), 280, "center")
 				-- Mineral Composition
+				love.graphics.setColor(255,255,255,255)
+				love.graphics.printf("SOLID", 4, 4 + 4 * font.standard:getHeight(), 280, "center")
 				if self.closest.minerals then
 					local _MC = normalize(self.closest.minerals,100)
 					local MC = sortProb(_MC, false)
 					
 					for i = 1,math.min(3, #MC) do
 						love.graphics.setColor(unpack(element_color[MC[i][1]]))
-						love.graphics.printf("SOLID", 4, 4 + 4 * font.standard:getHeight(), 280, "center")
 						love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 5 * font.standard:getHeight(), 280, pos[i])
 					end
 				end
 				-- Liquid Composition
+				love.graphics.setColor(255,255,255,255)
+				love.graphics.printf("LIQUID", 4, 4 + 7 * font.standard:getHeight(), 280, "center")
 				if self.closest.liquids then
 					local _MC = normalize(self.closest.liquids,100)
 					local MC = sortProb(_MC, false)
 					
 					for i = 1,math.min(3, #MC) do
 						love.graphics.setColor(unpack(element_color[MC[i][1]]))
-						love.graphics.printf("LIQUID", 4, 4 + 7 * font.standard:getHeight(), 280, "center")
 						love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 8 * font.standard:getHeight(), 280, pos[i])
 					end
 				end
 				-- Atmosphere Composition
+				love.graphics.setColor(255,255,255,255)
+				love.graphics.printf("GASEOUS", 4, 4 + 10 * font.standard:getHeight(), 280, "center")
 				if self.closest.atmosphere then
 					local _MC = normalize(self.closest.atmosphere,100)
 					local MC = sortProb(_MC, false)
 					
 					for i = 1,math.min(3, #MC) do
 						love.graphics.setColor(unpack(element_color[MC[i][1]]))
-						love.graphics.printf("GASEOUS", 4, 4 + 10 * font.standard:getHeight(), 280, "center")
 						love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 11 * font.standard:getHeight(), 280, pos[i])
 					end
 				end

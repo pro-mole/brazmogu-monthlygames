@@ -7,18 +7,18 @@ Station = {
 }
 
 Upgrade_List = { -- A state list of how the upgrades are progressing; this doesn't really affec the Probe, it's just for easier UI generation and control
-	-- {Name, Current Level, Max Level, Requirements}
-	thrust = {"Engine Thrust",1,4,{}},
-	torque = {"Reaction Wheel",1,4,{}},
-	boost = {"Booster Potency",1,4,{}},
-	radar = {"Radar Range",1,8,{}},
-	scanner = {"Planet Scanner",0,1,{}}, -- Generally, 0 means an equipment that is not present yet :)
-	autobreak = {"AutoBrerak",0,1,{}},
-	drill = {"Drill Efficiency",1,4,{}},
-	storage = {"Storage Capacity",1,4,{}},
-	pump = {"Pump Efficiency",1,4,{}},
-	tank = {"Tank Capacity",1,4,{}},
-	vacuum = {"Vaccum Chamber",0,4,{}}
+	-- {Name, Current Level, Max Level, Requirements, Hotkey}
+	{"thrust","Engine Thrust",1,4,"","1"},
+	{"torque","Reaction Wheel",1,4,"","2"},
+	{"boost","Booster Potency",1,4,"","3"},
+	{"radar","Radar Range",1,8,"","4"},
+	{"scanner","Planet Scanner",0,1,"","5"}, -- Generally, 0 means an equipment that is not present yet :)
+	{"autobreak","AutoBrerak",0,1,"","6"},
+	{"drill","Drill Efficiency",1,4,"","7"},
+	{"storage","Storage Capacity",1,4,"","8"},
+	{"pump","Pump Efficiency",1,4,"","9"},
+	{"tank","Tank Capacity",1,4,"","0"},
+	{"vacuum","Vaccum Chamber",0,4,"","`"}
 }
 
 -- Stock of primitive elements, distributed among all stations
@@ -33,6 +33,29 @@ __index = function(t,i)
 end
 }
 )
+
+function Master_Stock:contains(molecule)
+	local found = true
+	for E,x in chemComposition(molecule) do
+		if x == "" then x = 1 end
+		if self[E] < x then
+			found = false
+		end
+	end
+	
+	return found
+end
+
+function Master_Stock:subtract(molecule)
+	for E,x in chemComposition(molecule) do
+		if x == "" then x = 1 end
+		self[E] = self[E] - x
+	end
+end
+
+for i,E in ipairs(elements) do
+	Master_Stock[E] = 0
+end
 
 Station.__tostring = Body.__tostring
 
@@ -111,6 +134,27 @@ function Station:update(dt)
 			break
 		end
 	end
+	
+	-- Refueling
+	local refuel_intvl = 0
+	if refuel_intvl > 0 then
+		refuel_intvl = refuel_intvl - dt
+	end
+	if love.keyboard.isDown("f") then
+		if refuel_intvl <= 0 then
+			if Master_Stock:contains("CHO") and main_probe.fuel < main_probe.max_fuel then
+				Master_Stock:subtract("CHO")
+				main_probe.fuel = math.min(main_probe.fuel + 5, main_probe.max_fuel)
+				refuel_intvl = 0.25
+			end
+			
+			if Master_Stock:contains("NHO") and main_probe.booster < main_probe.max_booster then
+				Master_Stock:subtract("NHO")
+				main_probe.booster = math.min(main_probe.booster + 5, main_probe.max_booster)
+				refuel_intvl = 0.25
+			end
+		end
+	end
 end
 
 function Station:draw()	
@@ -147,7 +191,44 @@ function Station:draw()
 		end
 	end
 	
+	-- Refill
+	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.printf("Refuel Station", 0, 4, love.window.getWidth(), "center")
+	
+	if Master_Stock:contains("CHO") then
+		love.graphics.setColor(255, 192, 0, 255)
+	else
+		love.graphics.setColor(255, 192, 0, 128)
+	end
+	love.graphics.printf("Engine Fuel\n(CHO)", 0, 8 + font.standard:getHeight()*2, love.window.getWidth(), "center")
+	if Master_Stock:contains("NH") then
+		love.graphics.setColor(192, 255, 0, 255)
+	else
+		love.graphics.setColor(192, 255, 0, 128)
+	end
+	love.graphics.printf("Booster Fuel\n(NH)", 0, 8 + font.standard:getHeight()*5, love.window.getWidth(), "center")
+	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.printf("(Press F to Refuel)", 0, 8 + font.standard:getHeight()*8, love.window.getWidth(), "center")
+	
 	-- Upgrades
+	love.graphics.translate(love.window.getWidth() * 2/3, 0)
+	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.printf("Upgrades", 0, 4, love.window.getWidth()/3, "center")
+	local line_width = love.window.getWidth()/6
+	for m = 0,1 do
+		for n = 1,math.ceil(#Upgrade_List/2) do
+			local i = m*math.ceil(#Upgrade_List/2) + n
+			print(i)
+			if i <= #Upgrade_List then
+				local U = Upgrade_List[i]
+				local id, name, cur, tot, req, key = unpack(U)
+				
+				love.graphics.setColor(255, 255, 255, 255)
+				love.graphics.printf(string.format("%s) %s (%s)", key, name, req), m*line_width, n*2.5*font.standard:getHeight(), line_width, "center")
+				drawSegMeter((m+0.5)*line_width, n*2.5*font.standard:getHeight() + 1.5*font.standard:getHeight(), line_width-8, font.standard:getHeight(), {0, 32, 0, 255}, {0, 255, 0, 255}, tot, cur, "right", tot)
+			end
+		end
+	end
 	
 	love.graphics.pop()
 end
