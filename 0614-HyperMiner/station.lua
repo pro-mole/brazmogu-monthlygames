@@ -8,17 +8,17 @@ Station = {
 
 Upgrade_List = { -- A state list of how the upgrades are progressing; this doesn't really affec the Probe, it's just for easier UI generation and control
 	-- {Name, Current Level, Max Level, Requirements, Hotkey}
-	{"thrust","Engine Thrust",1,4,"","1"},
-	{"torque","Reaction Wheel",1,4,"","2"},
-	{"boost","Booster Potency",1,4,"","3"},
-	{"radar","Radar Range",1,8,"","4"},
-	{"scanner","Planet Scanner",0,1,"","5"}, -- Generally, 0 means an equipment that is not present yet :)
+	{"thrust","Engine Thrust",1,4,"Fe8","1"},
+	{"torque","Reaction Wheel",1,4,"C4Cu2","2"},
+	{"boost","Booster Potency",1,4,"Fe12","3"},
+	{"radar","Radar Range",1,8,"SiRa","4"},
+	{"scanner","Planet Scanner",0,1,"SiU","5"}, -- Generally, 0 means an equipment that is not present yet :)
 	{"autobreak","AutoBrerak",0,1,"","6"},
-	{"drill","Drill Efficiency",1,4,"","7"},
-	{"storage","Storage Capacity",1,4,"","8"},
-	{"pump","Pump Efficiency",1,4,"","9"},
-	{"tank","Tank Capacity",1,4,"","0"},
-	{"vacuum","Vaccum Chamber",0,4,"","`"}
+	{"drill","Drill Efficiency",1,4,"Fe6","7"},
+	{"storage","Storage Capacity",1,4,"Fe4","8"},
+	{"pump","Pump Efficiency",1,4,"Cu4","9"},
+	{"tank","Tank Capacity",1,4,"Si6","0"},
+	{"vacuum","Vaccum Chamber",0,4,"Si2Ti6","`"}
 }
 
 -- Stock of primitive elements, distributed among all stations
@@ -34,11 +34,15 @@ end
 }
 )
 
+for i,E in ipairs(elements) do
+	Master_Stock[E] = 0
+end
+
 function Master_Stock:contains(molecule)
 	local found = true
 	for E,x in chemComposition(molecule) do
 		if x == "" then x = 1 end
-		if self[E] < x then
+		if self[E] < tonumber(x) then
 			found = false
 		end
 	end
@@ -51,10 +55,6 @@ function Master_Stock:subtract(molecule)
 		if x == "" then x = 1 end
 		self[E] = self[E] - x
 	end
-end
-
-for i,E in ipairs(elements) do
-	Master_Stock[E] = 0
 end
 
 Station.__tostring = Body.__tostring
@@ -90,6 +90,45 @@ function Station:delete()
 		if S == self then
 			table.remove(Universe.stations, i)
 			break
+		end
+	end
+end
+
+function Station:keypressed(key, isrepeat)
+	-- If the probe is not docked, just go on
+	if not bodiesTouching(self, main_probe) then return end
+
+	-- Upgrades
+	for i,U in ipairs(Upgrade_List) do
+		local id, name, cur, tot, req, ukey = unpack(U)
+		if key == ukey then
+			print(unpack(U))
+			if Master_Stock:contains(req) and cur < tot then
+				Master_Stock:subtract(req)
+				U[3] = U[3] + 1
+				-- Perform upgrade on probe
+				if id == "thrust" then
+					main_probe.thrust = main_probe.thrust + 5
+				elseif id == "torque" then
+					main_probe.torque = main_probe.torque * 2
+				elseif id == "drill" then
+					main_probe.drill_rate = main_probe.drill_rate * 2
+				elseif id == "pump" then
+					main_probe.pump_rate = main_probe.pump_rate * 2
+				elseif id == "storage" then
+					main_probe.storage_capacity = main_probe.storage_capacity + 16
+				elseif id == "tank" then
+					main_probe.tank_capacity = main_probe.tank_capacity + 10
+				elseif id == "boost" then
+					main_probe.booster_rate = main_probe.booster_rate - 1
+				elseif id == "radar" then
+					main_probe.scope = main_probe.scope * 2
+				elseif id == "scanner" then
+					main_probe.scope = main_probe.scope * 2
+				elseif id == "vacuum" then
+					main_probe.vacuum_capacity = main_probe.vacuum_capacity + 20
+				end
+			end
 		end
 	end
 end
@@ -218,12 +257,15 @@ function Station:draw()
 	for m = 0,1 do
 		for n = 1,math.ceil(#Upgrade_List/2) do
 			local i = m*math.ceil(#Upgrade_List/2) + n
-			print(i)
 			if i <= #Upgrade_List then
 				local U = Upgrade_List[i]
 				local id, name, cur, tot, req, key = unpack(U)
 				
-				love.graphics.setColor(255, 255, 255, 255)
+				if Master_Stock:contains(req) then
+					love.graphics.setColor(255, 255, 255, 255)
+				else
+					love.graphics.setColor(255, 255, 255, 128)
+				end
 				love.graphics.printf(string.format("%s) %s (%s)", key, name, req), m*line_width, n*2.5*font.standard:getHeight(), line_width, "center")
 				drawSegMeter((m+0.5)*line_width, n*2.5*font.standard:getHeight() + 1.5*font.standard:getHeight(), line_width-8, font.standard:getHeight(), {0, 32, 0, 255}, {0, 255, 0, 255}, tot, cur, "right", tot)
 			end

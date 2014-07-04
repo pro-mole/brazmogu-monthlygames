@@ -16,7 +16,7 @@ SpaceBG = generateBackground(1024, 0.64)
 
 radar_color = {
 	{255,255,255,255}, -- Class 0
-	{128,128,182,255}, -- Class 1
+	{128,128,192,255}, -- Class 1
 	{64,64,64,255}, -- Class 2
 	{96,192,192,255}, -- Class 3
 	{0,64,128,255}, -- Class 4
@@ -44,7 +44,7 @@ loading = true
 load_buffer = {}
  
 function love.load()
-	Universe:generate(arg[2])
+	Universe:generate(os.time())
 	if #Space.probes >= 1 then
 		main_probe = Space.probes[1]
 	end
@@ -82,7 +82,7 @@ function love.update(dt)
 end
 
 function love.keypressed(key, isrepest)
-	print(key)
+	-- print(key)
 	io.stdout:flush()
 	
 	if key == "escape" then
@@ -116,8 +116,10 @@ layers = {
 
 function love.draw()
 	if loading then
+		love.graphics.setColor(255,255,255,255)
 		love.graphics.setCanvas()
 		
+		love.graphics.draw(SpaceBG,0,0)
 		love.graphics.setFont(font.standard)
 		love.graphics.setColor(255,255,255,255)
 		love.graphics.printf("GENERATING UNIVERSE - LOADING TEXTURES", 0, love.window.getHeight()/2 - font.standard:getHeight(), love.window.getWidth(), "center")
@@ -185,7 +187,7 @@ function love.draw()
 	love.graphics.draw(SpaceBG, _x+S, _y+S)]]
 
 	for i,B in ipairs(Physics.bodies) do
-		if (math.sqrt(squareBodyDistance(B,probe)) - B.size) <= screen_diag/2 then
+		if (math.sqrt(squareBodyDistance(B,probe)) - B.size) <= screen_diag then
 			B:draw()
 		end
 	end
@@ -206,7 +208,7 @@ function love.draw()
 		layers[L]:clear()
 	end
 	
-	if love.keyboard.isDown("`") then
+	--[[if love.keyboard.isDown("`") then
 		drawMap(probe, 1/64)
-	end
+	end]]
 end

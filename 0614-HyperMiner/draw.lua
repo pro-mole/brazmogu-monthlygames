@@ -214,7 +214,7 @@ function drawStorage(x, y, probe, offx, offy)
 			love.graphics.push()
 			love.graphics.translate(x * (crate_size+4) , y * (crate_size+4))
 			local _mx, _my = mx - x * (crate_size+4), my - y * (crate_size+4) 
-			if (x*8 + y) < Probe.storage_capacity then
+			if (x*8 + y) < probe.storage_capacity then
 				love.graphics.setColor(32,64,32,255)
 			else
 				love.graphics.setColor(64,64,64,255)
