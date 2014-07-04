@@ -41,7 +41,7 @@ function loadTexture(size, filename)
 	
 	love.graphics.setStencil(
 		function()
-			love.graphics.circle("fill", size, size, size, size/2)
+			love.graphics.circle("fill", size, size, size, size*2)
 		end
 	)
 	
