@@ -422,7 +422,8 @@ function Probe:drawUI()
 					
 					for i = 1,math.min(3, #MC) do
 						love.graphics.setColor(unpack(element_color[MC[i][1]]))
-						love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 4 * font.standard:getHeight(), 280, pos[i])
+						love.graphics.printf("SOLID", 4, 4 + 4 * font.standard:getHeight(), 280, "center")
+						love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 5 * font.standard:getHeight(), 280, pos[i])
 					end
 				end
 				-- Liquid Composition
@@ -432,7 +433,8 @@ function Probe:drawUI()
 					
 					for i = 1,math.min(3, #MC) do
 						love.graphics.setColor(unpack(element_color[MC[i][1]]))
-						love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 6 * font.standard:getHeight(), 280, pos[i])
+						love.graphics.printf("LIQUID", 4, 4 + 7 * font.standard:getHeight(), 280, "center")
+						love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 8 * font.standard:getHeight(), 280, pos[i])
 					end
 				end
 				-- Atmosphere Composition
@@ -442,7 +444,8 @@ function Probe:drawUI()
 					
 					for i = 1,math.min(3, #MC) do
 						love.graphics.setColor(unpack(element_color[MC[i][1]]))
-						love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 8 * font.standard:getHeight(), 280, pos[i])
+						love.graphics.printf("GASEOUS", 4, 4 + 10 * font.standard:getHeight(), 280, "center")
+						love.graphics.printf(string.format("%s: %.2d%%",unpack(MC[i])), 4, 4 + 11 * font.standard:getHeight(), 280, pos[i])
 					end
 				end
 			end
