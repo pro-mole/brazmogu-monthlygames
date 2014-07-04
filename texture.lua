@@ -1,7 +1,7 @@
 -- Randomized textures for our planets and stuff
 
 -- Global 
-simple_textures = true -- For when my video card just can't take it O_o
+simple_textures = false -- For when my video card just can't take it O_o
 
 -- Create a wrapping for the background
 function generateBackground(size, density)
@@ -41,7 +41,7 @@ function loadTexture(size, filename)
 	
 	love.graphics.setStencil(
 		function()
-			love.graphics.circle("fill", size, size, size, size*2)
+			love.graphics.circle("fill", size, size, size, size*2*math.pi)
 		end
 	)
 	

@@ -9,7 +9,7 @@ Probe = {
 	-- Engine
 	fuel = 0,
 	max_fuel = 100, -- Fuel capacity (liters)
-	thrust = 10, -- Acceleration (pixels per second per second per unit of mass)
+	thrust = 5, -- Acceleration (pixels per second per second per unit of mass)
 	fuel_rate = 1, -- Fuel rate for thrust (liters per second)
 
 	-- Energy
@@ -77,9 +77,7 @@ function Probe.new(specs)
 	P.class = 0
 	P.size = 8
 	P.mass = 1
-	P.texture_params = {
-		{"gradient",{255,255,255,255},{128,128,128,255},16}
-	}
+	P.texture_file = "/assets/textures/probe.png"
 	
 	P.fuel = P.max_fuel
 	P.energy = P.max_energy
@@ -122,7 +120,7 @@ function Probe:keyreleased(key)
 end
 
 function Probe:keypressed(key, isrepeat)
-	print(key)
+	-- print(key)
 	if key == " " then
 		if self.booster > 0 then
 			self:applyForce(self.boost * 2^(self.boost_power/2), self.d)
@@ -164,7 +162,12 @@ function Probe:keypressed(key, isrepeat)
 		end
 	end
 	
+	if bodiesTouching(self, self.influence_body) then
+		self.influence_body:keypressed(key, isrepeat)
+	end
+
 	-- DEBUG
+	--[[
 	if key == "." then
 		if self.scope < 1024 then
 			self.scope = self.scope * 2
@@ -174,7 +177,7 @@ function Probe:keypressed(key, isrepeat)
 		if self.scope > 1 then
 			self.scope = self.scope / 2
 		end
-	end
+	end]]
 end
 
 function Probe:update(dt)
@@ -286,7 +289,7 @@ function Probe:update(dt)
 				self.energy = self.energy - self.pump_power * dt
 				while self.pump_q >= 1 do
 					local L = selectRandomly(B.liquids)
-					print(L)
+					-- print(L)
 					if self.tank[L] then
 						self.tank[L] = self.tank[L] + 1
 					else

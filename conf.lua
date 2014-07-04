@@ -4,10 +4,10 @@ function love.conf(t)
 
 	t.window.title = "HyperMiner pre-alpha"
 
-	t.window.width = 800
-	t.window.height = 600
+	t.window.width = 1024
+	t.window.height = 768
 	t.window.resizable = false
-	t.window.fullscreen = false
+	t.window.fullscreen = true
 	t.window.vsync = true
 
 	t.modules.audio = true             -- Enable the audio module (boolean)

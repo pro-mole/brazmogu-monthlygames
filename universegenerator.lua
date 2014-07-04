@@ -99,7 +99,7 @@ function Universe:createStar(x, y)
 
 	-- Plan out the planetary orbits
 	local planets = {}
-	planOrbit(orbitrange, planets, mass*2, {5,11}, {7,9}, 2^-6)
+	planOrbit(orbitrange, planets, mass*4, {5,11}, {7,9}, 2^-6)
 	print("Planets:", #planets)
 
 	-- Plan out the asteroid belt orbits
