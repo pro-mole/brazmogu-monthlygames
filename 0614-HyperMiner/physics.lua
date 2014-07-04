@@ -409,9 +409,9 @@ function Body:draw()
 		love.graphics.pop()
 		
 		-- Draw speed and orientatino vectors
-		love.graphics.setColor(0, 255, 255, 128)
+		--[[love.graphics.setColor(0, 255, 255, 128)
 		drawVector(self.x, self.y, self.size, self.d)
 		love.graphics.setColor(0, 255, 0, 128)
-		drawVector(self.x, self.y, self.v, self.dir)
+		drawVector(self.x, self.y, self.v, self.dir)]]
 	end
 end

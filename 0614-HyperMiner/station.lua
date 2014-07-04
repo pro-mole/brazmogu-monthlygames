@@ -53,9 +53,7 @@ function Station.new(specs)
 	S.class = 1
 	S.size = 16
 	S.mass = 8
-	S.texture_params = {
-		{"gradient",{192,192,192,255},{128,128,128,255},32}
-	}
+	S.texture_file = "assets/textures/station.png"
 	S.fill_p = 0
 	
 	table.insert(Space.stations, S)
