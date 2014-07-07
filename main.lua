@@ -7,12 +7,18 @@ Score = {
 	right = {}
 }
 
-current_player = "neutral"
+turn = {
+	player = "neutral",
+	pieces = 0
+}
+
+endgame = false
 
 function love.load()
 	love.graphics.setFont(font.standard)
 
 	game_grid = Grid.new()
+	game_grid:startTurn("left")
 end
 
 function love.update(dt)
@@ -26,6 +32,7 @@ function love.keypressed(key, isrepeat)
 end
 
 function love.mousepressed(x, y, button)
+	game_grid:mousepressed(x, y, button)
 end
 
 function love.draw()
