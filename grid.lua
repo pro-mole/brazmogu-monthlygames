@@ -113,7 +113,9 @@ end
 
 function Grid:updateStats()
 	for p,S in pairs(self.stats) do
+		--print(p)
 		for n,v in pairs(S) do
+			--print(n,v)
 			S[n] = 0
 		end
 	end
@@ -121,10 +123,13 @@ function Grid:updateStats()
 	for x,y,T in self:iterator() do
 		local S = self.stats[T.owner]
 		S.occupation = S.occupation + 1
-		if not T.type == "normal" then
-			S[T.type + "s"] = S[T.type + "s"] + 1
+		if T.type ~= "normal" then
+			--print(T.type)
+			S[T.type.."s"] = S[T.type.."s"] + 1
 		end
 	end
+	
+	io.stdout:flush()
 end
 
 function Grid:getTile(x, y)
@@ -137,10 +142,10 @@ end
 
 function Grid:getAdjacentTiles(x, y)
 	return {
-		self:getTile(x-1, y),
-		self:getTile(x+1, y),
-		self:getTile(x, y-1),
-		self:getTile(x, y+1)
+		[string.format("%d;%d",x-1,y)] = self:getTile(x-1, y),
+		[string.format("%d;%d",x+1,y)] = self:getTile(x+1, y),
+		[string.format("%d;%d",x,y-1)] = self:getTile(x, y-1),
+		[string.format("%d;%d",x,y+1)] = self:getTile(x, y+1)
 	}
 end
 
@@ -172,9 +177,9 @@ function Grid:mousepressed(x, y, m)
 	if m == "l" then
 		if self.focus then
 			local valid = false
-			adj = self.focus:getAdjacents()
-			for i = 1,4 do
-				A = adj[i]
+			adj = self.focus:getAdjacents(self.stats[turn.player].towers + 1)
+			for i,T in pairs(adj) do
+				A = T
 				if A then
 					if A.owner == turn.player then
 						valid = true
@@ -227,10 +232,10 @@ function Grid:draw()
 		love.graphics.push()
 		love.graphics.translate((x-1) * self.tile_size, (y-1) * self.tile_size)
 		T:draw()
-		if T.owner == "neutral" then
-			adj = T:getAdjacents()
-			for i = 1,4 do
-				A = adj[i]
+		if T.owner ~= turn.player then
+			adj = T:getAdjacents(self.stats[turn.player].towers + 1)
+			for i,A in pairs(adj) do
+				-- A = adj[i]
 				if A then
 					if A.owner == turn.player then
 						love.graphics.setColor(255,255,255,64)
@@ -253,6 +258,29 @@ function Grid:draw()
 
 	love.graphics.setColor(unpack(PlayerColors[turn.player]))
 	love.graphics.printf(string.format("YOUR TURN: %d", turn.pieces), 0, -font.standard:getHeight() - 1, self.width * self.tile_size, turn.player)
+	
+	love.graphics.push()
+	love.graphics.origin()
+	for i,P in ipairs({"left","right"}) do
+		love.graphics.setColor(unpack(PlayerColors[P]))
+		local stats = self.stats[P]
+		local w = self.x - 8
+		local tx, al
+		if P == "left" then
+			tx = 4
+			al = "right"
+		else
+			tx = self.x + self.width * self.tile_size + 4
+			al = "left"
+		end
+		love.graphics.printf(string.format([[PLAYER: %s
+		
+		OCCUPATION: %d
+		TURRETS: %d
+		BUNKERS: %d
+		TOWERS: %d]], P, stats.occupation, stats.turrets, stats.bunkers, stats.towers), tx, self.y + font.standard:getHeight(), w, al)
+	end
+	love.graphics.pop()
 
 	love.graphics.translate(0, self.height * self.tile_size + 4)
 	love.graphics.setBlendMode("replace")
@@ -298,6 +326,8 @@ function Tile:addOccupation(value, player)
 		self.occupation = self.occupation + v
 	else
 		local t,b = self.grid.stats[p].turrets, self.grid.stats[other].bunkers
+		--print("Attacking Turrets:",t)
+		--print("Defending Bunkers:",b)
 		self.occupation = math.max(0, self.occupation - t + b)
 		self.occupation = self.occupation - v
 		if self.occupation == 0 then
@@ -309,8 +339,26 @@ function Tile:addOccupation(value, player)
 	end
 end
 
-function Tile:getAdjacents()
-	return self.grid:getAdjacentTiles(self.x, self.y)
+function Tile:getAdjacents(d)
+	local distance = d or 1
+	if distance <= 1 then
+		return self.grid:getAdjacentTiles(self.x, self.y)
+	else
+		local adjacents = self:getAdjacents(distance - 1)
+		new_adjacents = {}
+		for i,T in pairs(adjacents) do
+			_N = self.grid:getAdjacentTiles(T.x, T.y)
+			for j, _T in pairs(_N) do
+				if math.abs(_T.x - self.x) + math.abs(_T.y - self.y) == distance then
+					new_adjacents[string.format("%d;%d",_T.x,_T.y)] = _T
+				end
+			end
+		end
+		for i,T in pairs(new_adjacents) do
+			adjacents[i] = T
+		end
+		return adjacents
+	end
 end
 
 function Tile:draw()
