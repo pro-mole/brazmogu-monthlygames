@@ -129,6 +129,11 @@ function Grid:updateStats()
 		end
 	end
 	
+	if self:victory() then
+		endgame = true
+		turn.player = "neutral"
+	end
+	
 	io.stdout:flush()
 end
 
@@ -232,7 +237,7 @@ function Grid:draw()
 		love.graphics.push()
 		love.graphics.translate((x-1) * self.tile_size, (y-1) * self.tile_size)
 		T:draw()
-		if T.owner ~= turn.player then
+		if T.owner ~= turn.player and turn.player ~= "neutral" then then
 			adj = T:getAdjacents(self.stats[turn.player].towers + 1)
 			for i,A in pairs(adj) do
 				-- A = adj[i]
@@ -256,8 +261,10 @@ function Grid:draw()
 
 	love.graphics.pop()
 
-	love.graphics.setColor(unpack(PlayerColors[turn.player]))
-	love.graphics.printf(string.format("YOUR TURN: %d", turn.pieces), 0, -font.standard:getHeight() - 1, self.width * self.tile_size, turn.player)
+	if turn.player ~= "neutral" then
+		love.graphics.setColor(unpack(PlayerColors[turn.player]))
+		love.graphics.printf(string.format("YOUR TURN: %d", turn.pieces), 0, -font.standard:getHeight() - 1, self.width * self.tile_size, turn.player)
+	end
 	
 	love.graphics.push()
 	love.graphics.origin()
@@ -302,8 +309,16 @@ function Grid:draw()
 		love.graphics.printf(string.format("Owner: %s", F.owner), 0, 4 + 4*h, self.width * self.tile_size, "center")
 		love.graphics.printf(string.format("Structures: %s", TileTypes[F.type][1]), 0, 4 + 6*h, self.width * self.tile_size, "center")
 	end
-
+	
 	love.graphics.origin()
+	
+	if endgame then
+		love.graphics.setColor(0,0,0,64)
+		love.graphics.rectangle("fill",0,0,love.window.getWidth(), love.window.getHeight())
+
+		love.graphics.setColor(255,255,255,255)
+		love.graphics.printf(string.format("%s Wins!", self:victory()), 0, (love.window.getHeight() - font.standard:getHeight())/2, love.window.getWidth(), "center")
+	end
 end
 
 -- Tile Operations
