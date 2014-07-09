@@ -45,11 +45,11 @@ PlayerColors = {
 }
 
 TileTypes = {
-	normal = true,
-	range = true,
-	power = true,
-	defense = true,
-	base = true
+	normal = {"None"},
+	tower = {"Tower"}, -- +Range
+	turret = {"Turret"}, -- +Attack
+	bunker = {"Bunker"}, -- +Bunker
+	base = {"Base"}
 }
 
 function Grid:new(width, height, tsize, victory_condition)
@@ -92,8 +92,6 @@ function Grid:new(width, height, tsize, victory_condition)
 			bases = 0
 		}
 	end
-	
-	-- Set Special tiles
 	
 	-- Set victory condition
 	T.victory = victory_condition or Grid.victory
@@ -186,16 +184,19 @@ function Grid:mousepressed(x, y, m)
 			end
 			
 			if valid then
+				local other = "neutral"
+				if turn.player == "left" then
+					other = "right"
+				else
+					other = "left"
+				end
+
 				turn.pieces = turn.pieces - 1
 				self.focus:addOccupation(1)
 				self:updateStats()
 				
 				if turn.pieces == 0 then
-					if turn.player == "left" then
-						self:startTurn("right")
-					else
-						self:startTurn("left")
-					end
+					self:startTurn(other)
 				end
 			end
 		end
@@ -271,7 +272,7 @@ function Grid:draw()
 
 		love.graphics.printf(string.format("Occupation: %02d", F.occupation), 0, 4 + 2*h, self.width * self.tile_size, "center")
 		love.graphics.printf(string.format("Owner: %s", F.owner), 0, 4 + 4*h, self.width * self.tile_size, "center")
-		love.graphics.printf(string.format("Structures: %s", F.type), 0, 4 + 6*h, self.width * self.tile_size, "center")
+		love.graphics.printf(string.format("Structures: %s", TileTypes[F.type][1]), 0, 4 + 6*h, self.width * self.tile_size, "center")
 	end
 
 	love.graphics.origin()
@@ -283,16 +284,28 @@ function Tile:addOccupation(value, player)
 	local v = value
 	local p = player or turn.player
 
-	if self.owner ~= p then
-		v = -v
+	local other
+	if p == "left" then
+		other = "right"
+	else
+		other = "left"
 	end
-	
-	self.occupation = self.occupation + v
-	if self.occupation == 0 then
-		self.owner = "neutral"
-	elseif self.occupation < 0 then
-		self.occupation = -self.occupation
+
+	if self.owner == "neutral" then
+		self.occupation = v
 		self.owner = p
+	elseif self.owner == p then
+		self.occupation = self.occupation + v
+	else
+		local t,b = self.grid.stats[p].turrets, self.grid.stats[other].bunkers
+		self.occupation = math.max(0, self.occupation - t + b)
+		self.occupation = self.occupation - v
+		if self.occupation == 0 then
+			self.owner = "neutral"
+		elseif self.occupation < 0 then
+			self.occupation = -self.occupation
+			self.owner = p
+		end
 	end
 end
 
@@ -307,5 +320,14 @@ function Tile:draw()
 	if self.type == "base" then
 		love.graphics.setColor({0,0,0,128})
 		love.graphics.circle("line", s/2, s/2, s/4)
+	elseif self.type == "turret" then
+		love.graphics.setColor({0,0,0,128})
+		love.graphics.polygon("line", s/6, s*3/4, s/2, s/5, s*5/6, s*3/4)
+	elseif self.type == "bunker" then
+		love.graphics.setColor({0,0,0,128})
+		love.graphics.rectangle("line", s/4, s/4, s/2, s/2)
+	elseif self.type == "tower" then
+		love.graphics.setColor({0,0,0,128})
+		love.graphics.polygon("line", s/2, s/4, s*3/4, s/2, s/2, s*3/4, s/4, s/2)
 	end
 end
