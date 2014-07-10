@@ -28,6 +28,10 @@ function love.load()
 		{11,7,"turret"},
 		{8,3,"tower"},
 		{8,6,"tower"},
+		{1,1,"farm"},
+		{15,1,"farm"},
+		{1,8,"farm"},
+		{15,8,"farm"}
 	}
 	for i,S in ipairs(special) do
 		local t = game_grid:getTile(S[1], S[2])

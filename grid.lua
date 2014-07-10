@@ -48,7 +48,8 @@ TileTypes = {
 	normal = {"None"},
 	tower = {"Tower"}, -- +Range
 	turret = {"Turret"}, -- +Attack
-	bunker = {"Bunker"}, -- +Bunker
+	bunker = {"Bunker"}, -- +Defense
+	farm = {"Farm"}, -- +Moves
 	base = {"Base"}
 }
 
@@ -89,6 +90,7 @@ function Grid:new(width, height, tsize, victory_condition)
 			towers = 0,
 			bunkers = 0,
 			turrets = 0,
+			farms = 0,
 			bases = 0
 		}
 	end
@@ -157,7 +159,7 @@ end
 function Grid:startTurn(player)
 	self:updateStats()
 	turn.player = player
-	turn.pieces = self.stats[player].occupation
+	turn.pieces = self.stats[player].farms + self.stats[player].bases
 end
 
 function Grid:iterator()
@@ -237,7 +239,7 @@ function Grid:draw()
 		love.graphics.push()
 		love.graphics.translate((x-1) * self.tile_size, (y-1) * self.tile_size)
 		T:draw()
-		if T.owner ~= turn.player and turn.player ~= "neutral" then then
+		if T.owner ~= turn.player and turn.player ~= "neutral" then
 			adj = T:getAdjacents(self.stats[turn.player].towers + 1)
 			for i,A in pairs(adj) do
 				-- A = adj[i]
@@ -343,8 +345,8 @@ function Tile:addOccupation(value, player)
 		local t,b = self.grid.stats[p].turrets, self.grid.stats[other].bunkers
 		--print("Attacking Turrets:",t)
 		--print("Defending Bunkers:",b)
-		self.occupation = math.max(0, self.occupation - t + b)
-		self.occupation = self.occupation - v
+		local attack = math.max(0, t - b)
+		self.occupation = math.max(0, self.occupation - attack - v)
 		if self.occupation == 0 then
 			self.owner = "neutral"
 		elseif self.occupation < 0 then
@@ -392,5 +394,10 @@ function Tile:draw()
 	elseif self.type == "tower" then
 		love.graphics.setColor({0,0,0,128})
 		love.graphics.polygon("line", s/2, s/4, s*3/4, s/2, s/2, s*3/4, s/4, s/2)
+	elseif self.type == "farm" then
+		love.graphics.setColor({0,0,0,128})
+		love.graphics.line(s/2, s/8, s/2, s*7/8)
+		love.graphics.line(s/4, s/6, s/4, s*7/8)
+		love.graphics.line(s*3/4, s/6, s*3/4, s*7/8)
 	end
 end
