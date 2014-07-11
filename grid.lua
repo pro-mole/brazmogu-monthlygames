@@ -2,6 +2,8 @@
 
 font = {standard = love.graphics.newFont("assets/font/imagine_font.otf")}
 
+spritesheet = love.graphics.newImage("assets/sprite/board.png")
+
 Grid = {
 	width = 0,
 	height = 0,
@@ -10,6 +12,7 @@ Grid = {
 	x = 0,
 	y = 0,
 	tile_size = 8,
+	view_angle = 1,
 	
 	-- Game statistics, for quicker assessment
 	stats = {
@@ -53,14 +56,15 @@ TileTypes = {
 	base = {"Base"}
 }
 
-function Grid:new(width, height, tsize, victory_condition)
+function Grid.new(width, height, tsize, angle, victory_condition)
 	T = {}
 	T.width = width or 15
 	T.height = height or 8
 	T.tile_size = tsize or 16
+	T.view_angle = angle or 1
 
 	T.x = (love.window.getWidth() - T.width*T.tile_size) / 2
-	T.y = (love.window.getHeight() - T.height*T.tile_size) / 2
+	T.y = (love.window.getHeight() - T.height*T.tile_size*T.view_angle) / 2
 
 	T.tiles = {}
 	for y = 1,T.height do
@@ -245,7 +249,7 @@ function Grid:draw()
 				-- A = adj[i]
 				if A then
 					if A.owner == turn.player then
-						love.graphics.setColor(255,255,255,64)
+						love.graphics.setColor(255,255,255,32)
 						love.graphics.rectangle("fill", 0, 0, self.tile_size, self.tile_size)
 						break
 					end
@@ -253,11 +257,11 @@ function Grid:draw()
 			end
 		end
 		if self.focus == T then
-			love.graphics.setColor(255,255,255,128)
+			love.graphics.setColor(255,255,255,32)
 			love.graphics.rectangle("fill", 0, 0, self.tile_size, self.tile_size)
 		end
-		love.graphics.setColor(0,0,0,128)
-		love.graphics.rectangle("line", 0, 0, self.tile_size, self.tile_size)
+		--love.graphics.setColor(0,0,0,128)
+		--love.graphics.rectangle("line", 0, 0, self.tile_size, self.tile_size)
 		love.graphics.pop()
 	end
 
@@ -287,7 +291,8 @@ function Grid:draw()
 		OCCUPATION: %d
 		TURRETS: %d
 		BUNKERS: %d
-		TOWERS: %d]], P, stats.occupation, stats.turrets, stats.bunkers, stats.towers), tx, self.y + font.standard:getHeight(), w, al)
+		TOWERS: %d
+		FARMS: %d]], P, stats.occupation, stats.turrets, stats.bunkers, stats.towers, stats.farms), tx, self.y + font.standard:getHeight(), w, al)
 	end
 	love.graphics.pop()
 
@@ -380,24 +385,34 @@ end
 
 function Tile:draw()
 	local s = self.grid.tile_size
+	local k = s/16
 	love.graphics.setColor(unpack(PlayerColors[self.owner]))
 	love.graphics.rectangle("fill", 0, 0, s, s)
+	local Q = nil
 	if self.type == "base" then
-		love.graphics.setColor({0,0,0,128})
-		love.graphics.circle("line", s/2, s/2, s/4)
+		Q = love.graphics.newQuad(16,0,16,32,128,128)
+		--[[love.graphics.setColor({0,0,0,128})
+		love.graphics.circle("line", s/2, s/2, s/4)]]
 	elseif self.type == "turret" then
-		love.graphics.setColor({0,0,0,128})
-		love.graphics.polygon("line", s/6, s*3/4, s/2, s/5, s*5/6, s*3/4)
+		Q = love.graphics.newQuad(48,0,16,32,128,128)
+		--[[love.graphics.setColor({0,0,0,128})
+		love.graphics.polygon("line", s/6, s*3/4, s/2, s/5, s*5/6, s*3/4)]]
 	elseif self.type == "bunker" then
-		love.graphics.setColor({0,0,0,128})
-		love.graphics.rectangle("line", s/4, s/4, s/2, s/2)
+		Q = love.graphics.newQuad(32,0,16,32,128,128)
+		--[[love.graphics.setColor({0,0,0,128})
+		love.graphics.rectangle("line", s/4, s/4, s/2, s/2)]]
 	elseif self.type == "tower" then
-		love.graphics.setColor({0,0,0,128})
-		love.graphics.polygon("line", s/2, s/4, s*3/4, s/2, s/2, s*3/4, s/4, s/2)
+		Q = love.graphics.newQuad(64,0,16,32,128,128)
+		--[[love.graphics.setColor({0,0,0,128})
+		love.graphics.polygon("line", s/2, s/4, s*3/4, s/2, s/2, s*3/4, s/4, s/2)]]
 	elseif self.type == "farm" then
-		love.graphics.setColor({0,0,0,128})
+		Q = love.graphics.newQuad(80,0,16,32,128,128)
+		--[[love.graphics.setColor({0,0,0,128})
 		love.graphics.line(s/2, s/8, s/2, s*7/8)
 		love.graphics.line(s/4, s/6, s/4, s*7/8)
-		love.graphics.line(s*3/4, s/6, s*3/4, s*7/8)
+		love.graphics.line(s*3/4, s/6, s*3/4, s*7/8)]]
+	end
+	if Q then
+		love.graphics.draw(spritesheet, Q, 0, -s/2, 0, k, k)
 	end
 end

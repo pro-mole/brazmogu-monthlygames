@@ -17,7 +17,7 @@ endgame = false
 function love.load()
 	love.graphics.setFont(font.standard)
 
-	game_grid = Grid.new()
+	game_grid = Grid.new(15,8,32)
 	game_grid:startTurn("left")
 
 	-- Set Special tiles
@@ -34,6 +34,7 @@ function love.load()
 		{15,8,"farm"}
 	}
 	for i,S in ipairs(special) do
+		print(unpack(S))
 		local t = game_grid:getTile(S[1], S[2])
 		t.type = S[3]
 	end
