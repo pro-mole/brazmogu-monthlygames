@@ -46,9 +46,9 @@ Players = {
 }
 
 PlayerColors = {
-	neutral = {64,64,64,255},
+	neutral = {0,64,64,255},
 	left = {0,64,0,255},
-	right = {64,0,128,255}
+	right = {64,64,0,255}
 }
 
 TileTypes = {
@@ -411,29 +411,45 @@ function Tile:draw(highlight)
 	love.graphics.setColor(unpack(C))
 	local Q = nil
 	local H,W = spritesheet:getHeight(), spritesheet:getWidth()
+	local spritemap_col = {
+		normal = 0,
+		base = 1,
+		bunker = 2,
+		turret = 3,
+		tower = 4,
+		farm = 5
+	}
+	local spritemap_row = {
+		neutral = 0,
+		left = 1,
+		right = 2
+	}
+	local Q = love.graphics.newQuad(sprite_width * spritemap_col[self.type], sprite_height * spritemap_row[self.owner],sprite_width,sprite_height,W,H)
+	--[[
 	if self.type == "base" then
 		Q = love.graphics.newQuad(sprite_width,0,sprite_width,sprite_height,W,H)
 		--[[love.graphics.setColor({0,0,0,128})
-		love.graphics.circle("line", s/2, s/2, s/4)]]
+		love.graphics.circle("line", s/2, s/2, s/4)
 	elseif self.type == "bunker" then
 		Q = love.graphics.newQuad(2*sprite_width,0,sprite_width,sprite_height,W,H)
 		--[[love.graphics.setColor({0,0,0,128})
-		love.graphics.rectangle("line", s/4, s/4, s/2, s/2)]]
+		love.graphics.rectangle("line", s/4, s/4, s/2, s/2)
 	elseif self.type == "turret" then
 		Q = love.graphics.newQuad(3*sprite_width,0,sprite_width,sprite_height,W,H)
 		--[[love.graphics.setColor({0,0,0,128})
-		love.graphics.polygon("line", s/6, s*3/4, s/2, s/5, s*5/6, s*3/4)]]
+		love.graphics.polygon("line", s/6, s*3/4, s/2, s/5, s*5/6, s*3/4)
 	elseif self.type == "tower" then
 		Q = love.graphics.newQuad(4*sprite_width,0,sprite_width,sprite_height,W,H)
 		--[[love.graphics.setColor({0,0,0,128})
-		love.graphics.polygon("line", s/2, s/4, s*3/4, s/2, s/2, s*3/4, s/4, s/2)]]
+		love.graphics.polygon("line", s/2, s/4, s*3/4, s/2, s/2, s*3/4, s/4, s/2)
 	elseif self.type == "farm" then
 		Q = love.graphics.newQuad(5*sprite_width,0,sprite_width,sprite_height,W,H)
 		--[[love.graphics.setColor({0,0,0,128})
 		love.graphics.line(s/2, s/8, s/2, s*7/8)
 		love.graphics.line(s/4, s/6, s/4, s*7/8)
-		love.graphics.line(s*3/4, s/6, s*3/4, s*7/8)]]
+		love.graphics.line(s*3/4, s/6, s*3/4, s*7/8)
 	end
+	]]
 	if Q then
 		love.graphics.draw(spritesheet, Q, 0, -(sprite_height - h) - sprite_height/2, 0, k, k)
 	end
