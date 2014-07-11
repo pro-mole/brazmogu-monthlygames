@@ -3,6 +3,9 @@
 font = {standard = love.graphics.newFont("assets/font/imagine_font.otf")}
 
 spritesheet = love.graphics.newImage("assets/sprite/board.png")
+spritesheet:setFilter("linear","nearest")
+sprite_width = 16
+sprite_height = 32
 
 Grid = {
 	width = 0,
@@ -11,7 +14,8 @@ Grid = {
 
 	x = 0,
 	y = 0,
-	tile_size = 8,
+	tile_width = 8,
+	tile_height = 8,
 	view_angle = 1,
 	
 	-- Game statistics, for quicker assessment
@@ -60,11 +64,12 @@ function Grid.new(width, height, tsize, angle, victory_condition)
 	T = {}
 	T.width = width or 15
 	T.height = height or 8
-	T.tile_size = tsize or 16
+	T.tile_width = tsize or 16
 	T.view_angle = angle or 1
+	T.tile_height = T.tile_width * T.view_angle
 
-	T.x = (love.window.getWidth() - T.width*T.tile_size) / 2
-	T.y = (love.window.getHeight() - T.height*T.tile_size*T.view_angle) / 2
+	T.x = (love.window.getWidth() - T.width*T.tile_width) / 2
+	T.y = (love.window.getHeight() - T.height*T.tile_height*T.view_angle) / 2
 
 	T.tiles = {}
 	for y = 1,T.height do
@@ -224,8 +229,8 @@ function Grid:mouseover()
 	mx = mx - self.x
 	my = my - self.y
 
-	if mx > 0 and mx < self.width*self.tile_size and my > 0 and my < self.height*self.tile_size then
-		local fx, fy = math.ceil(mx / self.tile_size), math.ceil(my / self.tile_size)
+	if mx > 0 and mx < self.width*self.tile_width and my > 0 and my < self.height*self.tile_height then
+		local fx, fy = math.ceil(mx / self.tile_width), math.ceil(my / self.tile_height)
 		self.focus = self:getTile(fx, fy)
 	else
 		self.focus = nil
@@ -241,25 +246,31 @@ function Grid:draw()
 
 	for x,y,T in self:iterator() do
 		love.graphics.push()
-		love.graphics.translate((x-1) * self.tile_size, (y-1) * self.tile_size)
-		T:draw()
+		love.graphics.translate((x-1) * self.tile_width, (y-1) * self.tile_height)
+		local lighting = 1
 		if T.owner ~= turn.player and turn.player ~= "neutral" then
 			adj = T:getAdjacents(self.stats[turn.player].towers + 1)
 			for i,A in pairs(adj) do
 				-- A = adj[i]
 				if A then
 					if A.owner == turn.player then
+						--[[
 						love.graphics.setColor(255,255,255,32)
-						love.graphics.rectangle("fill", 0, 0, self.tile_size, self.tile_size)
+						love.graphics.rectangle("fill", 0, 0, self.tile_width, self.tile_height)]]
+						lighting = lighting + 1
 						break
 					end
 				end
 			end
 		end
 		if self.focus == T then
-			love.graphics.setColor(255,255,255,32)
-			love.graphics.rectangle("fill", 0, 0, self.tile_size, self.tile_size)
+			lighting = lighting + 1
 		end
+		T:draw(lighting)
+		--[[if self.focus == T then
+			love.graphics.setColor(255,255,255,32)
+			love.graphics.rectangle("fill", 0, 0, self.tile_width, self.tile_height)
+		end]]
 		--love.graphics.setColor(0,0,0,128)
 		--love.graphics.rectangle("line", 0, 0, self.tile_size, self.tile_size)
 		love.graphics.pop()
@@ -269,7 +280,7 @@ function Grid:draw()
 
 	if turn.player ~= "neutral" then
 		love.graphics.setColor(unpack(PlayerColors[turn.player]))
-		love.graphics.printf(string.format("YOUR TURN: %d", turn.pieces), 0, -font.standard:getHeight() - 1, self.width * self.tile_size, turn.player)
+		love.graphics.printf(string.format("YOUR TURN: %d", turn.pieces), 0, -font.standard:getHeight()*2, self.width * self.tile_width, turn.player)
 	end
 	
 	love.graphics.push()
@@ -283,7 +294,7 @@ function Grid:draw()
 			tx = 4
 			al = "right"
 		else
-			tx = self.x + self.width * self.tile_size + 4
+			tx = self.x + self.width * self.tile_width + 4
 			al = "left"
 		end
 		love.graphics.printf(string.format([[PLAYER: %s
@@ -296,25 +307,25 @@ function Grid:draw()
 	end
 	love.graphics.pop()
 
-	love.graphics.translate(0, self.height * self.tile_size + 4)
+	love.graphics.translate(0, self.height * self.tile_height + 4)
 	love.graphics.setBlendMode("replace")
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.rectangle("line", 1, 1, self.width * self.tile_size - 2, font.standard:getHeight()*10 + 6)
-	--love.graphics.rectangle("line", 4, 4, self.width * self.tile_size - 8, font.standard:getHeight()*10)
+	love.graphics.rectangle("line", 1, 1, self.width * self.tile_width - 2, font.standard:getHeight()*10 + 6)
+	--love.graphics.rectangle("line", 4, 4, self.width * self.tile_width - 8, font.standard:getHeight()*10)
 	love.graphics.rectangle("line", 1, 1, 3, 3)
-	love.graphics.rectangle("line", self.width * self.tile_size - 4, 1, 3, 3)
+	love.graphics.rectangle("line", self.width * self.tile_width - 4, 1, 3, 3)
 	love.graphics.rectangle("line", 1, font.standard:getHeight()*10 + 3, 3, 3)
-	love.graphics.rectangle("line", self.width * self.tile_size - 4, font.standard:getHeight()*10 + 3, 3, 3)
+	love.graphics.rectangle("line", self.width * self.tile_width - 4, font.standard:getHeight()*10 + 3, 3, 3)
 	love.graphics.setBlendMode("alpha")
 
 	if self.focus then
 		local F = self.focus
 		local h = font.standard:getHeight()
-		love.graphics.printf("Tile Info", 0, 4, self.width * self.tile_size, "center")
+		love.graphics.printf("Tile Info", 0, 4, self.width * self.tile_width, "center")
 
-		love.graphics.printf(string.format("Occupation: %02d", F.occupation), 0, 4 + 2*h, self.width * self.tile_size, "center")
-		love.graphics.printf(string.format("Owner: %s", F.owner), 0, 4 + 4*h, self.width * self.tile_size, "center")
-		love.graphics.printf(string.format("Structures: %s", TileTypes[F.type][1]), 0, 4 + 6*h, self.width * self.tile_size, "center")
+		love.graphics.printf(string.format("Occupation: %02d", F.occupation), 0, 4 + 2*h, self.width * self.tile_width, "center")
+		love.graphics.printf(string.format("Owner: %s", F.owner), 0, 4 + 4*h, self.width * self.tile_width, "center")
+		love.graphics.printf(string.format("Structures: %s", TileTypes[F.type][1]), 0, 4 + 6*h, self.width * self.tile_width, "center")
 	end
 	
 	love.graphics.origin()
@@ -383,36 +394,47 @@ function Tile:getAdjacents(d)
 	end
 end
 
-function Tile:draw()
-	local s = self.grid.tile_size
-	local k = s/16
-	love.graphics.setColor(unpack(PlayerColors[self.owner]))
-	love.graphics.rectangle("fill", 0, 0, s, s)
+function Tile:draw(highlight)
+	local w = self.grid.tile_width
+	local h = self.grid.tile_height
+	local k = w/sprite_width
+	local C = {unpack(PlayerColors[self.owner])}
+	local l = highlight or 1
+	for i = 1,3 do
+		C[i] = math.min(l * C[i], 255)
+	end
+	love.graphics.setColor(unpack(C))
+	love.graphics.rectangle("fill", 0, 0, w, h)
+	love.graphics.setColor(0,0,0,128)
+	love.graphics.rectangle("line", 0, 0, w, h)
+	
+	love.graphics.setColor(unpack(C))
 	local Q = nil
+	local H,W = spritesheet:getHeight(), spritesheet:getWidth()
 	if self.type == "base" then
-		Q = love.graphics.newQuad(16,0,16,32,128,128)
+		Q = love.graphics.newQuad(sprite_width,0,sprite_width,sprite_height,W,H)
 		--[[love.graphics.setColor({0,0,0,128})
 		love.graphics.circle("line", s/2, s/2, s/4)]]
-	elseif self.type == "turret" then
-		Q = love.graphics.newQuad(48,0,16,32,128,128)
-		--[[love.graphics.setColor({0,0,0,128})
-		love.graphics.polygon("line", s/6, s*3/4, s/2, s/5, s*5/6, s*3/4)]]
 	elseif self.type == "bunker" then
-		Q = love.graphics.newQuad(32,0,16,32,128,128)
+		Q = love.graphics.newQuad(2*sprite_width,0,sprite_width,sprite_height,W,H)
 		--[[love.graphics.setColor({0,0,0,128})
 		love.graphics.rectangle("line", s/4, s/4, s/2, s/2)]]
+	elseif self.type == "turret" then
+		Q = love.graphics.newQuad(3*sprite_width,0,sprite_width,sprite_height,W,H)
+		--[[love.graphics.setColor({0,0,0,128})
+		love.graphics.polygon("line", s/6, s*3/4, s/2, s/5, s*5/6, s*3/4)]]
 	elseif self.type == "tower" then
-		Q = love.graphics.newQuad(64,0,16,32,128,128)
+		Q = love.graphics.newQuad(4*sprite_width,0,sprite_width,sprite_height,W,H)
 		--[[love.graphics.setColor({0,0,0,128})
 		love.graphics.polygon("line", s/2, s/4, s*3/4, s/2, s/2, s*3/4, s/4, s/2)]]
 	elseif self.type == "farm" then
-		Q = love.graphics.newQuad(80,0,16,32,128,128)
+		Q = love.graphics.newQuad(5*sprite_width,0,sprite_width,sprite_height,W,H)
 		--[[love.graphics.setColor({0,0,0,128})
 		love.graphics.line(s/2, s/8, s/2, s*7/8)
 		love.graphics.line(s/4, s/6, s/4, s*7/8)
 		love.graphics.line(s*3/4, s/6, s*3/4, s*7/8)]]
 	end
 	if Q then
-		love.graphics.draw(spritesheet, Q, 0, -s/2, 0, k, k)
+		love.graphics.draw(spritesheet, Q, 0, -(sprite_height - h) - sprite_height/2, 0, k, k)
 	end
 end

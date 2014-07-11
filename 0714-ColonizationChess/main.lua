@@ -17,7 +17,7 @@ endgame = false
 function love.load()
 	love.graphics.setFont(font.standard)
 
-	game_grid = Grid.new(15,8,32)
+	game_grid = Grid.new(15,8,32,0.5)
 	game_grid:startTurn("left")
 
 	-- Set Special tiles
