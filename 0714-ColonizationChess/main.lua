@@ -14,46 +14,31 @@ turn = {
 
 endgame = false
 
+require("screen/main")
+require("screen/index")
+
 function love.load()
 	love.graphics.setFont(font.standard)
 
-	game_grid = Grid.new(15,8,32,0.5)
-	game_grid:startTurn("left")
-
-	-- Set Special tiles
-	local special = {
-		{5,2,"turret"},
-		{5,7,"bunker"},
-		{11,2,"bunker"},
-		{11,7,"turret"},
-		{8,3,"tower"},
-		{8,6,"tower"},
-		{1,1,"farm"},
-		{15,1,"farm"},
-		{1,8,"farm"},
-		{15,8,"farm"}
-	}
-	for i,S in ipairs(special) do
-		print(unpack(S))
-		local t = game_grid:getTile(S[1], S[2])
-		t.type = S[3]
-	end
+	screens:push(screen_game)
 end
 
 function love.update(dt)
-	game_grid:mouseover()
+	screens:update(dt)
 end
 
 function love.keypressed(key, isrepeat)
 	if key == "escape" then
 		love.event.quit()
 	end
+
+	screens:keypressed(key, isrepeat)
 end
 
 function love.mousepressed(x, y, button)
-	game_grid:mousepressed(x, y, button)
+	screens:mousepressed(x, y, button)
 end
 
 function love.draw()
-	game_grid:draw()
+	screens:draw()
 end

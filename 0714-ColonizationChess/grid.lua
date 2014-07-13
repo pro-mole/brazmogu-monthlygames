@@ -1,6 +1,6 @@
 -- Game Grid
 
-font = {standard = love.graphics.newFont("assets/font/imagine_font.otf")}
+font = {standard = love.graphics.newFont("assets/font/imagine_font.otf", 16)}
 
 spritesheet = love.graphics.newImage("assets/sprite/board.png")
 spritesheet:setFilter("linear","nearest")
@@ -321,11 +321,11 @@ function Grid:draw()
 	if self.focus then
 		local F = self.focus
 		local h = font.standard:getHeight()
-		love.graphics.printf("Tile Info", 0, 4, self.width * self.tile_width, "center")
+		love.graphics.printf("Tile Info", 0, 4+h, self.width * self.tile_width, "center")
 
-		love.graphics.printf(string.format("Occupation: %02d", F.occupation), 0, 4 + 2*h, self.width * self.tile_width, "center")
-		love.graphics.printf(string.format("Owner: %s", F.owner), 0, 4 + 4*h, self.width * self.tile_width, "center")
-		love.graphics.printf(string.format("Structures: %s", TileTypes[F.type][1]), 0, 4 + 6*h, self.width * self.tile_width, "center")
+		love.graphics.printf(string.format("Occupation: %02d", F.occupation), 0, 4 + 3*h, self.width * self.tile_width, "center")
+		love.graphics.printf(string.format("Owner: %s", F.owner), 0, 4 + 5*h, self.width * self.tile_width, "center")
+		love.graphics.printf(string.format("Structures: %s", TileTypes[F.type][1]), 0, 4 + 7*h, self.width * self.tile_width, "center")
 	end
 	
 	love.graphics.origin()
