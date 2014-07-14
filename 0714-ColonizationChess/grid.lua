@@ -40,15 +40,44 @@ Tile = {
 Tile.__index = Tile
 
 Players = {
-	neutral = true,
-	left = true,
-	right = true
-}
+	neutral = {
+		name = "None",
+		color = {64,64,64,255}
+	},
+	left = {
+		name = "Nature",
+		color = {0,128,0,255}
+	},
+	right = {
+		name = "Industry",
+		color = {0,64,128,255}
+	},
+	up = {
+		name = "Outsider",
+		color = {64,64,64,255}
+	},
+	down = {
+		name = "Virus",
+		color = {64,64,64,255}
+	},
+	current = "neutral",
+	active = {},
+	next = function(self)
+		local c = 0
+		for i,P in ipairs(self.active) do
+			if P == self.current then
+				c = i
+			end
+		end
 
-PlayerColors = {
-	neutral = {0,64,64,255},
-	left = {0,64,0,255},
-	right = {64,64,0,255}
+		if c == #self.active or c == 0 then
+			self.current = self.active[1]
+		else
+			self.current = self.active[c+1]
+		end
+
+		return self.current
+	end
 }
 
 TileTypes = {
@@ -93,7 +122,7 @@ function Grid.new(width, height, tsize, angle, victory_condition)
 
 	-- Initialize game stats
 	T.stats = {}
-	for i,P in ipairs({"left", "right", "neutral"}) do
+	for i,P in ipairs({"left", "right", "up", "down", "neutral"}) do
 		T.stats[P] = {
 			occupation = 0,
 			towers = 0,
@@ -166,6 +195,7 @@ function Grid:getAdjacentTiles(x, y)
 end
 
 function Grid:startTurn(player)
+	player = player or Players:next()
 	self:updateStats()
 	turn.player = player
 	turn.pieces = self.stats[player].farms + self.stats[player].bases
@@ -217,7 +247,7 @@ function Grid:mousepressed(x, y, m)
 				self:updateStats()
 				
 				if turn.pieces == 0 then
-					self:startTurn(other)
+					self:startTurn()
 				end
 			end
 		end
@@ -279,14 +309,14 @@ function Grid:draw()
 	love.graphics.pop()
 
 	if turn.player ~= "neutral" then
-		love.graphics.setColor(unpack(PlayerColors[turn.player]))
+		love.graphics.setColor(unpack(Players[turn.player].color))
 		love.graphics.printf(string.format("YOUR TURN: %d", turn.pieces), 0, -font.standard:getHeight()*2, self.width * self.tile_width, turn.player)
 	end
 	
 	love.graphics.push()
 	love.graphics.origin()
 	for i,P in ipairs({"left","right"}) do
-		love.graphics.setColor(unpack(PlayerColors[P]))
+		love.graphics.setColor(unpack(Players[P].color))
 		local stats = self.stats[P]
 		local w = self.x - 8
 		local tx, al
@@ -297,13 +327,13 @@ function Grid:draw()
 			tx = self.x + self.width * self.tile_width + 4
 			al = "left"
 		end
-		love.graphics.printf(string.format([[PLAYER: %s
+		love.graphics.printf(string.format([[%s
 		
 		OCCUPATION: %d
 		TURRETS: %d
 		BUNKERS: %d
 		TOWERS: %d
-		FARMS: %d]], P, stats.occupation, stats.turrets, stats.bunkers, stats.towers, stats.farms), tx, self.y + font.standard:getHeight(), w, al)
+		FARMS: %d]], Players[P].name, stats.occupation, stats.turrets, stats.bunkers, stats.towers, stats.farms), tx, self.y + font.standard:getHeight(), w, al)
 	end
 	love.graphics.pop()
 
@@ -398,7 +428,7 @@ function Tile:draw(highlight)
 	local w = self.grid.tile_width
 	local h = self.grid.tile_height
 	local k = w/sprite_width
-	local C = {unpack(PlayerColors[self.owner])}
+	local C = {unpack(Players[self.owner].color)}
 	local l = highlight or 1
 	for i = 1,3 do
 		C[i] = math.min(l * C[i], 255)

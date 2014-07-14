@@ -21,7 +21,8 @@ screen_game = setmetatable({}, Screen)
 
 function screen_game:load()
 	game_grid = Grid.new(15,8,32,0.5)
-	game_grid:startTurn("left")
+	Players.active = {"left","right"}
+	game_grid:startTurn()
 
 	-- Set Special tiles
 	local special = {
@@ -37,7 +38,7 @@ function screen_game:load()
 		{15,8,"farm"}
 	}
 	for i,S in ipairs(special) do
-		print(unpack(S))
+		--print(unpack(S))
 		local t = game_grid:getTile(S[1], S[2])
 		t.type = S[3]
 	end
