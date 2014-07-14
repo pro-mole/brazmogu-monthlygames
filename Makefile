@@ -6,8 +6,8 @@ PACKNAME=$(EXECNAME).love
 
 all: $(PACKNAME)
 
-$(PACKNAME): *.lua assets
-	zip -9 -q -r $(PACKNAME) *.lua assets
+$(PACKNAME): *.lua assets screen maps
+	zip -9 -q -r $(PACKNAME) *.lua assets screen maps
 	
 run: *.lua assets
 	love ./

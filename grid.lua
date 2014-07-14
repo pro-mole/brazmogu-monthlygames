@@ -39,47 +39,6 @@ Tile = {
 }
 Tile.__index = Tile
 
-Players = {
-	neutral = {
-		name = "None",
-		color = {64,64,64,255}
-	},
-	left = {
-		name = "Nature",
-		color = {0,128,0,255}
-	},
-	right = {
-		name = "Industry",
-		color = {0,64,128,255}
-	},
-	up = {
-		name = "Outsider",
-		color = {64,64,64,255}
-	},
-	down = {
-		name = "Virus",
-		color = {64,64,64,255}
-	},
-	current = "neutral",
-	active = {},
-	next = function(self)
-		local c = 0
-		for i,P in ipairs(self.active) do
-			if P == self.current then
-				c = i
-			end
-		end
-
-		if c == #self.active or c == 0 then
-			self.current = self.active[1]
-		else
-			self.current = self.active[c+1]
-		end
-
-		return self.current
-	end
-}
-
 TileTypes = {
 	normal = {"None"},
 	tower = {"Tower"}, -- +Range
@@ -122,8 +81,8 @@ function Grid.new(width, height, tsize, angle, victory_condition)
 
 	-- Initialize game stats
 	T.stats = {}
-	for i,P in ipairs({"left", "right", "up", "down", "neutral"}) do
-		T.stats[P] = {
+	for i,P in ipairs(Players) do
+		T.stats[P.id] = {
 			occupation = 0,
 			towers = 0,
 			bunkers = 0,
@@ -139,16 +98,65 @@ function Grid.new(width, height, tsize, angle, victory_condition)
 	return setmetatable(T, Grid)
 end
 
+function Grid.loadFile(name)
+	-- Create a game grid based on a file with the following characters as the key:
+	local key = {
+		B = {"neutral", "base"},
+		b = {"neutral", "bunker"},
+		t = {"neutral", "turret"},
+		T = {"neutral", "tower"},
+		f = {"neutral", "farm"},
+		l = {"left", "base"},
+		r = {"right", "base"},
+		u = {"up", "base"},
+		d = {"down", "base"}
+	}
+	if not love.filesystem.exists(name) then
+		return nil
+	else
+		local landmarks = {}
+		local x,y = 1,1
+		local w,h = 0,0
+		for line in love.filesystem.lines(name) do
+			local L = line:gsub("^%s*(.-)%s*$", "%1") -- Trim
+			print (L)
+			if #L > w then w = #L end
+			for i = 1,#L do
+				local t = L:sub(i,i)
+				if t ~= "#" then
+					print(unpack({i,y,unpack(key[t])}))
+					table.insert(landmarks, {i,y,unpack(key[t])})
+				end
+			end
+			h = y
+			y = y + 1
+		end
+		
+		local G = Grid.new(w,h,32,0.5)
+		for i,spec in ipairs(landmarks) do
+			local t = G:getTile(spec[1], spec[2])
+			t.owner = spec[3]
+			t.type = spec[4]
+		end
+		return G
+	end
+end
+
 -- Default victory condition function
 -- Returns the name of the player who won, or nil
 function Grid:victory()
-	if self.stats.left.bases == 0 then
-		return "right"
-	elseif self.stats.right.bases == 0 then
-		return "left"
-	else
-		return nil
+	local winner = nil
+	for i,P in ipairs(Players) do
+		if self.stats[P.id].bases > 0 then
+			if winner ~= nil then
+				return nil
+			else
+				winner = P.id
+			end
+		end
 	end
+	
+	return winner
 end
 
 function Grid:updateStats()
@@ -199,6 +207,9 @@ function Grid:startTurn(player)
 	self:updateStats()
 	turn.player = player
 	turn.pieces = self.stats[player].farms + self.stats[player].bases
+	if turn.pieces <= 0 then
+		self:startTurn()
+	end
 end
 
 function Grid:iterator()

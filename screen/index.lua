@@ -1,8 +1,24 @@
 -- Screen Index
 
+screen_quit = setmetatable({}, Screen)
+
+function screen_quit:draw()
+	love.graphics.printf("QUIT?", 0, love.window.getHeight()/2 - love.graphics.getFont():getHeight(), love.window.getWidth(), "center")
+	love.graphics.printf("ESC=YES	SPACE=NO", 0, love.window.getHeight()/2, love.window.getWidth(), "center")
+end
+
+function screen_quit:keypressed(k, isrepeat)
+	if k == "escape" then
+		love.event.quit()
+	elseif k == " " then
+		screens:pop()
+	end
+end
+
 screen_menu = setmetatable({}, Screen)
 
 function screen_menu:load()
+	-- Load properties from file
 end
 
 function screen_menu:update(dt)
@@ -12,6 +28,21 @@ function screen_menu:keypressed(k, isrepeat)
 end
 
 function screen_menu:draw()
+	-- Menu screen
+	local H = love.graphics.getFont():getHeight()
+	love.graphics.printf("MAP SELECT", 0, love.window.getHeight()/4 - H, love.window.getWidth(), "center")
+	-- Show map choice and a mini-map of the current selection
+	
+	love.graphics.printf("PLAYERS", 0, love.window.getHeight()/2 - H, love.window.getWidth(), "center")
+	local col = 0
+	for i,P in ipairs(Players) do
+		if P.id ~= "neutral" then
+			love.graphics.setColor(unpack(P.color))
+			love.graphics.printf(P.name, col * love.window.getWidth()/4, love.window.getHeight()/2 + H, love.window.getWidth()/4, "center")
+			col = col + 1
+		end
+	end
+	love.graphics.setColor(255,255,255,255)
 end
 
 function screen_menu:quit()
@@ -20,28 +51,16 @@ end
 screen_game = setmetatable({}, Screen)
 
 function screen_game:load()
-	game_grid = Grid.new(15,8,32,0.5)
-	Players.active = {"left","right"}
-	game_grid:startTurn()
-
-	-- Set Special tiles
-	local special = {
-		{5,2,"turret"},
-		{5,7,"bunker"},
-		{11,2,"bunker"},
-		{11,7,"turret"},
-		{8,3,"tower"},
-		{8,6,"tower"},
-		{1,1,"farm"},
-		{15,1,"farm"},
-		{1,8,"farm"},
-		{15,8,"farm"}
-	}
-	for i,S in ipairs(special) do
-		--print(unpack(S))
-		local t = game_grid:getTile(S[1], S[2])
-		t.type = S[3]
+	game_grid = Grid.loadFile("maps/game1.map")
+	
+	Players.active = {}
+	for i, T in ipairs(Players) do
+		if T.active then
+			table.insert(Players.active, T.id)
+		end
 	end
+	
+	game_grid:startTurn()
 end
 
 function screen_game:update(dt)

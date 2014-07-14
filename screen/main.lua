@@ -43,14 +43,17 @@ function screens:push(k)
 	screen:load()
 end
 
-function screens:pop()
+function screens:pop(reload)
 	local current = self:top()
 	if current then
 		current:quit()
 		table.remove(self)
 	end
 	screen = self:top()
-	screen:load()
+	local R = reload or false
+	if R then
+		screen:load()
+	end
 end
 
 function screens:keypressed(k, isrepeat)
