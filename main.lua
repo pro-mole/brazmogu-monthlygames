@@ -1,3 +1,4 @@
+require("draw")
 require("grid")
 
 game_grid = {}
@@ -6,8 +7,8 @@ Players = {
 	{
 		id = "neutral",
 		name = "None",
-		color = {128,64,16,255},
-		active = false,
+		color = {64,64,64,255},
+		active = false, -- Active if the player is in the game
 		AI = true, -- AI true for CPU player
 	},
 	{
@@ -91,7 +92,7 @@ require("screen/index")
 function love.load()
 	love.graphics.setFont(font.standard)
 
-	screens:push(screen_game)
+	screens:push(screen_menu)
 end
 
 function love.update(dt)
