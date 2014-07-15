@@ -185,6 +185,15 @@ function Grid:updateStats()
 	io.stdout:flush()
 end
 
+function Grid:proliferate(player)
+	local player = player or turn.player
+	for x,y,T in self:iterator() do
+		if T.owner == player and T.occupation > 0 then
+			T.occupation = T.occupation + 1
+		end
+	end
+end
+
 function Grid:getTile(x, y)
 	if x < 1 or x > self.width or y < 1 or y > self.height then
 		return nil
@@ -206,6 +215,7 @@ function Grid:startTurn(player)
 	player = player or Players:next()
 	self:updateStats()
 	turn.player = player
+	self:proliferate()
 	turn.pieces = self.stats[player].farms + self.stats[player].bases
 	if turn.pieces <= 0 then
 		self:startTurn()
@@ -298,14 +308,14 @@ function Grid:draw()
 						--[[
 						love.graphics.setColor(255,255,255,32)
 						love.graphics.rectangle("fill", 0, 0, self.tile_width, self.tile_height)]]
-						lighting = lighting + 1
+						lighting = lighting + 0.5
 						break
 					end
 				end
 			end
 		end
 		if self.focus == T then
-			lighting = lighting + 1
+			lighting = lighting + 0.5
 		end
 		T:draw(lighting)
 		--[[if self.focus == T then
@@ -442,8 +452,10 @@ function Tile:draw(highlight)
 	local C = {unpack(Players[self.owner].color)}
 	local l = highlight or 1
 	for i = 1,3 do
+		C[i] = math.min(C[i] + 0.1 * self.occupation * C[i], 255)
 		C[i] = math.min(l * C[i], 255)
 	end
+	
 	love.graphics.setColor(unpack(C))
 	love.graphics.rectangle("fill", 0, 0, w, h)
 	love.graphics.setColor(0,0,0,128)
@@ -463,34 +475,12 @@ function Tile:draw(highlight)
 	local spritemap_row = {
 		neutral = 0,
 		left = 1,
-		right = 2
+		right = 2,
+		up = 3,
+		down = 4
 	}
 	local Q = love.graphics.newQuad(sprite_width * spritemap_col[self.type], sprite_height * spritemap_row[self.owner],sprite_width,sprite_height,W,H)
-	--[[
-	if self.type == "base" then
-		Q = love.graphics.newQuad(sprite_width,0,sprite_width,sprite_height,W,H)
-		--[[love.graphics.setColor({0,0,0,128})
-		love.graphics.circle("line", s/2, s/2, s/4)
-	elseif self.type == "bunker" then
-		Q = love.graphics.newQuad(2*sprite_width,0,sprite_width,sprite_height,W,H)
-		--[[love.graphics.setColor({0,0,0,128})
-		love.graphics.rectangle("line", s/4, s/4, s/2, s/2)
-	elseif self.type == "turret" then
-		Q = love.graphics.newQuad(3*sprite_width,0,sprite_width,sprite_height,W,H)
-		--[[love.graphics.setColor({0,0,0,128})
-		love.graphics.polygon("line", s/6, s*3/4, s/2, s/5, s*5/6, s*3/4)
-	elseif self.type == "tower" then
-		Q = love.graphics.newQuad(4*sprite_width,0,sprite_width,sprite_height,W,H)
-		--[[love.graphics.setColor({0,0,0,128})
-		love.graphics.polygon("line", s/2, s/4, s*3/4, s/2, s/2, s*3/4, s/4, s/2)
-	elseif self.type == "farm" then
-		Q = love.graphics.newQuad(5*sprite_width,0,sprite_width,sprite_height,W,H)
-		--[[love.graphics.setColor({0,0,0,128})
-		love.graphics.line(s/2, s/8, s/2, s*7/8)
-		love.graphics.line(s/4, s/6, s/4, s*7/8)
-		love.graphics.line(s*3/4, s/6, s*3/4, s*7/8)
-	end
-	]]
+
 	if Q then
 		love.graphics.draw(spritesheet, Q, 0, -(sprite_height - h) - sprite_height/2, 0, k, k)
 	end
