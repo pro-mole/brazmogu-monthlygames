@@ -214,8 +214,8 @@ end
 function Grid:startTurn(player)
 	player = player or Players:next()
 	self:updateStats()
-	turn.player = player
 	self:proliferate()
+	turn.player = player
 	turn.pieces = self.stats[player].farms + self.stats[player].bases
 	if turn.pieces <= 0 then
 		self:startTurn()
@@ -329,24 +329,31 @@ function Grid:draw()
 
 	love.graphics.pop()
 
+	--[[
 	if turn.player ~= "neutral" then
 		love.graphics.setColor(unpack(Players[turn.player].color))
 		love.graphics.printf(string.format("YOUR TURN: %d", turn.pieces), 0, -font.standard:getHeight()*2, self.width * self.tile_width, turn.player)
 	end
+	]]
 	
 	love.graphics.push()
 	love.graphics.origin()
-	for i,P in ipairs({"left","right"}) do
-		love.graphics.setColor(unpack(Players[P].color))
+	
+	if #Players.active == 2 then
+		love.graphics.translate(love.window.getWidth()/4, self.y - font.standard:getHeight()*10)	
+	else
+		love.graphics.translate(0, self.y - font.standard:getHeight()*10)	
+	end
+	for i,P in ipairs(Players.active) do
 		local stats = self.stats[P]
-		local w = self.x - 8
-		local tx, al
-		if P == "left" then
-			tx = 4
-			al = "right"
-		else
-			tx = self.x + self.width * self.tile_width + 4
-			al = "left"
+		local w = love.window.getWidth()/4
+		
+		love.graphics.setColor(255,255,255,255)
+		drawDecoratedBox(2, 0, w - 4, font.standard:getHeight()*9, 4)
+		
+		love.graphics.setColor(unpack(Players[P].color))
+		if turn.player == P then
+			love.graphics.polygon("fill", w/2 - 8, -12, w/2, -4, w/2 + 8, -12)
 		end
 		love.graphics.printf(string.format([[%s
 		
@@ -354,20 +361,15 @@ function Grid:draw()
 		TURRETS: %d
 		BUNKERS: %d
 		TOWERS: %d
-		FARMS: %d]], Players[P].name, stats.occupation, stats.turrets, stats.bunkers, stats.towers, stats.farms), tx, self.y + font.standard:getHeight(), w, al)
+		FARMS: %d]], Players[P].name, stats.occupation, stats.turrets, stats.bunkers, stats.towers, stats.farms), 8, font.standard:getHeight(), w - 16, "center")
+		
+		love.graphics.translate(love.window.getWidth()/4,0)
 	end
 	love.graphics.pop()
 
 	love.graphics.translate(0, self.height * self.tile_height + 4)
-	love.graphics.setBlendMode("replace")
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.rectangle("line", 1, 1, self.width * self.tile_width - 2, font.standard:getHeight()*10 + 6)
-	--love.graphics.rectangle("line", 4, 4, self.width * self.tile_width - 8, font.standard:getHeight()*10)
-	love.graphics.rectangle("line", 1, 1, 3, 3)
-	love.graphics.rectangle("line", self.width * self.tile_width - 4, 1, 3, 3)
-	love.graphics.rectangle("line", 1, font.standard:getHeight()*10 + 3, 3, 3)
-	love.graphics.rectangle("line", self.width * self.tile_width - 4, font.standard:getHeight()*10 + 3, 3, 3)
-	love.graphics.setBlendMode("alpha")
+	drawDecoratedBox(0, 0, self.width * self.tile_width, font.standard:getHeight()*10, 4)
 
 	if self.focus then
 		local F = self.focus
@@ -449,19 +451,21 @@ function Tile:draw(highlight)
 	local w = self.grid.tile_width
 	local h = self.grid.tile_height
 	local k = w/sprite_width
-	local C = {unpack(Players[self.owner].color)}
+	local C_tile = {unpack(Players[self.owner].color)}
+	local C_landmark = {unpack(Players[self.owner].color)}
 	local l = highlight or 1
 	for i = 1,3 do
-		C[i] = math.min(C[i] + 0.1 * self.occupation * C[i], 255)
-		C[i] = math.min(l * C[i], 255)
+		C_tile[i] = math.min(C_tile[i] + 0.1 * self.occupation * C_tile[i], 255)
+		C_tile[i] = math.min(l * C_tile[i], 255)
 	end
 	
-	love.graphics.setColor(unpack(C))
+	love.graphics.setColor(unpack(C_tile))
 	love.graphics.rectangle("fill", 0, 0, w, h)
 	love.graphics.setColor(0,0,0,128)
 	love.graphics.rectangle("line", 0, 0, w, h)
 	
-	love.graphics.setColor(unpack(C))
+	love.graphics.setShader(shaders.colorize)
+	love.graphics.setColor(unpack(C_landmark))
 	local Q = nil
 	local H,W = spritesheet:getHeight(), spritesheet:getWidth()
 	local spritemap_col = {
@@ -484,4 +488,5 @@ function Tile:draw(highlight)
 	if Q then
 		love.graphics.draw(spritesheet, Q, 0, -(sprite_height - h) - sprite_height/2, 0, k, k)
 	end
+	love.graphics.setShader(shaders.standard)
 end

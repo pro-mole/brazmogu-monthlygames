@@ -25,12 +25,16 @@ function screen_menu:update(dt)
 end
 
 function screen_menu:keypressed(k, isrepeat)
+	if k == "return" then
+		screens:push(screen_game)
+	end
 end
 
 function screen_menu:draw()
 	-- Menu screen
 	local H = love.graphics.getFont():getHeight()
 	love.graphics.printf("MAP SELECT", 0, love.window.getHeight()/4 - H, love.window.getWidth(), "center")
+	love.graphics.printf(Maps[Maps.current][1], 0, love.window.getHeight()/4 + H, love.window.getWidth(), "center")
 	-- Show map choice and a mini-map of the current selection
 	
 	love.graphics.printf("PLAYERS", 0, love.window.getHeight()/2 - H, love.window.getWidth(), "center")
@@ -38,11 +42,20 @@ function screen_menu:draw()
 	for i,P in ipairs(Players) do
 		if P.id ~= "neutral" then
 			love.graphics.setColor(unpack(P.color))
-			love.graphics.printf(P.name, col * love.window.getWidth()/4, love.window.getHeight()/2 + H, love.window.getWidth()/4, "center")
+			love.graphics.printf(P.name, col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + H, love.window.getWidth()/4 - 16, "center")
+			
+			love.graphics.printf("Active:", col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + 3*H, love.window.getWidth()/4 - 16, "left")
+			love.graphics.printf(string.format("%s",P.active), col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + 3*H, love.window.getWidth()/4 - 16, "right")
+			
+			love.graphics.printf("CPU:", col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + 5*H, love.window.getWidth()/4 - 16, "left")
+			love.graphics.printf(string.format("%s",P.AI), col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + 5*H, love.window.getWidth()/4 - 16, "right")
+			
 			col = col + 1
 		end
 	end
 	love.graphics.setColor(255,255,255,255)
+	
+	love.graphics.printf("START\n(ENTER)", 0, love.window.getHeight()*7/8, love.window.getWidth(), "center")
 end
 
 function screen_menu:quit()
