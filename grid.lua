@@ -68,17 +68,6 @@ function Grid.new(width, height, tsize, angle, victory_condition)
 		end
 	end
 
-	-- Set player bases
-	for by = 0,1 do
-		for bx = 0,1 do
-			local lT, rT = T.tiles[T.height/2 + by][1 + bx], T.tiles[T.height/2 + by][T.width - bx]
-			lT.type = "base"
-			rT.type = "base"
-			lT:addOccupation(1,"left")
-			rT:addOccupation(1,"right")
-		end
-	end
-
 	-- Initialize game stats
 	T.stats = {}
 	for i,P in ipairs(Players) do
@@ -256,13 +245,6 @@ function Grid:mousepressed(x, y, m)
 			end
 			
 			if valid then
-				local other = "neutral"
-				if turn.player == "left" then
-					other = "right"
-				else
-					other = "left"
-				end
-
 				turn.pieces = turn.pieces - 1
 				self.focus:addOccupation(1)
 				self:updateStats()
