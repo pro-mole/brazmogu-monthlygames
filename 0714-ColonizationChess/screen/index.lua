@@ -22,11 +22,27 @@ function screen_menu:load()
 end
 
 function screen_menu:update(dt)
+	local map = Maps[Maps.current]
+	for p,a in pairs(map.players) do
+		Players[p].active = a
+	end
 end
 
 function screen_menu:keypressed(k, isrepeat)
 	if k == "return" then
 		screens:push(screen_game)
+	end
+	
+	if k == "left" then
+		Maps:next()
+	elseif k == "right" then
+		Maps:prev()
+	end
+	
+	for i,P in ipairs(Players) do
+		if k == P.key and P.active then
+			P.AI = not P.AI
+		end
 	end
 end
 
@@ -34,13 +50,18 @@ function screen_menu:draw()
 	-- Menu screen
 	local H = love.graphics.getFont():getHeight()
 	love.graphics.printf("MAP SELECT", 0, love.window.getHeight()/4 - H, love.window.getWidth(), "center")
-	love.graphics.printf(Maps[Maps.current][1], 0, love.window.getHeight()/4 + H, love.window.getWidth(), "center")
+	local map = Maps[Maps.current]
+	love.graphics.printf(map.name, 0, love.window.getHeight()/4 + H, love.window.getWidth(), "center")
 	-- Show map choice and a mini-map of the current selection
+	local minimap = map.minimap
+	love.graphics.draw(minimap, love.window.getWidth()/2 - minimap:getWidth()/2, love.window.getHeight()/4 + 3*H)
 	
 	love.graphics.printf("PLAYERS", 0, love.window.getHeight()/2 - H, love.window.getWidth(), "center")
 	local col = 0
 	for i,P in ipairs(Players) do
 		if P.id ~= "neutral" then
+			love.graphics.setColor(255,255,255,255)
+			drawDecoratedBox(col * love.window.getWidth()/4+2, love.window.getHeight()/2 + H/2, love.window.getWidth()/4 - 4, 6*H, 2)
 			love.graphics.setColor(unpack(P.color))
 			love.graphics.printf(P.name, col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + H, love.window.getWidth()/4 - 16, "center")
 			
@@ -49,6 +70,11 @@ function screen_menu:draw()
 			
 			love.graphics.printf("CPU:", col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + 5*H, love.window.getWidth()/4 - 16, "left")
 			love.graphics.printf(string.format("%s",P.AI), col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + 5*H, love.window.getWidth()/4 - 16, "right")
+			
+			if not P.active then
+				love.graphics.setColor(0,0,0,192)
+				love.graphics.rectangle("fill", col * love.window.getWidth()/4+4,love.window.getHeight()/2 + H/2 + 2, love.window.getWidth()/4 - 8, 6*H - 4)
+			end
 			
 			col = col + 1
 		end
@@ -64,7 +90,7 @@ end
 screen_game = setmetatable({}, Screen)
 
 function screen_game:load()
-	game_grid = Grid.loadFile("maps/game1.map")
+	game_grid = Grid.loadFile("maps/" .. Maps[Maps.current].name)
 	
 	Players.active = {}
 	for i, T in ipairs(Players) do

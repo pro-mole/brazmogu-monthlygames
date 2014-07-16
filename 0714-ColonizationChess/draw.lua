@@ -51,10 +51,19 @@ vec4 effect(vec4 vcolor, Image texture, vec2 texcoord, vec2 pixcoord)
 
 function drawDecoratedBox(x, y, w, h, border)
 	love.graphics.setBlendMode("replace")
-	-- love.graphics.rectangle("line", x, y, w, h)
 	love.graphics.rectangle("line", x, y, w, border)
 	love.graphics.rectangle("line", x, y, border, h)
 	love.graphics.rectangle("line", x+w-border, y, border, h)
 	love.graphics.rectangle("line", x, y+h-border, w, border)
+	love.graphics.setBlendMode("alpha")
+end
+
+function drawBox(x, y, w, h, border)
+	local border = border or 0
+	love.graphics.setBlendMode("replace")
+	love.graphics.rectangle("line", x, y, w, h)
+	if border > 0 then
+		love.graphics.rectangle("line", x+border, y+border, w-2*border, h-2*border)
+	end
 	love.graphics.setBlendMode("alpha")
 end

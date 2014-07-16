@@ -10,34 +10,39 @@ Players = {
 		color = {64,64,64,255},
 		active = false, -- Active if the player is in the game
 		AI = true, -- AI true for CPU player
+		key = nil,
 	},
 	{
 		id = "left",
 		name = "Nature",
 		color = {0,128,0,255},
 		active = true,
-		AI = false
+		AI = false,
+		key = "1",
 	},
 	{
 		id = "right",
 		name = "Industry",
 		color = {128,128,128,255},
 		active = true,
-		AI = false
+		AI = false,
+		key = "2",
 	},
 	{
 		id = "up",
 		name = "Outsider",
 		color = {128,0,128,255},
-		active = false,
-		AI = false
+		active = true,
+		AI = false,
+		key = "3",
 	},
 	{
 		id = "down",
 		name = "Virus",
 		color = {0,128,128,255},
-		active = false,
-		AI = false
+		active = true,
+		AI = false,
+		key = "4",
 	},
 	current = "neutral",
 	active = {},
@@ -75,8 +80,52 @@ setmetatable(Players, {
 
 -- Map data stored in tables, later we load the minimap for them into the tables :P
 Maps = {
-	{"map1.map"},
-	current = 1
+	current = 1,
+	next = function(self)
+		if self.current == #self then
+			self.current = 1
+		else
+			self.current = self.current + 1
+		end
+		return self.current
+	end,
+	prev = function(self)
+		if self.current == 1 then
+			self.current = #self
+		else
+			self.current = self.current - 1
+		end
+		return self.current
+	end,
+	process = function(self)
+		local allmaps = love.filesystem.getDirectoryItems("maps")
+		for i,file in ipairs(allmaps) do
+			table.insert(self, {name = file})
+		end
+		for i,map in ipairs(self) do
+			local grid = Grid.loadFile("maps/" .. map.name)
+			local minimap = love.graphics.newCanvas(grid.width * 4, grid.height * 4)
+			local players = {left = false, right = false, up = false, down = false}
+			love.graphics.setCanvas(minimap)
+			for x,y,T in grid:iterator() do
+				if T.owner == "neutral" then
+					if T.type == "normal" then
+						love.graphics.setColor(unpack(Players["neutral"].color))
+					else
+						love.graphics.setColor(16,16,16,255)
+					end
+				else
+					players[T.owner] = true
+					love.graphics.setColor(unpack(Players[T.owner].color))
+				end
+				love.graphics.rectangle("fill", (x-1) * 4, (y-1) * 4, 4, 4)
+			end
+			love.graphics.setCanvas()
+			
+			map.minimap = minimap
+			map.players = players
+		end
+	end
 }
 
 turn = {
@@ -91,6 +140,7 @@ require("screen/index")
 
 function love.load()
 	love.graphics.setFont(font.standard)
+	Maps:process()
 
 	screens:push(screen_menu)
 end
