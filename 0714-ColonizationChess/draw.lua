@@ -7,12 +7,19 @@ vec4 effect(vec4 vcolor, Image texture, vec2 texcoord, vec2 pixcoord)
 {
     vec4 texcolor = Texel(texture, texcoord);
 	
-	number r = (vcolor.r == 0)? texcolor.r: vcolor.r * texcolor.r;
-	number g = (vcolor.g == 0)? texcolor.g: vcolor.g * texcolor.g;
-	number b = (vcolor.b == 0)? texcolor.b: vcolor.b * texcolor.b;
-	number a = texcolor.a;
-
-    return vec4(r,g,b,a);
+	if (texcolor.r == texcolor.g && texcolor.g == texcolor.b)
+	{
+		return vcolor * texcolor;
+	}
+	else
+	{
+		number r,g,b;
+		r = (vcolor.r == 0)? texcolor.r: vcolor.r + texcolor.r - 0.5;
+		g = (vcolor.g == 0)? texcolor.g: vcolor.g + texcolor.g - 0.5;
+		b = (vcolor.b == 0)? texcolor.b: vcolor.b + texcolor.b - 0.5;
+		
+		return vec4(r, g, b, vcolor.a * texcolor.a);
+	}
 }
 ]],
 	add = love.graphics.newShader[[

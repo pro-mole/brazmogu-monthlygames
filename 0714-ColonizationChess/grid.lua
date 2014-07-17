@@ -108,12 +108,12 @@ function Grid.loadFile(name)
 		local w,h = 0,0
 		for line in love.filesystem.lines(name) do
 			local L = line:gsub("^%s*(.-)%s*$", "%1") -- Trim
-			print (L)
+			--print (L)
 			if #L > w then w = #L end
 			for i = 1,#L do
 				local t = L:sub(i,i)
 				if t ~= "#" then
-					print(unpack({i,y,unpack(key[t])}))
+					--print(unpack({i,y,unpack(key[t])}))
 					table.insert(landmarks, {i,y,unpack(key[t])})
 				end
 			end
