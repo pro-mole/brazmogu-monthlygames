@@ -61,7 +61,7 @@ function screen_menu:draw()
 	for i,P in ipairs(Players) do
 		if P.id ~= "neutral" then
 			love.graphics.setColor(255,255,255,255)
-			drawDecoratedBox(col * love.window.getWidth()/4+2, love.window.getHeight()/2 + H/2, love.window.getWidth()/4 - 4, 6*H, 2)
+			drawDecoratedBox(col * love.window.getWidth()/4+2, love.window.getHeight()/2 + H/2, love.window.getWidth()/4 - 4, 9*H, 2)
 			love.graphics.setColor(unpack(P.color))
 			love.graphics.printf(P.name, col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + H, love.window.getWidth()/4 - 16, "center")
 			
@@ -71,6 +71,7 @@ function screen_menu:draw()
 			love.graphics.printf("CPU:", col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + 5*H, love.window.getWidth()/4 - 16, "left")
 			love.graphics.printf(string.format("%s",P.AI), col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + 5*H, love.window.getWidth()/4 - 16, "right")
 			
+			love.graphics.printf(string.format("Press (%s) to toggle AI", P.key), col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + 7*H, love.window.getWidth()/4 - 16, "center")
 			if not P.active then
 				love.graphics.setColor(0,0,0,192)
 				love.graphics.rectangle("fill", col * love.window.getWidth()/4+4,love.window.getHeight()/2 + H/2 + 2, love.window.getWidth()/4 - 8, 6*H - 4)
