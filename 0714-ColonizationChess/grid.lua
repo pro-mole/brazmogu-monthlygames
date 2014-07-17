@@ -322,9 +322,9 @@ function Grid:draw()
 	love.graphics.origin()
 	
 	if #Players.active == 2 then
-		love.graphics.translate(love.window.getWidth()/4, self.y - font.standard:getHeight()*10)	
+		love.graphics.translate(love.window.getWidth()/4, self.y - font.standard:getHeight()*12)	
 	else
-		love.graphics.translate(0, self.y - font.standard:getHeight()*10)	
+		love.graphics.translate(0, self.y - font.standard:getHeight()*12)	
 	end
 	for i,P in ipairs(Players.active) do
 		local stats = self.stats[P]
@@ -335,7 +335,10 @@ function Grid:draw()
 		
 		love.graphics.setColor(unpack(Players[P].color))
 		if turn.player == P then
-			love.graphics.polygon("fill", w/2 - 8, -12, w/2, -4, w/2 + 8, -12)
+			love.graphics.polygon("fill", w/2 - 8, -16 - font.standard:getHeight(), w/2 - 8, -12, w/2, -4, w/2 + 8, -12, w/2 + 8, -16 - font.standard:getHeight())
+			love.graphics.setColor(255,255,255,255)
+			love.graphics.printf(turn.pieces, w/2 - 8, -14 - font.standard:getHeight(), 16, "center")
+			love.graphics.setColor(unpack(Players[P].color))
 		end
 		love.graphics.printf(string.format([[%s
 		
