@@ -1,6 +1,9 @@
 require("draw")
 require("grid")
 
+--Timers
+input_delay = 0
+
 game_grid = {}
 
 Players = {
@@ -146,10 +149,16 @@ function love.load()
 end
 
 function love.update(dt)
+	if input_delay > 0 then
+		input_delay = input_delay - dt
+	end
+	
 	screens:update(dt)
 end
 
 function love.keypressed(key, isrepeat)
+	if input_delay > 0 then return end
+	
 	screens:keypressed(key, isrepeat)
 	
 	if key == "escape" then
@@ -158,6 +167,8 @@ function love.keypressed(key, isrepeat)
 end
 
 function love.mousepressed(x, y, button)
+	if input_delay > 0 then return end
+	
 	screens:mousepressed(x, y, button)
 end
 

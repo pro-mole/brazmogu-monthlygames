@@ -255,6 +255,7 @@ function Grid:mousepressed(x, y, m)
 				if turn.pieces == 0 then
 					self:startTurn()
 				end
+				input_delay = 0.25
 			end
 		end
 	end
