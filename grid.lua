@@ -1,3 +1,5 @@
+
+
 -- Game Grid
 
 font = {standard = love.graphics.newFont("assets/font/imagine_font.otf", 16)}
@@ -125,6 +127,7 @@ function Grid.loadFile(name)
 		for i,spec in ipairs(landmarks) do
 			local t = G:getTile(spec[1], spec[2])
 			t.owner = spec[3]
+			if t.owner ~= "neutral" then t.occupation = 1 end
 			t.type = spec[4]
 		end
 		return G
