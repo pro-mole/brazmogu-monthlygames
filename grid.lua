@@ -37,7 +37,8 @@ Tile = {
 	grid = nil,
 	owner = "neutral", -- the player that controls the tile
 	occupation = 0,
-	type = "normal"
+	type = "normal",
+	effects = {}
 }
 Tile.__index = Tile
 
@@ -433,6 +434,18 @@ function Tile:getAdjacents(d)
 			adjacents[i] = T
 		end
 		return adjacents
+	end
+end
+
+function Tile:update(dt)
+	-- Process effects for this tile
+	for i = #self.effects,1,-1 do
+		local fx = self.effects[i]
+		fx.lifetime = fx.lifetime - dt
+		if fx.lifetime > 0 then
+		else
+			table.remove(self.effects, i)
+		end
 	end
 end
 
