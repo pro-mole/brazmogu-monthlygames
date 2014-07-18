@@ -105,6 +105,9 @@ end
 
 function screen_game:update(dt)
 	game_grid:mouseover()
+	for x,y,T in game_grid:iterator() do
+		T:update(dt)
+	end
 end
 
 function screen_game:keypressed(k, isrepeat)
