@@ -38,7 +38,7 @@ Tile = {
 	owner = "neutral", -- the player that controls the tile
 	occupation = 0,
 	type = "normal",
-	effects = {}
+	effects = nil
 }
 Tile.__index = Tile
 
@@ -67,7 +67,7 @@ function Grid.new(width, height, tsize, angle, victory_condition)
 		T.tiles[y] = {}
 		row = T.tiles[y]
 		for x = 1,T.width do
-			row[x] = setmetatable({x = x, y = y, grid = T, owner = "neutral", occupation = 0, type = "normal"}, Tile)
+			row[x] = setmetatable({x = x, y = y, grid = T, owner = "neutral", occupation = 0, type = "normal", effects = {}}, Tile)
 		end
 	end
 
@@ -183,6 +183,25 @@ function Grid:proliferate(player)
 	for x,y,T in self:iterator() do
 		if T.owner == player and T.occupation > 0 then
 			T.occupation = T.occupation + 1
+			for i = 1,2*T.occupation do
+				local x,y = math.random(), math.random()
+				local size = math.random(4)
+				local color = {unpack(Players[T.owner].color)}
+				for i = 1,3 do
+					color[i] = math.min(color[i] + 128, 255)
+				end
+				table.insert(T.effects, {
+					x = x * self.tile_width,
+					y = y * self.tile_height,
+					size = size,
+					speed = self.tile_height / math.sqrt(size),
+					dir = math.rad(270),
+					color = color,
+					alpha = 192,
+					fade = 128,
+					lifetime = size/5,
+				})
+			end
 		end
 	end
 end
@@ -438,13 +457,19 @@ function Tile:getAdjacents(d)
 end
 
 function Tile:update(dt)
-	-- Process effects for this tile
 	for i = #self.effects,1,-1 do
 		local fx = self.effects[i]
 		fx.lifetime = fx.lifetime - dt
 		if fx.lifetime > 0 then
+			if fx.speed and fx.dir then
+				fx.x = fx.x + math.cos(fx.dir) * fx.speed * dt
+				fx.y = fx.y + math.sin(fx.dir) * fx.speed * dt
+			end
+			if fx.fade then
+				fx.alpha = fx.alpha - fx.fade * dt
+			end
 		else
-			table.remove(self.effects, i)
+			table.remove(self.effects,i)
 		end
 	end
 end
@@ -491,4 +516,11 @@ function Tile:draw(highlight)
 		love.graphics.draw(spritesheet, Q, 0, -(sprite_height - h) - sprite_height/2, 0, k, k)
 	end
 	love.graphics.setShader(shaders.standard)
+	
+	for i,fx in ipairs(self.effects) do
+		local color = {unpack(fx.color)}
+		color[4] = fx.alpha
+		love.graphics.setColor(unpack(color))
+		love.graphics.rectangle("fill", fx.x - fx.size/2, fx.y - fx.size/2, fx.size, fx.size)
+	end
 end
