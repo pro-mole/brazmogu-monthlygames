@@ -1,5 +1,4 @@
 require("draw")
-require("effects")
 require("grid")
 
 --Timers
