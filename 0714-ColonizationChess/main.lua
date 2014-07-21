@@ -10,7 +10,7 @@ Players = {
 	{
 		id = "neutral",
 		name = "None",
-		color = {64,64,64,255},
+		color = {128,96,48,255},
 		active = false, -- Active if the player is in the game
 		AI = true, -- AI true for CPU player
 		key = nil,
@@ -34,7 +34,7 @@ Players = {
 	{
 		id = "up",
 		name = "Outsider",
-		color = {128,0,128,255},
+		color = {128,0,64,255},
 		active = true,
 		AI = false,
 		key = "3",
@@ -42,7 +42,7 @@ Players = {
 	{
 		id = "down",
 		name = "Virus",
-		color = {0,128,128,255},
+		color = {0,192,192,255},
 		active = true,
 		AI = false,
 		key = "4",
