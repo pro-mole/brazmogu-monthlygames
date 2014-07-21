@@ -271,6 +271,18 @@ function Grid:mousepressed(x, y, m)
 				turn.pieces = turn.pieces - 1
 				self.focus:addOccupation(1)
 				self:updateStats()
+				table.insert(self.focus.effects, {
+					x = 0.5 * self.tile_width,
+					y = 0.5 * self.tile_height,
+					size = self.tile_width/4,
+					speed = self.tile_height/2,
+					dir = math.rad(270),
+					color = Players[turn.player].color,
+					alpha = 128,
+					fade = 128,
+					grow = self.tile_width,
+					lifetime = 0.25,
+				})
 				
 				if turn.pieces == 0 then
 					self:startTurn()
@@ -467,6 +479,9 @@ function Tile:update(dt)
 			end
 			if fx.fade then
 				fx.alpha = fx.alpha - fx.fade * dt
+			end
+			if fx.grow then
+				fx.size = fx.size + fx.grow * dt
 			end
 		else
 			table.remove(self.effects,i)
