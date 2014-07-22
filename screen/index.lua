@@ -74,7 +74,7 @@ function screen_menu:draw()
 			love.graphics.printf(string.format("Press (%s) to toggle AI", P.key), col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + 7*H, love.window.getWidth()/4 - 16, "center")
 			if not P.active then
 				love.graphics.setColor(0,0,0,192)
-				love.graphics.rectangle("fill", col * love.window.getWidth()/4+4,love.window.getHeight()/2 + H/2 + 2, love.window.getWidth()/4 - 8, 6*H - 4)
+				love.graphics.rectangle("fill", col * love.window.getWidth()/4+4,love.window.getHeight()/2 + H/2 + 2, love.window.getWidth()/4 - 8, 9*H - 4)
 			end
 			
 			col = col + 1
