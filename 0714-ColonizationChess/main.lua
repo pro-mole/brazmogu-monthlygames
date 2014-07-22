@@ -6,6 +6,13 @@ input_delay = 0
 
 game_grid = {}
 
+Sounds = {
+	select = love.sound.newSoundData("assets/sound/Select.wav"),
+	start = love.sound.newSoundData("assets/sound/start.wav"),
+	confirm = love.sound.newSoundData("assets/sound/Click OK.wav"),
+	denied = love.sound.newSoundData("assets/sound/Click No.wav")
+}
+
 Players = {
 	{
 		id = "neutral",
