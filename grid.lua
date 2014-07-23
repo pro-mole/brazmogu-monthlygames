@@ -268,6 +268,7 @@ function Grid:mousepressed(x, y, m)
 			end
 			
 			if valid then
+				love.audio.newSource(Sounds.confirm):play()
 				turn.pieces = turn.pieces - 1
 				self.focus:addOccupation(1)
 				self:updateStats()
@@ -288,6 +289,8 @@ function Grid:mousepressed(x, y, m)
 					self:startTurn()
 				end
 				input_delay = 0.25
+			else
+				love.audio.newSource(Sounds.denied):play()
 			end
 		end
 	end
