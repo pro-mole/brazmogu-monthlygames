@@ -30,13 +30,17 @@ end
 
 function screen_menu:keypressed(k, isrepeat)
 	if k == "return" then
+		love.audio.newSource(Sounds.start):play()
+		love.timer.sleep(1)
 		screens:push(screen_game)
 	end
 	
 	if k == "left" then
 		Maps:next()
+		love.audio.newSource(Sounds.select):play()
 	elseif k == "right" then
 		Maps:prev()
+		love.audio.newSource(Sounds.select):play()
 	end
 	
 	for i,P in ipairs(Players) do
