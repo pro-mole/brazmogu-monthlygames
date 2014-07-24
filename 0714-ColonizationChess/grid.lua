@@ -267,6 +267,7 @@ function Grid:mousepressed(x, y, m)
 				end
 			end
 			
+			love.audio.setVolume(0.25)
 			if valid then
 				love.audio.newSource(Sounds.confirm):play()
 				turn.pieces = turn.pieces - 1
@@ -319,7 +320,7 @@ function Grid:draw()
 	for x,y,T in self:iterator() do
 		love.graphics.push()
 		love.graphics.translate((x-1) * self.tile_width, (y-1) * self.tile_height)
-		local lighting = 1
+		local lighting = 0.5
 		if T.owner ~= turn.player and turn.player ~= "neutral" then
 			adj = T:getAdjacents(self.stats[turn.player].towers + 1)
 			for i,A in pairs(adj) do
@@ -329,14 +330,17 @@ function Grid:draw()
 						--[[
 						love.graphics.setColor(255,255,255,32)
 						love.graphics.rectangle("fill", 0, 0, self.tile_width, self.tile_height)]]
-						lighting = lighting + 0.5
+						lighting = lighting + 0.25
 						break
 					end
 				end
 			end
 		end
-		if self.focus == T then
+		if T.owner == turn.player then
 			lighting = lighting + 0.5
+		end
+		if self.focus == T then
+			lighting = lighting + 0.25
 		end
 		T:draw(lighting)
 		--[[if self.focus == T then
@@ -422,20 +426,13 @@ function Tile:addOccupation(value, player)
 	local v = value
 	local p = player or turn.player
 
-	local other
-	if p == "left" then
-		other = "right"
-	else
-		other = "left"
-	end
-
 	if self.owner == "neutral" then
 		self.occupation = v
 		self.owner = p
 	elseif self.owner == p then
 		self.occupation = self.occupation + v
 	else
-		local t,b = self.grid.stats[p].turrets, self.grid.stats[other].bunkers
+		local t,b = self.grid.stats[p].turrets, self.grid.stats[self.owner].bunkers
 		--print("Attacking Turrets:",t)
 		--print("Defending Bunkers:",b)
 		local attack = math.max(0, t - b)
