@@ -29,6 +29,7 @@ function screen_menu:update(dt)
 end
 
 function screen_menu:keypressed(k, isrepeat)
+	love.audio.setVolume(0.5)
 	if k == "return" then
 		love.audio.newSource(Sounds.start):play()
 		love.timer.sleep(1)
