@@ -1,5 +1,6 @@
 require("draw")
 require("grid")
+require("ai")
 
 --Timers
 input_delay = 0
@@ -8,7 +9,7 @@ game_grid = {}
 
 Sounds = {
 	select = love.sound.newSoundData("assets/sound/Select.wav"),
-	start = love.sound.newSoundData("assets/sound/start.wav"),
+	start = love.sound.newSoundData("assets/sound/Start.wav"),
 	confirm = love.sound.newSoundData("assets/sound/Click OK.wav"),
 	denied = love.sound.newSoundData("assets/sound/Click No.wav")
 }
