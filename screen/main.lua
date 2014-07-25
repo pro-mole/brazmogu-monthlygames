@@ -50,6 +50,9 @@ function screens:pop(reload)
 		table.remove(self)
 	end
 	screen = self:top()
+	if not screen then
+		love.event.quit()
+	end
 	local R = reload or false
 	if R then
 		screen:load()

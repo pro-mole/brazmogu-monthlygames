@@ -111,6 +111,7 @@ Maps = {
 	end,
 	process = function(self)
 		local allmaps = love.filesystem.getDirectoryItems("maps")
+		table.sort(allmaps)
 		for i,file in ipairs(allmaps) do
 			table.insert(self, {name = file})
 		end
@@ -169,10 +170,6 @@ function love.keypressed(key, isrepeat)
 	if input_delay > 0 then return end
 	
 	screens:keypressed(key, isrepeat)
-	
-	if key == "escape" then
-		screens:push(screen_quit)
-	end
 end
 
 function love.mousepressed(x, y, button)

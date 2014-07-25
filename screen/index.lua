@@ -9,7 +9,8 @@ end
 
 function screen_quit:keypressed(k, isrepeat)
 	if k == "escape" then
-		love.event.quit()
+		screens:pop()
+		screens:pop()
 	elseif k == " " then
 		screens:pop()
 	end
@@ -34,6 +35,10 @@ function screen_menu:keypressed(k, isrepeat)
 		love.audio.newSource(Sounds.start):play()
 		love.timer.sleep(1)
 		screens:push(screen_game)
+	elseif k == "h" then
+		screens:push(screen_help)
+	elseif k == "escape" then
+		screens:push(screen_quit)
 	end
 	
 	if k == "left" then
@@ -87,7 +92,8 @@ function screen_menu:draw()
 	end
 	love.graphics.setColor(255,255,255,255)
 	
-	love.graphics.printf("START\n(ENTER)", 0, love.window.getHeight()*7/8, love.window.getWidth(), "center")
+	love.graphics.printf("START (ENTER)", 0, love.window.getHeight()*7/8, love.window.getWidth(), "center")
+	love.graphics.printf("HELP (H)", 0, love.window.getHeight()*7/8 + 2*H, love.window.getWidth(), "center")
 end
 
 function screen_menu:quit()
@@ -129,6 +135,10 @@ function screen_game:update(dt)
 end
 
 function screen_game:keypressed(k, isrepeat)
+	if k == "escape" then
+		screens:push(screen_quit)
+	end
+	
 	game_grid:mousepressed(x, y, button)
 end
 
@@ -143,3 +153,30 @@ end
 function screen_game:quit()
 end
 
+screen_help = setmetatable({}, Screen)
+
+function screen_help:draw()
+	love.graphics.printf("MANUAL", 0, 12, love.window.getWidth(), "center")
+	love.graphics.printf([[Colonization Chess is a game for up to 4 players in local multiplayer mode. The objective of the game is to conquer all the bases in the field.
+	
+	At the start of their turn, each player has a number of moves equals to the number of bases and farms they control. For each move the player may choose a tile to:
+	- Conquer an empty tile adjacent to the area the player controls;
+	- Fortify one of their own tiles; or
+	- Attack an enemy tile adjacent to the area the player controls.
+	At the end of the turn, each tile the player controls will proliferate, adding 1 to its current occupation.
+	
+	Different tiles on the field add different advantages to the player that controls them:
+	- Base tiles give one extra move and also are necessary to win the game;
+	- Farm tiles give one extra move per turn;
+	- Turret tiles will cause one more damage on enemy tiles per attack;
+	- Bunker tiles will prevent one damage when the enemy attacks(the damage dealt cannot be smaller than 1);
+	- Tower tiles give one extra tile of range to the player.]], 8, 36, love.window.getWidth()-16, "left")
+	
+	love.graphics.printf("PRESS 'ESC' TO RETURN", 8, love.window.getHeight() - love.graphics.getFont():getHeight(), love.window.getWidth() - 8, "right")
+end
+
+function screen_help:keypressed(k, isrepeat)
+	if k == "escape" then
+		screens:pop()	
+	end
+end
