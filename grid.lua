@@ -1,5 +1,3 @@
-
-
 -- Game Grid
 
 font = {standard = love.graphics.newFont("assets/font/imagine_font.otf", 16)}
@@ -253,7 +251,7 @@ function Grid:iterator()
 end
 
 function Grid:mousepressed(x, y, m)
-	if m == "l" then
+	if m == "l" and not Players[turn.player].AI then
 		if self.focus then
 			local valid = false
 			adj = self.focus:getAdjacents(self.stats[turn.player].towers + 1)
@@ -405,7 +403,7 @@ function Grid:draw()
 		love.graphics.printf("Tile Info", 0, 4+h, self.width * self.tile_width, "center")
 
 		love.graphics.printf(string.format("Occupation: %02d", F.occupation), 0, 4 + 3*h, self.width * self.tile_width, "center")
-		love.graphics.printf(string.format("Owner: %s", F.owner), 0, 4 + 5*h, self.width * self.tile_width, "center")
+		love.graphics.printf(string.format("Owner: %s", Players[F.owner].name), 0, 4 + 5*h, self.width * self.tile_width, "center")
 		love.graphics.printf(string.format("Structures: %s", TileTypes[F.type][1]), 0, 4 + 7*h, self.width * self.tile_width, "center")
 	end
 	

@@ -4,6 +4,7 @@ require("ai")
 
 --Timers
 input_delay = 0
+AI_delay = 1
 
 game_grid = {}
 
@@ -36,7 +37,7 @@ Players = {
 		name = "Industry",
 		color = {128,128,128,255},
 		active = true,
-		AI = false,
+		AI = true,
 		key = "2",
 	},
 	{
@@ -44,7 +45,7 @@ Players = {
 		name = "Outsider",
 		color = {128,0,64,255},
 		active = true,
-		AI = false,
+		AI = true,
 		key = "3",
 	},
 	{
@@ -52,7 +53,7 @@ Players = {
 		name = "Virus",
 		color = {0,192,192,255},
 		active = true,
-		AI = false,
+		AI = true,
 		key = "4",
 	},
 	current = "neutral",

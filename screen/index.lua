@@ -97,6 +97,7 @@ screen_game = setmetatable({}, Screen)
 
 function screen_game:load()
 	game_grid = Grid.loadFile("maps/" .. Maps[Maps.current].name)
+	AI.grid = game_grid
 	
 	Players.active = {}
 	for i, T in ipairs(Players) do
@@ -109,6 +110,18 @@ function screen_game:load()
 end
 
 function screen_game:update(dt)
+	if Players[turn.player].AI then
+		if AI_delay <= 0 then
+			AI.takeMove(turn.player)
+			AI_delay = 1
+			if turn.pieces <= 0 then
+				game_grid:startTurn()
+			end
+		else
+			AI_delay = AI_delay - dt
+		end
+	end
+
 	game_grid:mouseover()
 	for x,y,T in game_grid:iterator() do
 		T:update(dt)
