@@ -14,7 +14,6 @@ function AI.getAllAdjacentTiles(player)
 			for i,t in pairs(adj) do
 				if t.owner ~= P and not A[t] then
 					A[t] = true
-					print(string.format("added %s", i))
 				end
 			end
 		end
@@ -65,7 +64,6 @@ function AI.selectTileRandomly(player)
 	else
 		target_table = priority.all
 	end
-	print(target_table)
 
 	return target_table[math.random(1,#target_table)]
 end

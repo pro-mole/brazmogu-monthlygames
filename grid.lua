@@ -83,7 +83,7 @@ function Grid.new(width, height, tsize, angle, victory_condition)
 	end
 	
 	-- Set victory condition
-	T.victory = victory_condition or Grid.victory
+	T.victory = victory_condition or BaseConquestVictory
 
 	return setmetatable(T, Grid)
 end
@@ -131,23 +131,6 @@ function Grid.loadFile(name)
 		end
 		return G
 	end
-end
-
--- Default victory condition function
--- Returns the name of the player who won, or nil
-function Grid:victory()
-	local winner = nil
-	for i,P in ipairs(Players) do
-		if self.stats[P.id].bases > 0 then
-			if winner ~= nil then
-				return nil
-			else
-				winner = P.id
-			end
-		end
-	end
-	
-	return winner
 end
 
 function Grid:updateStats()
@@ -536,4 +519,64 @@ function Tile:draw(highlight)
 		love.graphics.setColor(unpack(color))
 		love.graphics.rectangle("fill", fx.x - fx.size/2, fx.y - fx.size/2, fx.size, fx.size)
 	end
+end
+
+-- Victory Conditions(AKA game modes)
+-- Returns the name of the player who won, or nil
+
+-- Default victory condition: Base conquest
+function BaseConquestVictory(self)
+	local winner = nil
+	for i,P in ipairs(Players) do
+		if self.stats[P.id].bases > 0 then
+			if winner ~= nil then
+				return nil
+			else
+				winner = P.id
+			end
+		end
+	end
+	
+	return winner
+end
+
+-- Victory by territory conquest
+function TerritoryConquestVictory(self)
+	local winner = nil
+
+	if self.stats["neutral"].occupation > 0 then
+		return nil
+	else
+		local player_score = {}
+		for i,P in ipairs(Players) do
+			table.insert(player_score, {P.id, P.occupation})
+		end
+		table.sort(player_score, function (a, b)
+			return a[2] >= b[2]
+		end )
+
+		-- Check if there isn't a tie
+		if player_score[1][2] == player_score[2][2] then
+			return nil
+		else
+			return player_score[1][1]
+		end
+	end
+end
+
+-- Victory by enemy Wipeout
+function WipeoutVictory(self)
+	local winner = nil
+	for i,P in ipairs(Players) do
+		local pStats = self.stats[P.id]
+		if pStats.bases > 0 or pStats.farms > 0 then
+			if winner ~= nil then
+				return nil
+			elseif P.id ~= neutral then
+				winner = P.id
+			end
+		end
+	end
+	
+	return winner
 end

@@ -110,7 +110,7 @@ function screen_game:load()
 end
 
 function screen_game:update(dt)
-	if Players[turn.player].AI then
+	if Players[turn.player].AI and turn.player ~= neutral then
 		if AI_delay <= 0 then
 			AI.takeMove(turn.player)
 			AI_delay = 1
