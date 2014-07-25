@@ -1,7 +1,7 @@
 #A simple Makefile to create our package
 
 EXECNAME=ColonizationChess
-VERSION=0.1
+VERSION=0.5
 PACKNAME=$(EXECNAME).love
 
 all: $(PACKNAME)
