@@ -1,0 +1,11 @@
+# Configuration file for releases
+
+# WIN
+icoName="merchants.ico"
+
+# MAC OS
+bundleIdentifier="com.brazmogu.merchants"
+bundleName="Merchants"
+icnsName="merchants.icns"
+
+# LINUX
