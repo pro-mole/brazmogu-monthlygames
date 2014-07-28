@@ -1,11 +1,11 @@
 # Configuration file for releases
 
 # WIN
-icoName="ColChess.ico"
+icoName="colchess.ico"
 
 # MAC OS
 bundleIdentifier="com.brazmogu.colonizationchess"
 bundleName="Colonization Chess"
-icnsName="ColChess.icns"
+icnsName="colchess.icns"
 
 # LINUX

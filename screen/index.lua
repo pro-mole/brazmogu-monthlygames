@@ -48,6 +48,14 @@ function screen_menu:keypressed(k, isrepeat)
 		Maps:prev()
 		love.audio.newSource(Sounds.select):play()
 	end
+
+	if k == "up" then
+		GameModes:next()
+		love.audio.newSource(Sounds.select):play()
+	elseif k == "down" then
+		GameModes:prev()
+		love.audio.newSource(Sounds.select):play()
+	end
 	
 	for i,P in ipairs(Players) do
 		if k == P.key and P.active then
@@ -60,31 +68,51 @@ function screen_menu:draw()
 	-- Menu screen
 	local H = love.graphics.getFont():getHeight()
 	love.graphics.printf("MAP SELECT", 0, love.window.getHeight()/4 - H, love.window.getWidth(), "center")
+	love.graphics.polygon("fill",
+		love.window.getWidth()/2 - 64, love.window.getHeight()/4 - H,
+		love.window.getWidth()/2 - 68, love.window.getHeight()/4 - H/2,
+		love.window.getWidth()/2 - 64, love.window.getHeight()/4)
+	love.graphics.polygon("fill",
+		love.window.getWidth()/2 + 64, love.window.getHeight()/4 - H,
+		love.window.getWidth()/2 + 68, love.window.getHeight()/4 - H/2,
+		love.window.getWidth()/2 + 64, love.window.getHeight()/4)
 	local map = Maps[Maps.current]
+
 	love.graphics.printf(map.name, 0, love.window.getHeight()/4 + H, love.window.getWidth(), "center")
 	-- Show map choice and a mini-map of the current selection
 	local minimap = map.minimap
 	love.graphics.draw(minimap, love.window.getWidth()/2 - minimap:getWidth()/2, love.window.getHeight()/4 + 3*H)
 	
-	love.graphics.printf("PLAYERS", 0, love.window.getHeight()/2 - H, love.window.getWidth(), "center")
+	love.graphics.printf("GAME MODE", 0, love.window.getHeight()*3/7 - H, love.window.getWidth(), "center")
+	love.graphics.polygon("fill",
+		love.window.getWidth()/2, love.window.getHeight()*3/7 + H/2-2,
+		love.window.getWidth()/2 - 4, love.window.getHeight()*3/7 + H-2,
+		love.window.getWidth()/2 + 4, love.window.getHeight()*3/7 + H-2)
+	love.graphics.polygon("fill",
+		love.window.getWidth()/2, love.window.getHeight()*3/7 + 5*H/2+2,
+		love.window.getWidth()/2 - 4, love.window.getHeight()*3/7 + 2*H+2,
+		love.window.getWidth()/2 + 4, love.window.getHeight()*3/7 + 2*H+2)
+	love.graphics.printf(GameModes[GameModes.current][1], 0, love.window.getHeight()*3/7 + H, love.window.getWidth(), "center")
+
+	love.graphics.printf("PLAYERS", 0, love.window.getHeight()*3/5 - H, love.window.getWidth(), "center")
 	local col = 0
 	for i,P in ipairs(Players) do
 		if P.id ~= "neutral" then
 			love.graphics.setColor(255,255,255,255)
-			drawDecoratedBox(col * love.window.getWidth()/4+2, love.window.getHeight()/2 + H/2, love.window.getWidth()/4 - 4, 9*H, 2)
+			drawDecoratedBox(col * love.window.getWidth()/4+2, love.window.getHeight()*3/5 + H/2, love.window.getWidth()/4 - 4, 9*H, 2)
 			love.graphics.setColor(unpack(P.color))
-			love.graphics.printf(P.name, col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + H, love.window.getWidth()/4 - 16, "center")
+			love.graphics.printf(P.name, col * love.window.getWidth()/4 + 8, love.window.getHeight()*3/5 + H, love.window.getWidth()/4 - 16, "center")
 			
-			love.graphics.printf("Active:", col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + 3*H, love.window.getWidth()/4 - 16, "left")
-			love.graphics.printf(string.format("%s",P.active), col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + 3*H, love.window.getWidth()/4 - 16, "right")
+			love.graphics.printf("Active:", col * love.window.getWidth()/4 + 8, love.window.getHeight()*3/5 + 3*H, love.window.getWidth()/4 - 16, "left")
+			love.graphics.printf(string.format("%s",P.active), col * love.window.getWidth()/4 + 8, love.window.getHeight()*3/5 + 3*H, love.window.getWidth()/4 - 16, "right")
 			
-			love.graphics.printf("CPU:", col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + 5*H, love.window.getWidth()/4 - 16, "left")
-			love.graphics.printf(string.format("%s",P.AI), col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + 5*H, love.window.getWidth()/4 - 16, "right")
+			love.graphics.printf("CPU:", col * love.window.getWidth()/4 + 8, love.window.getHeight()*3/5 + 5*H, love.window.getWidth()/4 - 16, "left")
+			love.graphics.printf(string.format("%s",P.AI), col * love.window.getWidth()/4 + 8, love.window.getHeight()*3/5 + 5*H, love.window.getWidth()/4 - 16, "right")
 			
-			love.graphics.printf(string.format("Press (%s) to toggle AI", P.key), col * love.window.getWidth()/4 + 8, love.window.getHeight()/2 + 7*H, love.window.getWidth()/4 - 16, "center")
+			love.graphics.printf(string.format("Press (%s) to toggle AI", P.key), col * love.window.getWidth()/4 + 8, love.window.getHeight()*3/5 + 7*H, love.window.getWidth()/4 - 16, "center")
 			if not P.active then
 				love.graphics.setColor(0,0,0,192)
-				love.graphics.rectangle("fill", col * love.window.getWidth()/4+4,love.window.getHeight()/2 + H/2 + 2, love.window.getWidth()/4 - 8, 9*H - 4)
+				love.graphics.rectangle("fill", col * love.window.getWidth()/4+4,love.window.getHeight()*3/5 + H/2 + 2, love.window.getWidth()*3/5 - 8, 9*H - 4)
 			end
 			
 			col = col + 1
@@ -103,6 +131,7 @@ screen_game = setmetatable({}, Screen)
 
 function screen_game:load()
 	game_grid = Grid.loadFile("maps/" .. Maps[Maps.current].name)
+	game_grid.victory = GameModes[GameModes.current][2]
 	AI.grid = game_grid
 	
 	Players.active = {}

@@ -141,6 +141,29 @@ Maps = {
 	end
 }
 
+GameModes = {
+	current = 1,
+	{"Base Conquest", BaseConquestVictory},
+	{"Territory Conquest", TerritoryConquestVictory},
+	{"Total Wipeout", WipeoutVictory},
+	next = function(self)
+		if self.current == #self then
+			self.current = 1
+		else
+			self.current = self.current + 1
+		end
+		return self.current
+	end,
+	prev = function(self)
+		if self.current == 1 then
+			self.current = #self
+		else
+			self.current = self.current - 1
+		end
+		return self.current
+	end
+}
+
 turn = {
 	player = "neutral",
 	pieces = 0

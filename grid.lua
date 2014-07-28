@@ -122,7 +122,7 @@ function Grid.loadFile(name)
 			y = y + 1
 		end
 		
-		local G = Grid.new(w,h,32,0.5)
+		local G = Grid.new(w,h,32,0.8)
 		for i,spec in ipairs(landmarks) do
 			local t = G:getTile(spec[1], spec[2])
 			t.owner = spec[3]
@@ -549,9 +549,12 @@ function TerritoryConquestVictory(self)
 	else
 		local player_score = {}
 		for i,P in ipairs(Players) do
-			table.insert(player_score, {P.id, P.occupation})
+			local pStats = self.stats[P.id]
+			table.insert(player_score, {P.id, pStats.occupation})
 		end
 		table.sort(player_score, function (a, b)
+			print(a, a[1], a[2])
+			print(b, b[1], b[2])
 			return a[2] >= b[2]
 		end )
 
