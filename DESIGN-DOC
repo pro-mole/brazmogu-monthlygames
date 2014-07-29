@@ -1,0 +1,77 @@
+== Merchants! - A Simulation Game ==
+
+Merchants is a simulation game with randomly defined parameters and maybe a great deal of emergent gameplay based on commerce. The player controls a troupe of nomad merchants that travel the world in a train, traveling from place to place buying stuff and selling stuff to keep themselves afloat and to upgrade their operation.
+
+== Gameplay Elements ==
+
+The gameplay is mostly done in an interface that shows prominently the Merchant Machine and its cars and contents, and also whatever is relevant to the current situation(most likely the location the player is stopped at). The player stops at a location and conducts economical transactions of merchandise and/or resources, as well as the possibility of upgrading the train or hiring more personnel.
+
+== Elaboration ==
+
+=== The Merchant Machine ===
+
+The train that the player is caring for. It's composed of potentially infinite cars, thought they all cost money and they increase the weight of the train(thus, requiring more fuel to run). Here's a list of cars and what they affect on the train:
+
+- The Engine: you need one of these to run. Also, you can only have one.
+- Living Car: these are where the crew lives. You need one of these per 3 members of crew(if you have space you can put passengers in there too).
+- Cargo Car: these carry the merchandise and low-class passengers around. You need more to carry more stuff with you without needing to dispose or sell stuff to make room.
+- Freezer Car: these cary food. You need these to keep the crew alive.
+- Fuel Tank Car: these carry fuel. You need these to keep the train running.
+- Luxury Car: these also carry passengers, but only one. They pay handsomely, though.
+
+=== Merchandise and Passengers ===
+
+These are the things you carry around to make more money to buy more stuff to make more money.
+
+Merchandise is tagged with different characteristics and priced accordingly. Different places and seasons will affect the price of merchandise according to the aspects they have. Possible aspects include:
+- Size (tiny, small, medium, big, huge...)
+- Color (red, blue, green, yellow, white, black, grey...)
+- Quality (shoddy, okay, luxurious...)
+- Utility (furniture, pet, jewel, clothing...)
+
+Passengers are only classified according to their social class. Low-Class passengers can be taken in cargo cars, Medium-Class passengers will need a place in the living cars, and High-Class passengers can only be taken in luxury cars. You can put a passenger in a car better than it requires, but not worse. They pay a fixed price to be left at a certain location and a bonus depending on a deadline(up to the point where they just leave the train if you're taking too much damn time)
+
+=== Resources ===
+
+These are stuff you shouldn't sell, only buy, because you will be using these.
+
+- Fuel: keeps the engine running. Bigger train and more merchandise means more fuel spent.
+- Food: keeps the crew alive. If you run out of food, people WILL die.
+- Hull: it IS the train. Needs to be repaired or else it will just breakdown in the middle of the road somewhere.
+- Guns: keeps the train protected and ca be used to hunt. Not obligatory, but you never know.
+- Money: to buy stuff and keep the train getting better and better.
+
+=== Personnel ===
+
+The personnel are all interchangeable, but each person has their own set of skills that determine how well they do job they are assigned to. Skills affect the outcome of activities such as comandeering the train, acquiring information or getting special prices on merchandise. Each job is also the name of the relevant skill of the person.
+
+- Engineer: the one at the helm. It's impossible to move around without and engineer.
+- Merchant: the one that does the buying and selling. It's impossible to buy/sell merchandise without a merchant.
+- Mechanic: keeps the train from falling apart, and also can greatly reduce the costs of upgrades.
+- Ambassador: does the talking and recruiting. May influence prices and information available.
+- Cook: keeps the personnel alive more efficiently.
+- Medic: keeps the personnel from dying in case of disease.
+- Survivalist: gathers stuff from the wilderness. Great to acquire resources.
+- Security: defense against bandits, local militia and rowdy townspeople in general. Also maintains peace in the Machine.
+
+=== Locations and Travel ===
+
+Cities, towns and outposts are locations where the player can take action:
+
+- Follow the available railroads to another place
+- Trade merchandise and resources
+- Accept passengers(passengers arriving at their destination will leave automatically)
+- Hire people
+- Acquire information on current economy
+
+Each place has a set of merchandise price modifiers, some permanent, some varying as time passes. These modifiers affect sell and purchase prices of merchandise.
+
+Each place also has a different set of economic activities that influence stock variations and the permanent modifiers(places will generally have more of what they produce and buy it for less, while buying for more products they do not have).
+
+Some places also have unique locations that can be used to train personnel skills(for money) and customize the train(adding carts and repairing).
+
+The player sometimes can be prompted in the middle of travel when random events occur(bandits attack, hunting is performed, stowaways and hitch-hikers appear, etc).
+
+Routes between places are always two-way.
+
+=== Map Generation ===
