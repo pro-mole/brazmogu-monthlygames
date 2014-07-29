@@ -572,11 +572,13 @@ function WipeoutVictory(self)
 	local winner = nil
 	for i,P in ipairs(Players) do
 		local pStats = self.stats[P.id]
-		if pStats.bases > 0 or pStats.farms > 0 then
-			if winner ~= nil then
-				return nil
-			elseif P.id ~= neutral then
-				winner = P.id
+		if pStats.occupation > 0 then
+			if P.id ~= "neutral" then
+				if winner ~= nil then
+					return nil
+				else
+					winner = P.id
+				end
 			end
 		end
 	end
