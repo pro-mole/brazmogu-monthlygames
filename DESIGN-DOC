@@ -75,3 +75,35 @@ The player sometimes can be prompted in the middle of travel when random events 
 Routes between places are always two-way.
 
 === Map Generation ===
+
+Primary map generation should be easy: lay down town and the routes between them. Laying things down in a grid should help defining distances that make sense for the tracks.
+
+For each location generated, set up parameters randomly for what kind of place it is, what it contains and what are its permanent and variable economic parameters. Maybe environment could play some role in that.
+
+== Quantification and Processes ==
+
+=== Cargo ===
+
+The main characteristic that influence the size of objects and occupation in cargo holds is the "Size"(obviously)
+SIZE SCALE:
+- Tiny: 1
+- Small: 2
+- Medium: 3
+- Large: 4
+- Huge: 24
+
+The total space in the cargo car is the same a Huge object(24). A low-class passenger has occupation equals to a Large object(4).
+
+Resources occupy space in special ways:
+- Money occupy no space(money is just a number)
+- Likewise, Hull occupies no space(it's a characteristic of the train itself)
+- Fuel and Food occupy space on their own specialized cart.
+- Guns and ammunition occupy space like a Small and Tiny objects respectively(2 and 1).
+
+Luxury and living cars have fixed occupation of people.
+
+=== Food and Starvation ===
+
+The freezer car holds up to 24 rations of food. 3 people survive on one ration of food for one day of travel(+ a variable number of people depending on the level of the acting Cook).
+
+If there's less food than the needed for the day, all passengers and crew share the starvation for that portion. From then on, starvation accumulates. Each day of starvation may lead to sickness or death. Sick people can die more easily in a situation of starvation, but healthy starving people may die too.
