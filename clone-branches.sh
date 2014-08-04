@@ -9,7 +9,7 @@ BRANCH_0414=0414-PixelPopDefenseZone
 BRANCH_0514=0514-Molesweeper
 BRANCH_0614=0614-HyperMiner
 BRANCH_0714=0714-ColonizationChess
-BRANCH_0814=0814-Merchants
+BRANCH_0814=0814-Mantle
 
 for b in $BRANCHES
 do
