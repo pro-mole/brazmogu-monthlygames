@@ -1,11 +1,11 @@
 # Configuration file for releases
 
 # WIN
-icoName="merchants.ico"
+icoName="mantle.ico"
 
 # MAC OS
-bundleIdentifier="com.brazmogu.merchants"
-bundleName="Merchants"
-icnsName="merchants.icns"
+bundleIdentifier="com.brazmogu.mantle"
+bundleName="Mantle"
+icnsName="mantle.icns"
 
 # LINUX
