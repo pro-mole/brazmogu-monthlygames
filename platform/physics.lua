@@ -1,7 +1,12 @@
 -- Physics engine of my own
 
--- A prototype Object, as "something that exists in the world"
+local Physics = {
+	gravity = 320,
+	gravity_dir = math.rad(270),
+	terminal_velocity = 320
+}
 
+-- A prototype Object, as "something that exists in the world"
 Object = {
 	x = 0, y = 0, -- Position
 	hspeed = 0, vspeed = 0, -- Speed components; less vectorial this time
@@ -26,13 +31,37 @@ function Object.new(data)
 		debug_color = data.color
 	}, Object)
 	
+	table.insert(Engine.Objects, O)
 	return O
 end
 
 function Object:draw()
 	love.graphics.setColor(unpack(self.debug_color))
-	for i,box in self.bbox do
-		love.graphics.rectangle(self.x + box.x, self.y + box.y, box.w, box.h)
+	for i,box in ipairs(self.bbox) do
+		love.graphics.rectangle("fill",self.x + box.x, self.y + box.y, box.w, box.h)
+	end
+end
+
+function Object:update(dt)
+	if checkObjectFree(self) then
+		local dvy = Engine.Physics.gravity * math.sin(Engine.Physics.gravity_dir) * dt
+		local dvx = Engine.Physics.gravity * math.cos(Engine.Physics.gravity_dir) * dt
+		
+		self.vspeed = self.vspeed - dvy
+		if self.vspeed > Engine.Physics.terminal_velocity then self.vspeed = Engine.Physics.terminal_velocity end
+		self.hspeed = self.hspeed + dvx
+		
+		if checkOffsetFree(self, self.hspeed * dt, 0) then
+			self.x = self.x + self.hspeed * dt
+		else
+			self.hspeed = 0
+		end
+		
+		if checkOffsetFree(self, 0, self.vspeed * dt) then
+			self.y = self.y + self.vspeed * dt
+		else
+			self.vspeed = 0
+		end
 	end
 end
 
@@ -42,5 +71,7 @@ function Object:addBoundingBox(x, y, w, h)
 		self.bbox = {}
 	end
 	
-	table.insert(self.bbox, {x=x, y=y, h=h, w=w}
+	table.insert(self.bbox, BoundingBox.new{x=x, y=y, h=h, w=w} )
 end
+
+return Physics

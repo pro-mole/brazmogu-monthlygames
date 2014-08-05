@@ -8,7 +8,8 @@ local Camera = {
 	draw_x = 0,
 	draw_y = 0,
 	follow_object = nil,
-	follow_padding = 0
+	follow_padding = 0,
+	background_color = {0x00, 0xc0, 0xff, 0xff}
 }
 
 function Camera:update(dt)

@@ -1,13 +1,13 @@
 #A simple Makefile to create our package
 
-EXECNAME=MERCHANTS
+EXECNAME=Mantle
 VERSION=0.1
 PACKNAME=$(EXECNAME)-$(VERSION).love
 
 all: $(PACKNAME)
 
-$(PACKNAME): *.lua assets
-	zip -9 -q -r $(PACKNAME) *.lua assets
+$(PACKNAME): *.lua assets platform
+	zip -9 -q -r $(PACKNAME) *.lua assets platform
 	
 run: *.lua assets
 	love .
