@@ -2,8 +2,20 @@
 
 Player = {}
 
-function Player.new(data)
+function Player.new(x,y)
+	-- Create basic object
+	data = {
+		x = x,
+		y = y,
+		color = {0xff, 0x00, 0x00, 0xff},
+		visible = true,
+		solid = false,
+		fixed = false
+	}
+	
 	local P = setmetatable(Object.new(data), Player)
+	
+	-- Class-specific data
 	P.speed = 80
 	P.jump = 160
 	P:addBoundingBox(0, 0, 16, 32)
@@ -11,17 +23,7 @@ function Player.new(data)
 	return P
 end
 
-function Player.__index(t,i)
-	if rawget(t, i) == nil then
-		if Player[i] == nil then
-			return Object[i]
-		else
-			return Player[i]
-		end
-	else
-		return rawget(t, i)
-	end
-end
+Player.__index = __inherit(Player, Object)
 
 function Player:keypressed(k)
 	if k == " " then
@@ -32,17 +34,43 @@ function Player:keypressed(k)
 end
 
 function Player:update(dt)
-	Object.update(self, dt)
+	print_debug(self.x, self.y)
 	
 	if love.keyboard.isDown("right") then
 		self.hspeed = self.speed
+		local others = getOffsetCollisions(self, 1, 0)
+		if #others > 0 then
+			for i,other in ipairs(others) do
+				if other.solid and not other.fixed then
+					if checkOffsetFree(other, self.speed*dt/2, 0) then
+						other.x = other.x + self.speed*dt/2
+					else
+						other.hspeed = self.hspeed
+					end
+				end
+			end
+		end
 	end
 	
 	if love.keyboard.isDown("left") then
 		self.hspeed = -self.speed
+		local others = getOffsetCollisions(self, -1, 0)
+		if #others > 0 then
+			for i,other in ipairs(others) do
+				if other.solid and not other.fixed then
+					if checkOffsetFree(other, -self.speed*dt/2, 0) then
+						other.x = other.x - self.speed*dt/2
+					else
+						other.hspeed = self.hspeed
+					end
+				end
+			end
+		end
 	end
 	
 	if not(love.keyboard.isDown("right") or love.keyboard.isDown("left")) then
 		self.hspeed = 0
 	end
+	
+	Object.update(self, dt)
 end

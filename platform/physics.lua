@@ -26,7 +26,7 @@ function Object.new(data)
 		vspeed = 0,
 		bbox = {},
 		fixed = data.fixed or false,
-		solid = data.fixed or false,
+		solid = data.solid or false,
 		visible = data.visible or true,
 		debug_color = data.color
 	}, Object)
@@ -54,12 +54,26 @@ function Object:update(dt)
 		if checkOffsetFree(self, self.hspeed * dt, 0) then
 			self.x = self.x + self.hspeed * dt
 		else
+			-- "Touch" on the blocking object
+			while self.hspeed > 1 do
+				self.hspeed = self.hspeed / 2
+				if checkOffsetFree(self, self.hspeed * dt, 0) then
+					self.x = self.x + self.hspeed * dt
+				end
+			end
 			self.hspeed = 0
 		end
 		
 		if checkOffsetFree(self, 0, self.vspeed * dt) then
 			self.y = self.y + self.vspeed * dt
 		else
+			-- "Touch" on the blocking object
+			while self.vspeed > 1 do
+				self.vspeed = self.vspeed / 2
+				if checkOffsetFree(self, 0, self.vspeed * dt) then
+					self.y = self.y + self.vspeed * dt
+				end
+			end
 			self.vspeed = 0
 		end
 	end

@@ -5,10 +5,14 @@ Engine.Objects = {} -- A list of the objects contained in the world
 
 Engine.Physics = require("platform/physics")
 require("platform/collision")
+Engine.Camera = require("platform/camera")
 
 require("platform/level")
 require("platform/player")
-Engine.Camera = require("platform/camera")
+require("platform/platform")
+require("platform/block")
+
+Engine.tick = 1/24; -- Engine ideal tick, inverse of ideal FPS(for dealing with severe lag)
 
 function Engine.update(dt)
 	for i,obj in ipairs(Engine.Objects) do

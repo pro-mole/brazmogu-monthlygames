@@ -66,17 +66,34 @@ end
 function checkOffsetFree(O, x, y)
 	O.x = O.x + x
 	O.y = O.y + y
+	local free = checkObjectFree(O)
+	
+	O.x = O.x - x
+	O.y = O.y - y
+	return free
+end
+
+-- Gather objects colliding
+function getObjectCollisions(O)
+	local others = {}
 	for i,other in ipairs(Engine.Objects) do
-		if other ~= O and other.solid then
+		if other ~= O then
 			if checkCollision(O, other) then
-				O.x = O.x - x
-				O.y = O.y - y
-				return false
+				table.insert(others, other)
 			end
 		end
 	end
 	
+	return others
+end
+
+-- Gather objects colliding at an offset
+function getOffsetCollisions(O, x, y) 
+	O.x = O.x + x
+	O.y = O.y + y
+	local others = getObjectCollisions(O)
+	
 	O.x = O.x - x
 	O.y = O.y - y
-	return true
+	return others
 end
