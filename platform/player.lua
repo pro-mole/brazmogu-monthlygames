@@ -42,11 +42,12 @@ function Player:update(dt)
 		if #others > 0 then
 			for i,other in ipairs(others) do
 				if other.solid and not other.fixed then
-					if checkOffsetFree(other, self.speed*dt/2, 0) then
+					if checkOffsetFree(other, self.speed/2 * dt, 0) then
 						other.x = other.x + self.speed*dt/2
 					else
-						other.hspeed = self.hspeed
+						other:moveUpTo(self.speed*dt/2, 0)
 					end
+					self:moveUpTo(self.speed*dt, 0)
 				end
 			end
 		end
@@ -58,11 +59,12 @@ function Player:update(dt)
 		if #others > 0 then
 			for i,other in ipairs(others) do
 				if other.solid and not other.fixed then
-					if checkOffsetFree(other, -self.speed*dt/2, 0) then
+					if checkOffsetFree(other, -self.speed/2 * dt, 0) then
 						other.x = other.x - self.speed*dt/2
 					else
-						other.hspeed = self.hspeed
+						other:moveUpTo(-self.speed*dt/2, 0)
 					end
+					self:moveUpTo(-self.speed*dt, 0)
 				end
 			end
 		end

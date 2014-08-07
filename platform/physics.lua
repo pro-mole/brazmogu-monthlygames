@@ -55,12 +55,7 @@ function Object:update(dt)
 			self.x = self.x + self.hspeed * dt
 		else
 			-- "Touch" on the blocking object
-			while self.hspeed > 1 do
-				self.hspeed = self.hspeed / 2
-				if checkOffsetFree(self, self.hspeed * dt, 0) then
-					self.x = self.x + self.hspeed * dt
-				end
-			end
+			self:moveUpTo(self.hspeed * dt, 0)
 			self.hspeed = 0
 		end
 		
@@ -68,12 +63,7 @@ function Object:update(dt)
 			self.y = self.y + self.vspeed * dt
 		else
 			-- "Touch" on the blocking object
-			while self.vspeed > 1 do
-				self.vspeed = self.vspeed / 2
-				if checkOffsetFree(self, 0, self.vspeed * dt) then
-					self.y = self.y + self.vspeed * dt
-				end
-			end
+			self:moveUpTo(0, self.vspeed * dt)
 			self.vspeed = 0
 		end
 	end
@@ -86,6 +76,22 @@ function Object:addBoundingBox(x, y, w, h)
 	end
 	
 	table.insert(self.bbox, BoundingBox.new{x=x, y=y, h=h, w=w} )
+end
+
+-- Move object up to an offset, ending as close as possible to any solid barrier
+function Object:moveUpTo(offx, offy)
+	local dir = math.atan2(offy, offx)
+	local dist = offx^2 + offy^2
+	local factor = 1
+	while dist*factor > 1 do
+		factor = factor/2
+		local fx = math.cos(dir) * factor
+		local fy = math.sin(dir) * factor
+		if checkOffsetFree(self, fx*offx, fy*offy) then
+			self.x = self.x + fx*offx
+			self.y = self.y + fy*offy
+		end
+	end
 end
 
 return Physics
