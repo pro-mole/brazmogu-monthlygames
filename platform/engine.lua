@@ -16,14 +16,20 @@ Engine.tick = 1/24; -- Engine ideal tick, inverse of ideal FPS(for dealing with 
 
 function Engine.update(dt)
 	for i,obj in ipairs(Engine.Objects) do
-		if not obj.fixed then
-			obj:update(dt)
-		end
+		obj:update(dt)
 	end
 	
-	for i=1,#Engine.Objects-1 do
-		for j=i+1,#Engine.Objects do
-			-- check collisions
+	for i,obj in ipairs(Engine.Objects) do
+		if not obj.fixed then
+			print_debug("Simulating",obj)
+			obj:simulate(dt)
+		end
+	end
+
+	for i,obj in ipairs(Engine.Objects) do
+		if not obj.fixed then
+			print_debug("Colliding",obj)
+			obj:solveCollisions(dt)
 		end
 	end
 end

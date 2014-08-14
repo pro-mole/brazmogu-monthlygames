@@ -15,7 +15,7 @@ end
 
 function love.load()
 	player = Player.new(128, 480)
-	
+	Platform.new(80, 504, 32, 64)
 	Platform.new(0, 568, 800, 32)
 	Platform.new(512, 504, 128, 64)
 	Platform.new(320, 480, 64, 32)

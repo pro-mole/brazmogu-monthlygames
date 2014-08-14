@@ -8,8 +8,8 @@ function __inherit(...)
 			return rawget(t,i)
 		else
 			for x,class in ipairs(inherit_order) do
-				if class[i] ~= nil then
-					return class[i]
+				if rawget(class,i) ~= nil then
+					return rawget(class,i)
 				end
 			end
 			

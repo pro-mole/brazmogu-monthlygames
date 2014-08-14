@@ -22,3 +22,4 @@ function Platform.new(x, y, w, h)
 end
 
 Platform.__index = __inherit(Platform, Object)
+Platform.__tostring = Object.__tostring

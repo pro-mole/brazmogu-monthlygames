@@ -14,6 +14,10 @@ function BoundingBox.new(data)
 	}, BoundingBox)
 end
 
+function BoundingBox:__tostring()
+	return string.format("[[%f, %f, %f, %f]]", self.x, self.y, self.x+self.w, self.y+self.h)
+end
+
 function BoundingBox:offsetXY(x, y)
 	local box = BoundingBox.new(self)
 	box.x = box.x + x
@@ -26,14 +30,15 @@ function BoundingBox:offsetObject(obj)
 end
 
 -- Check collision between two objects
-function checkCollision(A, B)
+function checkCollision(A, B, touch)
 	if A == B then return false end
+	local touch = touch or false
 	
-	for i,box1 in ipairs(A.bbox) do
-		for j,box2 in ipairs(B.bbox) do
-			if checkOverlap(box1:offsetObject(A),box2:offsetObject(B)) then
-				return true
-			end
+	if checkOverlap(A.bbox:offsetObject(A),B.bbox:offsetObject(B)) then
+		return true
+	elseif touch then
+		if checkTouch(A.bbox:offsetObject(A),B.bbox:offsetObject(B)) then
+			return true
 		end
 	end
 	
@@ -49,51 +54,11 @@ function checkOverlap(Box1, Box2)
 	return true
 end
 
--- Check if object is free
-function checkObjectFree(O)
-	for i,other in ipairs(Engine.Objects) do
-		if other ~= O and other.solid then
-			if checkCollision(O, other) then
-				return false
-			end
-		end
+-- Check if bounding boxes touch
+function checkTouch(Box1, Box2)
+	if Box1.x + Box1.w == Box2.x or Box1.x == Box2.x + Box2.w or Box1.y + Box1.h == Box2.y or Box1.y == Box2.y + Box2.h then
+		return false
 	end
-	
+		
 	return true
-end
-
--- Check if object O will be free at offset position
-function checkOffsetFree(O, x, y)
-	O.x = O.x + x
-	O.y = O.y + y
-	local free = checkObjectFree(O)
-	
-	O.x = O.x - x
-	O.y = O.y - y
-	return free
-end
-
--- Gather objects colliding
-function getObjectCollisions(O)
-	local others = {}
-	for i,other in ipairs(Engine.Objects) do
-		if other ~= O then
-			if checkCollision(O, other) then
-				table.insert(others, other)
-			end
-		end
-	end
-	
-	return others
-end
-
--- Gather objects colliding at an offset
-function getOffsetCollisions(O, x, y) 
-	O.x = O.x + x
-	O.y = O.y + y
-	local others = getObjectCollisions(O)
-	
-	O.x = O.x - x
-	O.y = O.y - y
-	return others
 end
