@@ -50,80 +50,69 @@ function Object:update(dt)
 
 end
 
+function Object:getBoundingBox(x,y)
+	local x,y = x or 0, y or 0
+	local bbox = self.bbox:offsetObject(self)
+	return bbox:offsetXY(x,y)
+end
+
 function Object:simulate(dt)
+	print_debug(self)
 	dx = self.hspeed*dt
 	dy = self.vspeed*dt + 0.5*Engine.Physics.gravity*self.gravity*dt^2
 
 	dv = Engine.Physics.gravity*self.gravity*dt
 
-	self.x = self.x + dx
-	self.y = self.y + dy
+	print_debug(dx,dy,dv)
+	if self:checkOffsetFree(dx, dy) then
+		self.x = self.x + dx
+		self.y = self.y + dy
+	else
+		if self:checkOffsetFree(dx, 0) then
+			self.x = self.x + dx
+		else
+			local factor = 0.5
+			while factor > 1/32 do
+				if self:checkOffsetFree(dx*factor,0) then
+					self.x = self.x + dx*factor
+				end
+				factor = factor /2
+			end
+		end
+		if self:checkOffsetFree(0, dy) then
+			self.y = self.y + dy
+		else
+			local factor = 0.5
+			while factor > 1/32 do
+				if self:checkOffsetFree(0,dy*factor) then
+					self.y = self.y + dy*factor
+				end
+				factor = factor /2
+			end
+		end
+	end
+
 	self.vspeed = self.vspeed + dv
 end
 
 function Object:solveCollisions(dt)
-	local others = self:getCollisions()
-	for other in pairs(others) do
-		if other.solid then
-			local boxSelf = self.bbox:offsetObject(self)
-			local boxOther = other.bbox:offsetObject(other)
-			local dx, dy = 0, 0
-			if boxSelf.x < boxOther.x and (boxSelf.x + boxSelf.w) < (boxOther.x + boxOther.w) then
-				dx = boxSelf.x+boxSelf.w - boxOther.x
-			else
-				dx = boxOther.x+boxOther.w - boxSelf.x
-			end
-			if boxSelf.y < boxOther.y then
-				dy = boxSelf.y+boxSelf.h - boxOther.y
-			else
-				dy = boxOther.y+boxOther.h - boxSelf.y
-			end
+	if self.vspeed > 0 and not self:checkOffsetFree(0, 1) then
+		self.vspeed = 0
+	end
 
-			print_debug(self)
-			print_debug(boxSelf, boxOther)
-			print_debug(self.hspeed, self.vspeed, dx, dy)
-			if dx ~= 0 or dy ~= 0 then
-				if math.abs(dx) <= math.abs(dy) then
-					if self.hspeed > 0 then
-						self.x = self.x - dx
-					elseif self.hspeed < 0 then
-						self.x = self.x + dx
-					end
-					self.hsspeed = 0 
-				end
-
-				if math.abs(dx) >= math.abs(dy) then
-					if self.vspeed > 0 then
-						self.y = self.y - dy
-					elseif self.vspeed < 0 then
-						self.y = self.y + dy
-					end
-					self.vspeed = 0
-				end
-			end
-		end
+	if self.vspeed < 0 and not self:checkOffsetFree(0, -1) then
+		self.vspeed = 0
 	end
 end
 
-function Object:getCollisions(touch)
-	local others = {}
-	for i,other in ipairs(Engine.Objects) do
-		if i ~= self then
-			if checkCollision(self,other,touch) then
-				if not others[other] then
-					others[other] = true
-				end
-			end
-		end
-	end
-
-	return others
+function Object:getCollisions(x,y,touch)
+	return self:getBoundingBox(x,y):getCollisions()
 end
 
 function Object:checkOffsetFree(x, y)
 	for i,other in ipairs(Engine.Objects) do
-		if i ~= self and other.solid then
-			if checkOverlap(self.bbox:offsetXY(self.x+x,self.y+y), other.bbox:offsetObject(other)) then
+		if other ~= self and other.solid then
+			if checkOverlap(self:getBoundingBox(x,y), other:getBoundingBox()) then
 				return false
 			end
 		end

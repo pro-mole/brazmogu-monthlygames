@@ -29,15 +29,28 @@ function BoundingBox:offsetObject(obj)
 	return self:offsetXY(obj.x, obj.y)
 end
 
+function BoundingBox:getCollisions()
+	local others = {}
+	for i,other in ipairs(Engine.Objects) do
+		if other ~= self then
+			if checkOverlap(self,other:getBoundingBox()) then
+				others[other] = true
+			end
+		end
+	end
+
+	return others
+end
+
 -- Check collision between two objects
 function checkCollision(A, B, touch)
 	if A == B then return false end
 	local touch = touch or false
 	
-	if checkOverlap(A.bbox:offsetObject(A),B.bbox:offsetObject(B)) then
+	if checkOverlap(A:getBoundingBox(),B:getBoundingBox()) then
 		return true
 	elseif touch then
-		if checkTouch(A.bbox:offsetObject(A),B.bbox:offsetObject(B)) then
+		if checkTouch(A:getBoundingBox(),B:getBoundingBox()) then
 			return true
 		end
 	end
@@ -56,9 +69,10 @@ end
 
 -- Check if bounding boxes touch
 function checkTouch(Box1, Box2)
-	if Box1.x + Box1.w == Box2.x or Box1.x == Box2.x + Box2.w or Box1.y + Box1.h == Box2.y or Box1.y == Box2.y + Box2.h then
-		return false
+	if (math.abs(Box1.x + Box1.w - Box2.x) < 1 or math.abs(Box1.x - Box2.x - Box2.w) < 1) or 
+		(math.abs(Box1.y + Box1.h - Box2.y) < 1 or math.abs(Box1.y - Box2.y - Box2.h) < 1) then
+		return true
 	end
 		
-	return true
+	return false
 end

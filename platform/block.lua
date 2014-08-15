@@ -26,9 +26,14 @@ Block.__index = __inherit(Block, Object)
 Block.__tostring = Object.__tostring
 
 function Block:update(dt)
-	Object.update(self, dt)
-
-	if (self.hspeed > 0 and player.x < self.x - player.bbox.w) or(self.hspeed < 0 and player.x > self.x + self.bbox.w) then
+	if not checkTouch(self:getBoundingBox(), player:getBoundingBox()) then
+		print_debug(self:getBoundingBox())
+		print_debug(player:getBoundingBox())
 		self.hspeed = 0
+	else
+		print_debug(self:getBoundingBox())
+		print_debug(player:getBoundingBox())
 	end
+
+	Object.update(self, dt)
 end

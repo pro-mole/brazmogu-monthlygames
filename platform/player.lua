@@ -38,22 +38,35 @@ end
 
 function Player:update(dt)
 	print_debug(self.x, self.y)
-	local others = self:getCollisions(false)
 
 	if love.keyboard.isDown("right") then
 		self.hspeed = self.speed
 		print_debug("Check pushing to the right")
-		for other in pairs(others) do
-			print_debug(other, other.bbox:offsetObject(other))
-			if not other.fixed and other.x > self.x then
-				print_debug(string.format("Pushing %s", other))
-				other.hspeed = self.speed/2
+		if not self:checkOffsetFree(1,0) and not self:checkOffsetFree(0,1) then
+			local others = self:getCollisions(1,0,true)
+			for other in pairs(others) do
+				print_debug(other, other.solid, other.fixed)
+				if other.solid and not other.fixed then
+					other.hspeed = self.speed/2
+					self.hspeed = self.speed/2
+				end
 			end
 		end
 	end
 	
 	if love.keyboard.isDown("left") then
 		self.hspeed = -self.speed
+		print_debug("Check pushing to the left")
+		if not self:checkOffsetFree(-1,0) and not self:checkOffsetFree(0,1) then
+			local others = self:getCollisions(-1,0,true)
+			for other in pairs(others) do
+				print_debug(other, other.solid, other.fixed)
+				if other.solid and not other.fixed then
+					other.hspeed = -self.speed/2
+					self.hspeed = -self.speed/2
+				end
+			end
+		end
 	end
 	
 	if not(love.keyboard.isDown("right") or love.keyboard.isDown("left")) then
