@@ -22,7 +22,8 @@ function ScreenMenu:init()
 	self.parent_menu = nil
 	-- print (self.current_menu)
 
-	music.BGM:rewind()
+	music.BGM:stop()
+	music.BGM:seek(0)
 	music.BGM:setVolume(0.5)
 	if settings.music == "ON" then
 		music.BGM:play()
@@ -32,7 +33,7 @@ function ScreenMenu:init()
 end
 
 function ScreenMenu:mousepressed(x, y, button)
-	if button == 'l' then
+	if button == 1 then
 		-- Check all menu buttons :D
 		for i, button in ipairs(self.current_menu) do
 			if x > button.pos[1] and x < button.pos[1]+button.size[1] and y > button.pos[2] and y < button.pos[2]+button.size[2] then
@@ -81,20 +82,20 @@ function ScreenMenu:draw()
 
 	-- Draw the menu header
 	love.graphics.setFont(fonts.huge)
-	love.graphics.printf("PIXEL POP DEFENSE ZONE", 0, center.y/2 - fonts.huge:getHeight(), love.window.getWidth(), "center")
+	love.graphics.printf("PIXEL POP DEFENSE ZONE", 0, center.y/2 - fonts.huge:getHeight(), love.graphics.getWidth(), "center")
 	
 	love.graphics.setFont(fonts.standard)
 	self:drawMenu(self.current_menu)
 	-- Draw footer stuff, I guess
 	--love.graphics.setFont(fonts.standard)
-	love.graphics.printf("HIGHSCORE", center.x-32, love.window.getHeight() - 128 - fonts.standard:getHeight()*2 - 2, 64, "center")
-	love.graphics.printf(highscore, center.x-32, love.window.getHeight() - 128 - fonts.standard:getHeight() - 1, 64, "center")
+	love.graphics.printf("HIGHSCORE", center.x-40, love.graphics.getHeight() - 128 - fonts.standard:getHeight()*2 - 2, 80, "center")
+	love.graphics.printf(highscore, center.x-32, love.graphics.getHeight() - 128 - fonts.standard:getHeight() - 1, 64, "center")
 end
 
 function ScreenMenu:drawMenu(menu)
 	if menu.title ~= nil then
 		love.graphics.setFont(fonts.big)
-		love.graphics.printf(menu.title, 0, center.y - fonts.big:getHeight() - 8, love.window.getWidth(),"center")
+		love.graphics.printf(menu.title, 0, center.y - fonts.big:getHeight() - 8, love.graphics.getWidth(),"center")
 		love.graphics.setFont(fonts.standard)
 	end
 	

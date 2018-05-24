@@ -36,7 +36,7 @@ function partSpark.new(x, y, duration, numSparks, color, avgSize)
 	-- print(string.format("PARTICLE: [%d;%d - %d, %d, (%x,%x,%x), %d]", P.x, P.y, P.duration, numSparks, color.r, color.g, color.b, avgSize))
 	-- print (numSparks)
 	for i=1,numSparks,1 do
-		local spark = {x=x, y=y, size=avgSize or 4, color=color or {r=0xff, g=0xff, b=0xff}, alpha=128}
+		local spark = {x=x, y=y, size=avgSize or 4, color=color or {r=1, g=1, b=1}, alpha=0.5}
 		spark.x = spark.x + love.math.random(-numSparks,numSparks)
 		spark.y = spark.y + love.math.random(-numSparks,numSparks)
 		spark.size = spark.size + love.math.random(-numSparks,numSparks)
@@ -67,7 +67,7 @@ partFlash = {}
 partFlash.__index = partFlash
 
 function partFlash.new(x, y, duration, size, color)
-	local P = {x=x, y=y, duration=duration, color=color or {r=0xff, g=0xff, b=0xff}, size=size, alpha=96, factor=30, increment=120/duration }
+	local P = {x=x, y=y, duration=duration, color=color or {r=1, g=1, b=1}, size=size, alpha=0.4, factor=30, increment=120/duration }
 	return setmetatable(P, partFlash)
 end
 

@@ -18,11 +18,11 @@ function Pixel.new(x, y, color, speed, ptype)
 		color = pixel's color name
 		type = common, flash, hollow or rainbow
 	]]
-	P = setmetatable({x = x or 0, y = y or 0, color = color or {r=0xff, g=0xff, b=0xff}, speed = speed or 16, type = ptype or "common"}, Pixel)
+	P = setmetatable({x = x or 0, y = y or 0, color = color or {r=1, g=1, b=1}, speed = speed or 16, type = ptype or "common"}, Pixel)
 	if P.type == "flash" then
 		P.angle = 0
-		if P.color.r ~= 0xff or P.color.g ~= 0xff or P.color.b ~= 0xff then
-			P.color_offset = {r=0xff - P.color.r, g=0xff - P.color.g, b=0xff - P.color.b}
+		if P.color.r ~= 1 or P.color.g ~= 1 or P.color.b ~= 1 then
+			P.color_offset = {r=1 - P.color.r, g=1 - P.color.g, b=1 - P.color.b}
 		else -- Pixel is white, need to flash to black
 			P.color_offset = {r=-0xff, g=-0xff, b=-0xff}
 		end
@@ -34,8 +34,8 @@ function Pixel.new(x, y, color, speed, ptype)
 	end
 	
 	local d = P.speed / P:distCenter()
-	P.vx = d * (love.window.getWidth()/2 - x)
-	P.vy = d * (love.window.getHeight()/2 - y)
+	P.vx = d * (love.graphics.getWidth()/2 - x)
+	P.vy = d * (love.graphics.getHeight()/2 - y)
 	P.index = string.format('%08x',lastindex)
 	lastindex = lastindex + 1
 	pixels[P.index] =  P
@@ -105,7 +105,7 @@ function Pixel:destroy(clicked)
 		end
 		
 		if settings.sound == "ON" then
-			sound.dissolve:rewind()
+			sound.dissolve:seek(0)
 			sound.dissolve:play()
 		end
 	end
@@ -132,7 +132,7 @@ function Pixel:destroy(clicked)
 
 	if clicked and self.type == "rainbow" then
 		timestop = 3
-		streak = {r=255, g=255, b=255, n=0}
+		streak = {r=1, g=1, b=1, n=0}
 	end
 end
 
@@ -161,5 +161,5 @@ end
 
 -- Return pixel distance from the center
 function Pixel:distCenter()
-	return math.sqrt((love.window.getWidth()/2 - self.x)^2 + (love.window.getHeight()/2 - self.y)^2)
+	return math.sqrt((love.graphics.getWidth()/2 - self.x)^2 + (love.graphics.getHeight()/2 - self.y)^2)
 end

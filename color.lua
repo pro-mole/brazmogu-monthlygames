@@ -2,18 +2,18 @@
 -- TODO: add colorblind mode drawing functions to each color
 
 COLOR = {
-	{r = 0xff, g = 0x00, b = 0x00},
-	{r = 0x00, g = 0x00, b = 0xff},
-	{r = 0x00, g = 0xff, b = 0x00},
-	{r = 0xff, g = 0x00, b = 0xff},
-	{r = 0x00, g = 0xff, b = 0xff},
-	{r = 0xff, g = 0xff, b = 0x00},
-	{r = 0xff, g = 0x80, b = 0x00},
-	{r = 0x00, g = 0xc0, b = 0xff},
-	{r = 0x80, g = 0x00, b = 0xff},
-	{r = 0xff, g = 0x00, b = 0x80},
-	{r = 0xff, g = 0xff, b = 0xff},
-	{r = 0x80, g = 0x80, b = 0x80}
+	{r = 1, g = 0, b = 0},
+	{r = 0, g = 0, b = 1},
+	{r = 0, g = 1, b = 0},
+	{r = 1, g = 0, b = 1},
+	{r = 0, g = 1, b = 1},
+	{r = 1, g = 1, b = 0},
+	{r = 1, g = 0.5, b = 0},
+	{r = 0, g = 0.75, b = 1},
+	{r = 0.5, g = 0, b = 1},
+	{r = 1, g = 0, b = 0.5},
+	{r = 1, g = 1, b = 1},
+	{r = 0.5, g = 0.5, b = 0.5}
 }
 
 function compare_color(t, other)

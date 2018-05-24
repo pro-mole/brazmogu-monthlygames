@@ -7,7 +7,7 @@ timestop = 0
 score = 0
 highscore = 0
 multiplier = 1
-streak = {n=0, r=255, g=255, b=255}
+streak = {n=0, r=1, g=1, b=1}
 
 function ScreenGame:init()
 	-- set up local vars
@@ -65,7 +65,7 @@ function ScreenGame:init()
 	gameover = false
 	score = 0
 	multiplier = 1
-	streak = {n=0, r=255, g=255, b=255}
+	streak = {n=0, r=1, g=1, b=1}
 
 	-- play that music
 	music.BGM:setVolume(1.0)
@@ -116,13 +116,13 @@ function ScreenGame:update(dt)
 			
 			local speed = self.speedavg + self.speedavg*love.math.random(-self.speedvar, self.speedvar)
 			if side == 0 then     -- Left
-				Pixel.new(0, love.math.random(love.window.getHeight()), color, speed, ptype)
+				Pixel.new(0, love.math.random(love.graphics.getHeight()), color, speed, ptype)
 			elseif side == 1 then -- Top
-				Pixel.new(love.math.random(love.window.getWidth()), 0, color, speed, ptype)
+				Pixel.new(love.math.random(love.graphics.getWidth()), 0, color, speed, ptype)
 			elseif side == 2 then -- Right
-				Pixel.new(love.window.getWidth(), love.math.random(love.window.getHeight()), color, speed, ptype)
+				Pixel.new(love.graphics.getWidth(), love.math.random(love.graphics.getHeight()), color, speed, ptype)
 			elseif side == 3 then -- Bottom
-				Pixel.new(love.math.random(love.window.getWidth()), love.window.getHeight(), color, speed, ptype)
+				Pixel.new(love.math.random(love.graphics.getWidth()), love.graphics.getHeight(), color, speed, ptype)
 			end
 		end
 		
@@ -148,7 +148,7 @@ end
 function ScreenGame:mousepressed(x, y, button)
 	if not gameover then
 		-- print(string.format("mouse press(%s) at %d;%d",button,x,y))
-		if button == 'l' then
+		if button == 1 then
 			for i,pixel in pairs(pixels) do
 				if pixel:isClicked(x,y) then
 					-- print("Got a pixel!")
@@ -161,7 +161,7 @@ function ScreenGame:mousepressed(x, y, button)
 end
 
 function ScreenGame:draw()
-	-- love.graphics.printf("PLAY THE GAME", love.window.getWidth()/2 - 10, love.window.getHeight()/2, 20, "center")
+	-- love.graphics.printf("PLAY THE GAME", love.graphics.getWidth()/2 - 10, love.graphics.getHeight()/2, 20, "center")
 	love.graphics.setColor(255,255,255,255)
 	love.graphics.draw(bg['circles'])
 
@@ -175,24 +175,24 @@ function ScreenGame:draw()
 	love.graphics.setColor(255,255,255,255)
 	local stats_w = fonts.standard:getWidth("STREAK")
 	local stats_h = fonts.standard:getHeight() * 5
-	love.graphics.printf("SCORE", 4, love.window.getHeight() - stats_h, stats_w, "center")
-	love.graphics.printf(score, 4, love.window.getHeight() - stats_h + fonts.standard:getHeight() * 2, stats_w, "center")
-	love.graphics.printf("STREAK", love.window.getWidth() - 4 - stats_w, love.window.getHeight() - stats_h, stats_w, "center")
+	love.graphics.printf("SCORE", 4, love.graphics.getHeight() - stats_h, stats_w, "center")
+	love.graphics.printf(score, 4, love.graphics.getHeight() - stats_h + fonts.standard:getHeight() * 2, stats_w, "center")
+	love.graphics.printf("STREAK", love.graphics.getWidth() - 4 - stats_w, love.graphics.getHeight() - stats_h, stats_w, "center")
 	love.graphics.setColor(streak.r,streak.g,streak.b,255)
-	love.graphics.rectangle("fill", love.window.getWidth() - stats_w/2 - 9, love.window.getHeight() - stats_h + fonts.standard:getHeight() * 2, 8, 8)
-	love.graphics.printf(streak.n, love.window.getWidth() - stats_w/2 + 1, love.window.getHeight() - stats_h + fonts.standard:getHeight() * 2 + 1, fonts.standard:getWidth("00"), "left")
+	love.graphics.rectangle("fill", love.graphics.getWidth() - stats_w/2 - 9, love.graphics.getHeight() - stats_h + fonts.standard:getHeight() * 2, 8, 8)
+	love.graphics.printf(streak.n, love.graphics.getWidth() - stats_w/2 + 1, love.graphics.getHeight() - stats_h + fonts.standard:getHeight() * 2 + 1, fonts.standard:getWidth("00"), "left")
 	
 	if gameover then
 		love.graphics.setColor(0,0,0,128)
-		love.graphics.rectangle("fill",0,0,love.window.getWidth(),love.window.getHeight())
+		love.graphics.rectangle("fill",0,0,love.graphics.getWidth(),love.graphics.getHeight())
 		love.graphics.setFont(fonts.big)
 		love.graphics.setColor(255,255,255,255)
-		love.graphics.printf("GAME OVER", 0, love.window.getHeight()/2 - 24, love.window.getWidth(), "center")
+		love.graphics.printf("GAME OVER", 0, love.graphics.getHeight()/2 - 24, love.graphics.getWidth(), "center")
 		love.graphics.setFont(fonts.standard)
-		love.graphics.printf("Press ESC to continue...", 0, love.window.getHeight()/2, love.window.getWidth(), "center")
+		love.graphics.printf("Press ESC to continue...", 0, love.graphics.getHeight()/2, love.graphics.getWidth(), "center")
 	end
-	-- love.graphics.printf(#pixels, love.window.getWidth()/2 - 10, love.window.getHeight() - 16, 20, "center")
-	-- love.graphics.printf(#COLOR, love.window.getWidth()/2 - 10, love.window.getHeight() - 32, 20, "center")
+	-- love.graphics.printf(#pixels, love.graphics.getWidth()/2 - 10, love.graphics.getHeight() - 16, 20, "center")
+	-- love.graphics.printf(#COLOR, love.graphics.getWidth()/2 - 10, love.graphics.getHeight() - 32, 20, "center")
 end
 
 function ScreenGame:quit()

@@ -18,8 +18,8 @@ music = {}
 settings = {sound = "ON", music = "ON", difficulty = "Medium", colorblind = "OFF"}
 
 function love.load()
-	center.x = love.window.getWidth()/2
-	center.y = love.window.getHeight()/2
+	center.x = love.graphics.getWidth()/2
+	center.y = love.graphics.getHeight()/2
 	
 	fonts['small'] = love.graphics.newFont("assets/font/imagine_font.otf",8)
 	fonts['standard'] = love.graphics.newFont("assets/font/imagine_font.otf",10)
@@ -42,11 +42,11 @@ function love.update(dt)
 	current_screen:update(dt)
 end
 
-function love.mousepressed(x, y, button)
+function love.mousepressed(x, y, button, istouch)
 	current_screen:mousepressed(x,y,button)
 end
 
-function love.keypressed(key, isrepeat)
+function love.keypressed(key, scancode, isrepeat)
 	current_screen:keypressed(key,isrepeat)
 end
 
@@ -71,7 +71,7 @@ function settings:save()
 end
 
 function settings:load()
-	if not love.filesystem.exists("ppdz.settings") then
+	if not love.filesystem.getInfo("ppdz.settings") then
 		self:save()
 	else
 		local str, bytes = love.filesystem.read("ppdz.settings")
