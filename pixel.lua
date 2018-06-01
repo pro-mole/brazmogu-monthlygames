@@ -147,6 +147,7 @@ function Pixel:update(dt)
 			if highscore < score then
 				highscore = score
 			end
+			score_save()
 		else
 			zone.defense = zone.defense - 1
 		end

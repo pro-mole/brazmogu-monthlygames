@@ -33,6 +33,7 @@ function love.load()
 	bg['circles'] = love.graphics.newImage("assets/bg/octos.png")
 	bg['titlescreen'] = love.graphics.newImage("assets/bg/title.png")
 
+	score_load()
 	settings:load()
 	
 	current_screen:init()
@@ -81,5 +82,38 @@ function settings:load()
 		for k, v in string.gmatch(str, "(%w+)=(%w+)") do
 			self[k] = v
 		end
+	end
+end
+
+function score_load()
+	if not love.filesystem.getInfo("ppdz.data") then
+		score_save()
+	else
+		local str, bytes = love.filesystem.read("ppdz.data")
+
+		if bytes == 0 then return end
+
+		highscore_str = ""
+		for k=1,10 do
+			hex = str:sub((k-1)*4 + 1, k*4)
+			val = string.char((tonumber(hex, 16) / 9)+32)
+			highscore_str = highscore_str .. val
+		end
+
+		highscore = tonumber(highscore_str)
+	end
+end
+
+function score_save()
+	-- "Encrypt" high score
+	crypto = ""
+	highscore_str = string.format("%010d", highscore)
+	for n=1,10 do
+		hex = string.format("%04x", 9*(string.byte(highscore_str, n) - 32))
+		crypto = crypto .. hex
+	end
+
+	if not love.filesystem.write("ppdz.data", crypto) then
+		print("ERROR: Cannot save high score")
 	end
 end
