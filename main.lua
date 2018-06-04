@@ -21,10 +21,10 @@ function love.load()
 	center.x = love.graphics.getWidth()/2
 	center.y = love.graphics.getHeight()/2
 	
-	fonts['small'] = love.graphics.newFont("assets/font/imagine_font.otf",8)
-	fonts['standard'] = love.graphics.newFont("assets/font/imagine_font.otf",10)
-	fonts['big'] = love.graphics.newFont("assets/font/imagine_font.otf",16)
-	fonts['huge'] = love.graphics.newFont("assets/font/imagine_font.otf",64)
+	fonts['small'] = love.graphics.newFont("assets/font/PixelPop.ttf",8)
+	fonts['standard'] = love.graphics.newFont("assets/font/PixelPop.ttf",10)
+	fonts['big'] = love.graphics.newFont("assets/font/PixelPop.ttf",16)
+	fonts['huge'] = love.graphics.newFont("assets/font/PixelPop.ttf",64)
 
 	sound['dissolve'] = love.audio.newSource("assets/sound/dissolve.wav","static")
 

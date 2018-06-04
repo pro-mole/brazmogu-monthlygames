@@ -88,8 +88,8 @@ function ScreenMenu:draw()
 	self:drawMenu(self.current_menu)
 	-- Draw footer stuff, I guess
 	--love.graphics.setFont(fonts.standard)
-	love.graphics.printf("HIGHSCORE", center.x-40, love.graphics.getHeight() - 128 - fonts.standard:getHeight()*2 - 2, 80, "center")
-	love.graphics.printf(highscore, center.x-32, love.graphics.getHeight() - 128 - fonts.standard:getHeight() - 1, 64, "center")
+	love.graphics.printf("HIGHSCORE", center.x-64, love.graphics.getHeight() - 128 - fonts.standard:getHeight()*2 - 2, 128, "center")
+	love.graphics.printf(string.format("%06d",highscore), center.x-32, love.graphics.getHeight() - 128 - fonts.standard:getHeight() - 1, 64, "center")
 end
 
 function ScreenMenu:drawMenu(menu)
@@ -104,8 +104,8 @@ function ScreenMenu:drawMenu(menu)
 	for i,button in ipairs(menu) do
 		if button.action == "toggle" then -- toggle buttons need to tell me what value is set
 			love.graphics.rectangle("line", button.pos[1], button.pos[2], button.size[1], button.size[2])
-			love.graphics.printf(button.text, button.pos[1], button.pos[2] + 8, button.size[1],"center")
-			love.graphics.printf(settings[button.var], button.pos[1], button.pos[2] + 12 + fonts.standard:getHeight(), button.size[1],"center")
+			love.graphics.printf(button.text, button.pos[1], button.pos[2] + 4, button.size[1],"center")
+			love.graphics.printf(settings[button.var], button.pos[1], button.pos[2] + 8 + fonts.standard:getHeight(), button.size[1],"center")
 		else -- all other buttons
 			love.graphics.rectangle("line", button.pos[1], button.pos[2], button.size[1], button.size[2])
 			love.graphics.printf(button.text, button.pos[1], button.pos[2] + (button.size[2] - fonts.standard:getHeight())/2, button.size[1],"center")
