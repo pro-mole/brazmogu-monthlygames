@@ -54,9 +54,9 @@ function ScreenHelp:draw()
 	
 	love.graphics.setColor(255, 255, 255, 255)
 	love.graphics.printf("Try clicking pixels of a same color in a row to not only rack up more points per pixel destroyed, but also add a sweet splash effect and destroy more pixels at once!", 332, 192, 256, "right");
-	love.graphics.rectangle("fill", 140, 166, 8, 8)
+	love.graphics.rectangle("fill", 140, 168, 8, 8)
 	love.graphics.setFont(fonts.standard)
-	love.graphics.printf(self.splashsize, 150, 167, 8, "center")
+	love.graphics.printf(self.splashsize, 150, 167, 10, "center")
 	love.graphics.setFont(fonts.big)
 	particles:draw()
 	
@@ -71,7 +71,7 @@ function ScreenHelp:draw()
 	love.graphics.printf("And that's about all you need to know for now! Stay strong as long as you can and best of luck!", 32, 480, 536, "center");
 	
 	love.graphics.setFont(fonts.standard)
-	love.graphics.printf("Press 'Esc' or 'Backspace' to go back!", 16, 624, 268, "left");
+	love.graphics.printf("Press 'Esc' or 'Backspace' to go back!", 16, 624, 800-32, "left");
 end
 
 function ScreenHelp:quit()
