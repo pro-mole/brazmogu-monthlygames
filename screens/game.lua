@@ -180,7 +180,7 @@ function ScreenGame:draw()
 	love.graphics.printf("STREAK", love.graphics.getWidth() - 4 - stats_w, love.graphics.getHeight() - stats_h, stats_w, "center")
 	love.graphics.setColor(streak.r,streak.g,streak.b,255)
 	love.graphics.rectangle("fill", love.graphics.getWidth() - stats_w/2 - 9, love.graphics.getHeight() - stats_h + fonts.standard:getHeight() * 2, 8, 8)
-	love.graphics.printf(streak.n, love.graphics.getWidth() - stats_w/2 + 1, love.graphics.getHeight() - stats_h + fonts.standard:getHeight() * 2 + 1, fonts.standard:getWidth("00"), "left")
+	love.graphics.printf(streak.n, love.graphics.getWidth() - stats_w/2 + 1, love.graphics.getHeight() - stats_h + fonts.standard:getHeight() * 2 - 1, fonts.standard:getWidth("00"), "left")
 	
 	if gameover then
 		love.graphics.setColor(0,0,0,128)

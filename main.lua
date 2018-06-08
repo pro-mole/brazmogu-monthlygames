@@ -24,7 +24,7 @@ function love.load()
 	fonts['small'] = love.graphics.newFont("assets/font/PixelPop.ttf",8)
 	fonts['standard'] = love.graphics.newFont("assets/font/PixelPop.ttf",10)
 	fonts['big'] = love.graphics.newFont("assets/font/PixelPop.ttf",12)
-	fonts['huge'] = love.graphics.newFont("assets/font/PixelPop.ttf",64)
+	fonts['huge'] = love.graphics.newFont("assets/font/PixelPop.ttf",48)
 
 	sound['dissolve'] = love.audio.newSource("assets/sound/dissolve.wav","static")
 
