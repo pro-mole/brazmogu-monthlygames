@@ -14,51 +14,21 @@ function ScreenGame:init()
 	zone:init(32)
 	self.delta = 0
 	self.dstep = 0
-	if settings.difficulty == "Easy" then
+	if settings.difficulty == "Demo" then
 		self.step=4
 		self.interval = 4
 		self.timerate = 0.99
 		self.mininterval = 1
 		
-		self.speedavg = 8
+		self.speedavg = 16
 		self.speedavgrate = 0.5
 		self.maxspeedavg = 32
 		
 		self.speedvar = 0
 		self.speedvarrate = 0.01
-		self.maxspeedvar = 0.5
+		self.maxspeedvar = 0.1
 
-		self.randChances = {streak=5, flash=20, hollow=20, rainbow=20}
-	elseif settings.difficulty == "Medium" then
-		self.step=2
-		self.interval = 2
-		self.timerate = 0.9
-		self.mininterval = 0.5
-		
-		self.speedavg = 12
-		self.speedavgrate = 1
-		self.maxspeedavg = 48
-		
-		self.speedvar = 0
-		self.speedvarrate = 0.01
-		self.maxspeedvar = 0.5
-
-		self.randChances = {streak=10, flash=50, hollow=50, rainbow=100}
-	elseif settings.difficulty == "Hard" then
-		self.step=1
-		self.interval = 1
-		self.timerate = 0.75
-		self.mininterval = 0.25
-		
-		self.speedavg = 16
-		self.speedavgrate = 2
-		self.maxspeedavg = 64
-		
-		self.speedvar = 0
-		self.speedvarrate = 0.1
-		self.maxspeedvar = 1
-
-		self.randChances = {streak=20, flash=100, hollow=100, rainbow=500}
+		self.randChances = {streak=50, flash=20, hollow=20, rainbow=10}
 	end
 	
 	-- set up global vars

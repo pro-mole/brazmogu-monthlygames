@@ -10,7 +10,7 @@ pixels = {}
 lastindex = 0
 
 -- Score value depending on game difficulty
-pixelval = {Easy=4, Medium=10, Hard=16}
+pixelval = {Demo=1}
 
 function Pixel.new(x, y, color, speed, ptype)
 	--[[

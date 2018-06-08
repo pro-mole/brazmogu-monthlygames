@@ -9,7 +9,7 @@ function ScreenMenu:init()
 			title="Options",
 			{text="Sound", pos={center.x-100, center.y}, size={96,32}, action="toggle", var="sound", values={"ON","OFF"}},
 			{text="Music", pos={center.x+4, center.y}, size={96,32}, action="toggle", var="music", values={"ON","OFF"}, callback=toggleMusic},
-			{text="Dificulty", pos={center.x-64, center.y+40}, size={128,32}, action="toggle", var="difficulty", values={"Easy","Medium","Hard"}},
+			{text="Dificulty", pos={center.x-64, center.y+40}, size={128,32}, action="toggle", var="difficulty", values={"Demo"}},
 			-- {text="Colorblind Mode", pos={center.x-72, center.y+80}, size={144,32}, action="toggle", var="colorblind", values={"ON","OFF"}},
 			{text="Back", pos={center.x-24, center.y+120}, size={48,24}, action="back"}
 		}},
@@ -83,6 +83,8 @@ function ScreenMenu:draw()
 	-- Draw the menu header
 	love.graphics.setFont(fonts.huge)
 	love.graphics.printf("PIXEL POP DEFENSE ZONE", 0, center.y/2 - fonts.huge:getHeight(), love.graphics.getWidth(), "center")
+	love.graphics.setFont(fonts.big)
+	love.graphics.printf("DEMO", 0, center.y/2 + fonts.huge:getHeight(), love.graphics.getWidth(), "center")
 	
 	love.graphics.setFont(fonts.standard)
 	self:drawMenu(self.current_menu)

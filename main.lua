@@ -15,7 +15,7 @@ fonts = {}
 bg = {}
 sound = {}
 music = {}
-settings = {sound = "ON", music = "ON", difficulty = "Medium", colorblind = "OFF"}
+settings = {sound = "ON", music = "ON", difficulty = "Demo", colorblind = "OFF"}
 
 function love.load()
 	center.x = love.graphics.getWidth()/2
@@ -86,34 +86,9 @@ function settings:load()
 end
 
 function score_load()
-	if not love.filesystem.getInfo("ppdz.data") then
-		score_save()
-	else
-		local str, bytes = love.filesystem.read("ppdz.data")
-
-		if bytes == 0 then return end
-
-		highscore_str = ""
-		for k=1,10 do
-			hex = str:sub((k-1)*4 + 1, k*4)
-			val = string.char((tonumber(hex, 16) / 9)+32)
-			highscore_str = highscore_str .. val
-		end
-
-		highscore = tonumber(highscore_str)
-	end
+	highscore = 0
 end
 
 function score_save()
-	-- "Encrypt" high score
-	crypto = ""
-	highscore_str = string.format("%010d", highscore)
-	for n=1,10 do
-		hex = string.format("%04x", 9*(string.byte(highscore_str, n) - 32))
-		crypto = crypto .. hex
-	end
-
-	if not love.filesystem.write("ppdz.data", crypto) then
-		print("ERROR: Cannot save high score")
-	end
+	-- No highscore keeping in the demo!
 end
